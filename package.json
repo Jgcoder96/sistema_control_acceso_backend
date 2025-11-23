@@ -1,0 +1,38 @@
+{
+  "name": "sistema_control_acceso_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node-dev --respawn --clear src/index.ts",
+    "build": "rimraf ./dist && tsc",
+    "start": "npm run build &&node ./dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jgcoder96/sistema_control_acceso_backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Jgcoder96/sistema_control_acceso_backend/issues"
+  },
+  "homepage": "https://github.com/Jgcoder96/sistema_control_acceso_backend#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/node": "^24.10.1",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-prettier": "^0.0.0-empty",
+    "globals": "^16.5.0",
+    "prettier": "3.6.2",
+    "rimraf": "^6.1.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.47.0"
+  }
+}
