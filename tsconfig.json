@@ -32,6 +32,6 @@
     /* 6. Rendimiento de Compilación */
     "skipLibCheck": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/websocket/events/startEventListener.ts"],
   "exclude": ["node_modules", "dist"]
 }

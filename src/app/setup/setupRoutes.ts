@@ -10,7 +10,9 @@ export const appRoutes: AppRoutes = {
 
 export const setupRoutes = (app: Express): Router => {
   const router = Router();
+
   router.use('/auth', appRoutes.auth);
   app.use('/api', router);
+
   return router;
 };
