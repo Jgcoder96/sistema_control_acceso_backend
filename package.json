@@ -30,6 +30,7 @@
   "devDependencies": {
     "@eslint/js": "9.39.1",
     "@types/express": "5.0.5",
+    "@types/morgan": "1.9.10",
     "@types/node": "24.10.1",
     "eslint": "9.39.1",
     "eslint-config-prettier": "10.1.8",
@@ -47,6 +48,7 @@
     "dotenv": "17.2.3",
     "env-var": "7.5.0",
     "express": "5.1.0",
+    "morgan": "1.10.1",
     "socket.io": "4.8.1"
   }
 }
