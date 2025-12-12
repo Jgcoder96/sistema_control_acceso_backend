@@ -11,7 +11,7 @@ const main = (): void => {
 
   initWss(httpServer);
 
-  const PORT = envs.PORT;
+  const PORT = envs.PORT || 3000;
 
   httpServer.listen(PORT, () => {
     console.log(

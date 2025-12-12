@@ -1,0 +1,21 @@
+# Directorios pesados y de compilación
+node_modules
+dist
+.git
+
+# Archivos de configuración de Docker
+Dockerfile
+.dockerignore
+
+# Archivos de entorno
+.env
+.env.template
+
+# Documentación y Git
+README.md
+.gitignore
+
+# Herramientas de Estilo y Linting
+.prettierrc
+.prettierignore
+eslint.config.mjs
