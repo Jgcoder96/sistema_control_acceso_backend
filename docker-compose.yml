@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  backend-app:
+    build: .
+
+    container_name: sistema_control_acceso_backend
+
+    restart: always
+
+    ports:
+      - '3000:3000'
+
+    environment:
+      - NODE_ENV=production
+      - APP_PORT=3000
+
+    env_file:
+      - .env

@@ -12,7 +12,7 @@ export const setupMiddleware = (app: Express): Express => {
   app.use(morgan('dev'));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  if (envs.NODE_ENV === 'produccion') {
+  if (envs.NODE_ENV === 'production') {
     app.use(morgan('combined'));
   } else {
     app.use(morgan('dev'));
