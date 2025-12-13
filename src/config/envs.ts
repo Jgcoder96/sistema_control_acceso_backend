@@ -4,6 +4,7 @@ import env from 'env-var';
 config();
 
 export const envs = {
-  PORT: env.get('APP_PORT').default('3000').asPortNumber(),
-  NODE_ENV: env.get('NODE_ENV').default('desarrollo').asString(),
+  PORT: env.get('APP_PORT').required().asPortNumber(),
+  NODE_ENV: env.get('NODE_ENV').required().asString(),
+  MQTT_BROKER_URL: env.get('MQTT_BROKER_URL').required().asString(),
 };
