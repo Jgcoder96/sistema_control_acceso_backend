@@ -3,17 +3,27 @@ version: '3.8'
 services:
   backend-app:
     build: .
-
     container_name: sistema_control_acceso_backend
-
     restart: always
-
     ports:
       - '3000:3000'
-
     environment:
       - NODE_ENV=production
       - APP_PORT=3000
-
+      - MQTT_BROKER_URL=mqtt://mosquitto
+      - MQTT_BROKER_PORT=1883
     env_file:
       - .env
+    depends_on:
+      - mosquitto
+
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mqtt_broker
+    restart: always
+    ports:
+      - '1883:1883'
+    volumes:
+      - ./config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto_data:/mosquitto/data
+      - ./mosquitto_log:/mosquitto/log
