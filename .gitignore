@@ -1,5 +1,6 @@
+.env
 dist/
-node_modules/
 mosquitto_data/
 mosquitto_log/
-.env
+node_modules/
+postgres_data/
