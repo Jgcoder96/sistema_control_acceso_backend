@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: postgres_db
+    image: postgres:15.15
+    restart: always
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=sistema_control_acceso_database
+      - POSTGRES_USER=jgcoder96
+      - POSTGRES_PASSWORD=sistema123
+
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mqtt_broker_dev
+    restart: always
+    ports:
+      - '1883:1883'
+    volumes:
+      - ./config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto_data:/mosquitto/data
+      - ./mosquitto_log:/mosquitto/log

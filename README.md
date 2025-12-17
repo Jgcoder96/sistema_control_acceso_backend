@@ -82,7 +82,7 @@ Puedes duplicar el archivo `.env.template` como base y definir los siguientes va
 Para el correcto funcionamiento del sistema, es necesario levantar el servicio de mensajería Eclipse Mosquitto. Ejecuta el siguiente comando:
 
 ```
-docker compose -f docker-compose.mqtt.yml up -d
+docker compose -f docker-compose.dev.yml up -d
 ```
 
 ### 5. Ejecución del Proyecto
