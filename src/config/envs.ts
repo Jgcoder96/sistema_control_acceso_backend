@@ -9,4 +9,6 @@ export const envs = {
 
   MQTT_BROKER_URL: env.get('MQTT_BROKER_URL').required().asString(),
   MQTT_BROKER_PORT: env.get('MQTT_BROKER_PORT').required().asPortNumber(),
+
+  DATABASE_URL: env.get('DATABASE_URL').required().asString(),
 };

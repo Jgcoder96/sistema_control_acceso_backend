@@ -14,9 +14,8 @@ const main = (): void => {
   const PORT = envs.PORT || 3000;
 
   httpServer.listen(PORT, () => {
-    console.log(
-      `Servidor HTTP: http://localhost:${PORT} \nWebSocket: ws://localhost:${PORT}`,
-    );
+    // http://localhost:${PORT}
+    // ws://localhost:${PORT}
   });
 };
 

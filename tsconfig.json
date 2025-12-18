@@ -32,6 +32,10 @@
     /* 6. Rendimiento de Compilación */
     "skipLibCheck": true
   },
-  "include": ["src/**/*", "src/websocket/events/startEventListener.ts"],
+  "include": [
+    "src/**/*",
+    "src/websocket/events/startEventListener.ts",
+    "src/config/prisma.config.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }
