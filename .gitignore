@@ -1,5 +1,6 @@
 .env
 dist/
+generated/
 mosquitto_data/
 mosquitto_log/
 node_modules/
