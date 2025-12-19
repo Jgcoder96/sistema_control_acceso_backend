@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   db:
     container_name: postgres_db
@@ -16,7 +15,7 @@ services:
 
   mosquitto:
     image: eclipse-mosquitto:latest
-    container_name: mqtt_broker_dev
+    container_name: mqtt_broker
     restart: always
     ports:
       - '1883:1883'

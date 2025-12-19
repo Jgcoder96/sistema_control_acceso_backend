@@ -1,28 +1,59 @@
 version: '3.8'
+
 services:
+  postgres_db:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    restart: always
+    environment:
+      - POSTGRES_DB=sistema_control_acceso_database
+      - POSTGRES_USER=jgcoder96
+      - POSTGRES_PASSWORD=sistema123
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'pg_isready -U jgcoder96 -d sistema_control_acceso_database',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mqtt_broker_eclipse_mosquitto
+    restart: always
+    ports:
+      - '1883:1883'
+    volumes:
+      - ./config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+
   backend-app:
     build: .
     container_name: sistema_control_acceso_backend
     restart: always
     ports:
       - '80:3000'
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+      mosquitto:
+        condition: service_started
+    env_file:
+      - .env
     environment:
       - NODE_ENV=production
       - APP_PORT=3000
       - MQTT_BROKER_URL=mqtt://mosquitto
       - MQTT_BROKER_PORT=1883
-    env_file:
-      - .env
-    depends_on:
-      - mosquitto
+      - DATABASE_URL=postgresql://jgcoder96:sistema123@postgres_db:5432/sistema_control_acceso_database?schema=public
 
-  mosquitto:
-    image: eclipse-mosquitto:latest
-    container_name: mqtt_broker
-    restart: always
-    ports:
-      - '1883:1883'
-    volumes:
-      - ./config/mosquitto.conf:/mosquitto/config/mosquitto.conf
-      - ./mosquitto_data:/mosquitto/data
-      - ./mosquitto_log:/mosquitto/log
+volumes:
+  postgres_data:
+  mosquitto_data:
+  mosquitto_log:

@@ -1,37 +1,40 @@
-# ==========================================
 # ETAPA 1: Construcción (Builder)
-# ==========================================
-FROM node:lts-alpine AS builder
+FROM node:22-alpine3.21 AS builder
+
+RUN apk add --no-cache openssl libc6-compat
 
 WORKDIR /app
 
-# 1. Instalar dependencias del proyecto (incluyendo desarrollo)
 COPY package.json package-lock.json ./
+COPY prisma ./prisma/
+COPY prisma.config.ts ./ 
+
 RUN npm ci
 
-# 2. Copiar código fuente y compilar
 COPY . .
+
+RUN npx prisma generate
+
 RUN npm run build
 
-# ==========================================
-# ETAPA 2: Producción (Runner)
-# ==========================================
-FROM node:lts-alpine AS runner
+RUN npm prune --omit=dev
 
-# Configuración de entorno
+# ETAPA 2: Producción (Runner)
+FROM node:22-alpine3.21 AS runner
+
+RUN apk add --no-cache openssl libc6-compat
+
 ENV NODE_ENV=production
 WORKDIR /app
 
-# 1. Instalar únicamente dependencias de producción
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
-
-# 2. Copiar los artefactos compilados desde la etapa anterior
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma.config.ts ./ 
+COPY --from=builder /app/package.json ./package.json
 
-# 3. Configuración de seguridad (Usuario sin privilegios)
 USER node
 EXPOSE 3000
 
-# 4. Iniciar aplicación
-CMD ["node", "dist/main.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main.js"]
