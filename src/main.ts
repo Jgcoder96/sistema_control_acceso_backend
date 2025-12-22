@@ -1,7 +1,7 @@
 import { createServer } from 'http';
 
 import { appExpress } from './app/app.js';
-import { envs } from './config/envs.js';
+import { envs } from './config/envs.config.js';
 import { initWss } from './websocket/index.js';
 
 const main = (): void => {

@@ -24,7 +24,6 @@ FROM node:22-alpine3.21 AS runner
 
 RUN apk add --no-cache openssl libc6-compat
 
-ENV NODE_ENV=production
 WORKDIR /app
 
 COPY --from=builder /app/node_modules ./node_modules

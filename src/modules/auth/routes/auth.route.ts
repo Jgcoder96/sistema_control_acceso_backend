@@ -1,11 +1,18 @@
 import { Router } from 'express';
 
-import { registerUser } from '../controllers/register.controller.js';
-import { registerUserSchema } from '../schemas/registerUser.schemas.js';
+import { changeLedStatusController } from '../controllers/changeLedStatus.controller.js';
+import { registerUserSchema } from '../schemas/registerUser.schema.js';
 import { schemaValidator } from '../../../shared/middlewares/schemaValidator.middleware.js';
+import { signUpController } from '../controllers/signUp.controller.js';
+import { Action } from '../schemas/Action.schema.js';
 
 export const authRoute = (): Router => {
   const router = Router();
-  router.post('/register', [schemaValidator(registerUserSchema)], registerUser);
+  router.post(
+    '/register',
+    [schemaValidator(registerUserSchema)],
+    signUpController,
+  );
+  router.post('/led', [schemaValidator(Action)], changeLedStatusController);
   return router;
 };
