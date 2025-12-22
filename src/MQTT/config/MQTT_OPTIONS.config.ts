@@ -1,6 +1,6 @@
 import type { IClientOptions } from 'mqtt';
 
-import { envs } from '../../config/envs.js';
+import { envs } from '../../config/envs.config.js';
 
 export const MQTT_OPTIONS = {
   brokerUrl: `${envs.MQTT_BROKER_URL}:${envs.MQTT_BROKER_PORT}`,
