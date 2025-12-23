@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     /* 1. Rutas y Salida de Archivos */
-    "rootDir": "src",
-    "outDir": "dist",
+    "rootDir": "./src",
+    "outDir": "./dist",
 
     /* 2. Configuración del Lenguaje y Entorno */
     "target": "esnext",
@@ -16,6 +16,7 @@
     "verbatimModuleSyntax": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
 
     /* 4. Estrictez y Seguridad de Tipos (Strictness) */
     "strict": true,
