@@ -1,5 +1,4 @@
 import type { IClientOptions } from 'mqtt';
-
 import { envs } from '../../config/envs.config.js';
 
 export const MQTT_OPTIONS = {

@@ -1,5 +1,4 @@
 import type { Request, Response, NextFunction } from 'express';
-
 import { signUpService } from '../services/signUpService.service.js';
 import type { UserToCreate } from '../types/UserToCreate.type.js';
 

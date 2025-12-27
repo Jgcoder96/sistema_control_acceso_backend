@@ -1,5 +1,4 @@
 import type { usuarios } from '@prisma/client';
-
 import { prisma } from '../../../config/prismaConnection.config.js';
 import type { UserToCreate } from '../types/UserToCreate.type.js';
 

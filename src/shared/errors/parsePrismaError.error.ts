@@ -3,12 +3,12 @@ export const parsePrismaError = (error: string) => {
     case 'P2002':
       return {
         statusCode: 409,
-        message: 'Ya existe un registro con esos datos únicos.',
+        message: 'El registro ya existe',
       };
     default:
       return {
         statusCode: 500,
-        message: `Error inesperado de la base de datos`,
+        message: `Error en la base de datos`,
       };
   }
 };

@@ -1,39 +1,38 @@
 import type { Request, Response, NextFunction } from 'express';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-
+import { Prisma } from '@prisma/client';
+import { logger } from '../../config/logger.config.js';
 import { parsePrismaError } from '../errors/parsePrismaError.error.js';
 
-interface AppError extends Error {
-  statusCode?: number;
-}
-
 export const globalErrorHandler = (
-  err: AppError | Error | unknown,
-  _req: Request,
+  err: Error,
+  req: Request,
   res: Response,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction,
 ): void => {
-  // 1. Errores conocidos de Prisma
-  if (err instanceof PrismaClientKnownRequestError) {
-    const { statusCode, message } = parsePrismaError(err.code);
+  const meta = { path: req.originalUrl, method: req.method };
 
-    res.status(statusCode).json({
-      res: false,
-      message,
-    });
-
+  if (err instanceof Prisma.PrismaClientKnownRequestError) {
+    const parsedError = parsePrismaError(err.code);
+    if (parsedError.statusCode >= 500) {
+      logger.error(`Prisma Error`, {
+        ...meta,
+        code: err.code,
+      });
+      console.error(err);
+    } else {
+      logger.warn(`Prisma Error`, { ...meta, code: err.code });
+    }
+    res
+      .status(parsedError.statusCode)
+      .json({ success: false, message: parsedError.message });
     return;
   }
 
-  // 2. Errores genéricos de la aplicación
-  const statusCode = (err as AppError).statusCode || 500;
-  const message = (err as Error).message || 'Error interno del servidor';
+  logger.error('Error interno del servidor', { ...meta });
 
-  console.error(`[Error Log]: ${message}`);
-
-  res.status(statusCode).json({
-    res: false,
-    message: statusCode === 500 ? 'Error interno del servidor' : message,
+  res.status(500).json({
+    success: false,
+    message: 'Error interno del servidor',
   });
 };

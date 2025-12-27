@@ -1,19 +1,20 @@
 import { MqttClient } from 'mqtt';
+import { logger } from '../../config/logger.config.js';
 
 export const eventHandlers = (client: MqttClient) => {
   client.on('connect', () => {
-    console.log('✅ Servicio MQTT: Conectado exitosamente');
+    logger.info('Servicio MQTT: Conectado exitosamente');
   });
 
   client.on('reconnect', () => {
-    console.log('⚠️ Servicio MQTT: Re-conectando...');
+    logger.warn('Servicio MQTT: Re-conectando...');
   });
 
   client.on('error', (err) => {
-    console.error('❌ Servicio MQTT Error:', err.message);
+    logger.error(`Servicio MQTT Error: ${err.message}`);
   });
 
   client.on('offline', () => {
-    console.warn('🔌 Servicio MQTT: Desconectado (Offline)');
+    logger.warn('Servicio MQTT: Desconectado (Offline)');
   });
 };

@@ -1,5 +1,4 @@
 import type { Request, Response, NextFunction } from 'express';
-
 import { publishMessage } from '../../../MQTT/publisher/publishmessage.publish.js';
 
 export const changeLedStatusController = async (

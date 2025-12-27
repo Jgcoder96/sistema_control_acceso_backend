@@ -1,5 +1,4 @@
 import { Router } from 'express';
-
 import { changeLedStatusController } from '../controllers/changeLedStatus.controller.js';
 import { registerUserSchema } from '../schemas/registerUser.schema.js';
 import { schemaValidator } from '../../../shared/middlewares/schemaValidator.middleware.js';
