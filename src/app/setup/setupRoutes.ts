@@ -1,8 +1,7 @@
-import { Router } from 'express';
 import type { Express } from 'express';
-
-import { authRoute } from '../../modules/auth/routes/auth.route.js';
+import { Router } from 'express';
 import type { AppRoutes } from '../types/AppRoutes.type.js';
+import { authRoute } from '../../modules/auth/routes/auth.route.js';
 
 export const appRoutes: AppRoutes = {
   auth: authRoute(),

@@ -1,8 +1,9 @@
 import { Server } from 'socket.io';
+import { logger } from '../../config/logger.config.js';
 
 export const startEventListener = (wss: Server): void => {
   wss.on('connection', (socket) => {
-    console.log('Un usuario se ha conectado');
+    logger.info('Nuevo usuario conectado');
 
     socket.on('chat message', (msg) => {
       console.log('Mensaje: ' + msg);
@@ -11,7 +12,7 @@ export const startEventListener = (wss: Server): void => {
     });
 
     socket.on('disconnect', () => {
-      console.log('Un usuario se ha desconectado');
+      logger.info('Usuario desconectado');
     });
   });
 };
