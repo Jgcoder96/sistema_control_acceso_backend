@@ -19,13 +19,14 @@ export const globalErrorHandler = (
         ...meta,
         code: err.code,
       });
-      console.error(err);
     } else {
       logger.warn(`Prisma Error`, { ...meta, code: err.code });
     }
+
     res
       .status(parsedError.statusCode)
       .json({ success: false, message: parsedError.message });
+
     return;
   }
 
