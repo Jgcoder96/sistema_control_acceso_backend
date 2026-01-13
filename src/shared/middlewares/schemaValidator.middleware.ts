@@ -12,12 +12,11 @@ export const schemaValidator =
           field: issue.path[0],
           message: issue.message,
         }));
-        res.status(400).json({ res: false, issues });
+        res.status(400).json({ success: false, issues });
       } else {
         res.status(500).json({
-          res: false,
-          statusCode: 500,
-          message: 'Error Interno del Servidor',
+          success: false,
+          message: 'Error Interno del Servidor.',
         });
       }
     }

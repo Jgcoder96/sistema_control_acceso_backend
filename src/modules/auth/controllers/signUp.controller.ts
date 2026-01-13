@@ -1,6 +1,7 @@
+import { signUpService } from '../services/signUp.service.js';
 import type { Request, Response, NextFunction } from 'express';
-import { signUpService } from '../services/signUpService.service.js';
-import type { UserToCreate } from '../types/UserToCreate.type.js';
+import type { RequestBodySignUp } from '../types/RequestBodySignUp.type.js';
+import type { RequestFile } from '../../../shared/types/RequestFile.type.js';
 
 export const signUpController = async (
   req: Request,
@@ -8,12 +9,13 @@ export const signUpController = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const requestBody: UserToCreate = req.body;
+    const requestBody: RequestBodySignUp = req.body;
+    const requestFile: RequestFile | undefined = req.file;
 
-    const user = await signUpService(requestBody);
+    const user = await signUpService(requestBody, requestFile);
 
     res.status(201).json({
-      res: true,
+      success: true,
       message: 'Usuario registrado exitosamente.',
       data: user,
     });
