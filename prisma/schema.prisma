@@ -8,7 +8,14 @@ datasource db {
 }
 
 model usuarios {
-  id       Int    @id @default(autoincrement())
-  nombre   String @unique @db.VarChar(100)
-  apellido String @db.VarChar(100)
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nombre             String   @db.VarChar(100)
+  apellido           String   @db.VarChar(100)
+  cedula             BigInt   @unique
+  correo_electronico String   @unique @db.VarChar(255)
+  foto_url           String?  @db.VarChar(255)
+  estado             String   @default("activo") @db.VarChar(20)
+  clave_hash         String   @db.VarChar(255)
+  creado_el          DateTime @default(now()) @db.Timestamp(6)
+  actualizado_el     DateTime @default(now()) @db.Timestamp(6)
 }

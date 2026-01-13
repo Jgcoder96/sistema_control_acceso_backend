@@ -1,4 +1,8 @@
 export interface UserToCreate {
-  nombre: string;
   apellido: string;
+  cedula: number;
+  clave_hash: string;
+  correo_electronico: string;
+  foto_url: string;
+  nombre: string;
 }

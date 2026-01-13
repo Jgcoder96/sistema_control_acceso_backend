@@ -34,6 +34,6 @@ export const globalErrorHandler = (
 
   res.status(500).json({
     success: false,
-    message: 'Error interno del servidor',
+    message: 'Error interno del servidor.',
   });
 };
