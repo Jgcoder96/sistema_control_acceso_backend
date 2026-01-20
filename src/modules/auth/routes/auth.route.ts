@@ -1,19 +1,28 @@
-import { Action } from '../schemas/Action.schema.js';
-import { changeLedStatusController } from '../controllers/changeLedStatus.controller.js';
-import { formDataValidator } from '../../../shared/middlewares/formDataValidator.middleware.js';
+import { Action, signInSchema, signUpSchema } from '../schemas/index.js';
+import {
+  formDataValidator,
+  schemaValidator,
+} from '../../../shared/middlewares/index.js';
 import { Router } from 'express';
-import { schemaValidator } from '../../../shared/middlewares/schemaValidator.middleware.js';
-import { signUpController } from '../controllers/signUp.controller.js';
-import { signUpSchema } from '../schemas/signUp.schema.js';
 import upload from '../../../config/multer.config.js';
+import {
+  changeLedStatusController,
+  signUpController,
+  signInController,
+} from '../controllers/index.js';
 
 export const authRoute = (): Router => {
   const router = Router();
+
   router.post(
-    '/register',
+    '/signup',
     [upload.single('foto'), formDataValidator(signUpSchema)],
     signUpController,
   );
+
+  router.post('/signin', [schemaValidator(signInSchema)], signInController);
+
   router.post('/led', [schemaValidator(Action)], changeLedStatusController);
+
   return router;
 };

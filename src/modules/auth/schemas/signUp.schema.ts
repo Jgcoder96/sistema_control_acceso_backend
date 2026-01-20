@@ -1,23 +1,38 @@
 import { z } from 'zod';
 
 export const signUpSchema = z.object({
-  nombre: z.string().min(1, 'El nombre es obligatorio').max(100),
-  apellido: z.string().min(1, 'El apellido es obligatorio').max(100),
+  nombre: z
+    .string('El nombre es obligatorio')
+    .min(1, 'El nombre es obligatorio')
+    .max(100, 'El nombre no debe exceder los 100 caracteres'),
+
+  apellido: z
+    .string('El apellido es obligatorio')
+    .min(1, 'El apellido es obligatorio')
+    .max(100, 'El apellido no debe exceder los 100 caracteres'),
 
   cedula: z.coerce
     .number()
     .int('La cédula debe ser un número entero')
     .positive('La cédula debe ser un número positivo'),
 
-  correo_electronico: z.string().email('Email inválido').max(255),
+  correo_electronico: z
+    .string('El correo electrónico es obligatorio')
+    .min(1, 'El correo electrónico es obligatorio')
+    .email('Formato de correo electrónico no válido')
+    .max(255, 'El correo electrónico no debe exceder los 255 caracteres'),
 
   clave: z
-    .string()
-    .min(8, 'Mínimo 8 caracteres')
-    .regex(/[A-Z]/, 'Falta una mayúscula')
-    .regex(/[a-z]/, 'Falta una minúscula')
-    .regex(/[0-9]/, 'Falta un número')
-    .regex(/[^a-zA-Z0-9]/, 'Falta un carácter especial'),
+    .string('La contraseña es obligatoria')
+    .min(8, 'La contraseña debe tener al menos 8 caracteres')
+    .max(100, 'La contraseña es demasiado larga')
+    .regex(/[A-Z]/, 'Debe incluir al menos una letra mayúscula')
+    .regex(/[a-z]/, 'Debe incluir al menos una letra minúscula')
+    .regex(/[0-9]/, 'Debe incluir al menos un número')
+    .regex(
+      /[^a-zA-Z0-9]/,
+      'Debe incluir al menos un carácter especial (ej. @, #, $, %)',
+    ),
 
   estado: z.enum(['activo', 'inactivo']).default('activo'),
 
@@ -31,6 +46,6 @@ export const signUpSchema = z.object({
     .refine(
       (file) =>
         ['image/jpeg', 'image/png', 'image/webp'].includes(file?.mimetype),
-      'Solo se permiten formatos JPG, PNG y WebP',
+      'Solo se permiten formatos Jpeg, PNG y WebP',
     ),
 });
