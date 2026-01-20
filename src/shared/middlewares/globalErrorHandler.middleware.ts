@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 import { Prisma } from '@prisma/client';
 import { logger } from '../../config/logger.config.js';
 import { parsePrismaError } from '../errors/parsePrismaError.error.js';
+import { RecordNotFound, InvalidPassword } from '../errors/index.js';
 
 export const globalErrorHandler = (
   err: Error,
@@ -27,6 +28,25 @@ export const globalErrorHandler = (
       .status(parsedError.statusCode)
       .json({ success: false, message: parsedError.message });
 
+    return;
+  }
+
+  if (err instanceof RecordNotFound) {
+    logger.warn('Registro no encontrado', { ...meta });
+
+    res.status(err.statusCode).json({
+      success: false,
+      message: err.message,
+    });
+
+    return;
+  } else if (err instanceof InvalidPassword) {
+    logger.warn('Contraseña inválida', { ...meta });
+
+    res.status(err.statusCode).json({
+      success: false,
+      message: err.message,
+    });
     return;
   }
 

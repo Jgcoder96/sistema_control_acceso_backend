@@ -1,8 +1,8 @@
-import { createUser } from '../models/createUser.model.js';
-import { encryptPassword } from '../helpers/encryptPassword.helper.js';
-import { uploadFile, getFileUrl } from '../helpers/s3.helper.js';
-import type { RequestBodySignUp } from '../types/RequestBodySignUp.type.js';
-import type { RequestFile } from '../../../shared/types/RequestFile.type.js';
+import { createUser } from '../models/index.js';
+import { encryptPassword } from '../helpers/index.js';
+import { uploadFile, getFileUrl } from '../helpers/index.js';
+import type { RequestBodySignUp } from '../types/index.js';
+import type { RequestFile } from '../../../shared/types/index.js';
 
 export const signUpService = async (
   userData: RequestBodySignUp,

@@ -1,11 +1,11 @@
-import {
-  S3Client,
-  PutObjectCommand,
-  GetObjectCommand,
-  type S3ClientConfig,
-} from '@aws-sdk/client-s3';
 import { envs } from '../../../config/envs.config.js';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+  type S3ClientConfig,
+} from '@aws-sdk/client-s3';
 import type { RequestFile } from '../../../shared/types/RequestFile.type.js';
 
 const s3Config: S3ClientConfig = {
@@ -22,7 +22,7 @@ if (envs.AWS_ACCESS_KEY_ID && envs.AWS_SECRET_ACCESS_KEY) {
 const s3Client = new S3Client(s3Config);
 const BUCKET_NAME = envs.S3_BUCKET_NAME;
 
-export const uploadFile = async (file: RequestFile) => {
+export const uploadFile = async (file: RequestFile): Promise<string> => {
   const uploadParams = {
     Bucket: BUCKET_NAME,
     Key: `fotos/${Date.now()}-${file.originalname}`,
@@ -37,12 +37,13 @@ export const uploadFile = async (file: RequestFile) => {
   return uploadParams.Key;
 };
 
-export const getFileUrl = async (fileKey: string) => {
+export const getFileUrl = async (fileKey: string): Promise<string> => {
   const command = new GetObjectCommand({
     Bucket: BUCKET_NAME,
     Key: fileKey,
   });
 
   const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+
   return url;
 };

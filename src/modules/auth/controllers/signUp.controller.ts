@@ -1,7 +1,7 @@
-import { signUpService } from '../services/signUp.service.js';
+import { signUpService } from '../services/index.js';
 import type { Request, Response, NextFunction } from 'express';
-import type { RequestBodySignUp } from '../types/RequestBodySignUp.type.js';
-import type { RequestFile } from '../../../shared/types/RequestFile.type.js';
+import type { RequestBodySignUp } from '../types/index.js';
+import type { RequestFile } from '../../../shared/types/index.js';
 
 export const signUpController = async (
   req: Request,
@@ -10,6 +10,7 @@ export const signUpController = async (
 ): Promise<void> => {
   try {
     const requestBody: RequestBodySignUp = req.body;
+
     const requestFile: RequestFile | undefined = req.file;
 
     const user = await signUpService(requestBody, requestFile);
