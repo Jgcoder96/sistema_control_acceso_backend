@@ -1,9 +1,6 @@
 import { comparePasswords, generateJWT, getFileUrl } from '../helpers/index.js';
 import { getUserByEmail } from '../models/index.js';
-import {
-  RecordNotFound,
-  InvalidPassword,
-} from '../../../shared/errors/index.js';
+import { RecordNotFound, InvalidPassword } from '../../shared/errors/index.js';
 import type { RequestBodySignIn } from '../types/index.js';
 
 export const signInService = async (data: RequestBodySignIn) => {

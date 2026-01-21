@@ -2,7 +2,7 @@ import { Action, signInSchema, signUpSchema } from '../schemas/index.js';
 import {
   formDataValidator,
   schemaValidator,
-} from '../../../shared/middlewares/index.js';
+} from '../../shared/middlewares/index.js';
 import { Router } from 'express';
 import upload from '../../../config/multer.config.js';
 import {

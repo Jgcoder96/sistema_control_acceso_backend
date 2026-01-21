@@ -1,7 +1,7 @@
 import { signUpService } from '../services/index.js';
 import type { Request, Response, NextFunction } from 'express';
 import type { RequestBodySignUp } from '../types/index.js';
-import type { RequestFile } from '../../../shared/types/index.js';
+import type { RequestFile } from '../../shared/types/index.js';
 
 export const signUpController = async (
   req: Request,
@@ -17,7 +17,7 @@ export const signUpController = async (
 
     res.status(201).json({
       success: true,
-      message: 'Usuario registrado exitosamente.',
+      message: 'Usuario registrado exitosamente',
       data: user,
     });
   } catch (error) {
