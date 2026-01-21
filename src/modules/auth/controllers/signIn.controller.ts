@@ -14,7 +14,7 @@ export const signInController = async (
 
     res.status(200).json({
       success: true,
-      message: 'Login exitoso.',
+      message: 'Login exitoso',
       data: user,
     });
   } catch (error) {

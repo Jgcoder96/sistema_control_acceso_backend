@@ -11,10 +11,11 @@ export const signUpSchema = z.object({
     .min(1, 'El apellido es obligatorio')
     .max(100, 'El apellido no debe exceder los 100 caracteres'),
 
-  cedula: z.coerce
-    .number()
-    .int('La cédula debe ser un número entero')
-    .positive('La cédula debe ser un número positivo'),
+  cedula: z
+    .string('La cédula es obligatoria')
+    .min(7, 'La cédula debe tener al menos 7 dígitos')
+    .max(8, 'La cédula no debe exceder los 8 dígitos')
+    .regex(/^[0-9]+$/, 'La cédula debe contener solo números'),
 
   correo_electronico: z
     .string('El correo electrónico es obligatorio')

@@ -1,0 +1,161 @@
+/api/auth/signIn:
+  post:
+    summary: Inicio de sesión
+    description: Endpoint para la autenticación de usuarios. Recibe las credenciales en formato JSON, valida que el correo y la contraseña cumplan con los requisitos de seguridad y devuelve los datos del usuario junto con un mensaje de éxito si la autenticación es correcta.
+    tags:
+      - auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - correo_electronico
+              - clave
+            properties:
+              correo_electronico:
+                type: string
+                format: email
+                description: Correo electrónico del usuario
+                example: jgprcoder@gmail.com
+              clave:
+                type: string
+                format: password
+                description: Contraseña de acceso
+                example: Gregory.040620
+    responses:
+      '200':
+        description: Login exitoso
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Login exitoso
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                      example: c15498c8-9f6c-4212-8560-e073512364f8
+                    nombre:
+                      type: string
+                      example: José
+                    apellido:
+                      type: string
+                      example: Pérez
+                    cedula:
+                      type: string
+                      example: '1234567890'
+                    correo_electronico:
+                      type: string
+                      format: email
+                      example: jgcoder96@gmail.com
+                    token:
+                      type: string
+                      example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImVjNDAzOTA0LTc2ODUtNDc2Mi1iMzFlLTdlODYxMzg2MWRiYyIsImlhdCI6MTc2OTAwODM3NywiZXhwIjoxNzY5MDExOTc3fQ.KNFqChyA_iEDne54ffVbYC4ENVaNV-qYBbwJAF5SIh8
+                    foto_url:
+                      type: string
+                      format: uri
+                      example: 'https://sistema-control-acceso-s3.s3.amazonaws.com/fotos/perfil.jpg'
+      '400':
+        description: Error de validación en los datos enviados
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                message: { type: string }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              campos_obligatorios:
+                summary: 1. Errores de campos faltantes
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados'
+                  issues:
+                    - field: 'correo_electronico'
+                      message: 'El correo electrónico es obligatorio'
+                    - field: 'clave'
+                      message: 'La contraseña es obligatoria'
+              formato_correo:
+                summary: 2. Error de formato de correo
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados'
+                  issues:
+                    - field: 'correo_electronico'
+                      message: 'Formato de correo electrónico no válido'
+                    - field: 'correo_electronico'
+                      message: 'El correo electrónico no debe exceder los 255 caracteres'
+              complejidad_clave:
+                summary: 3. Reglas de seguridad de contraseña
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados'
+                  issues:
+                    - field: 'clave'
+                      message: 'La contraseña debe tener al menos 8 caracteres'
+                    - field: 'clave'
+                      message: 'La contraseña es demasiado larga'
+                    - field: 'clave'
+                      message: 'Debe incluir al menos una letra mayúscula'
+                    - field: 'clave'
+                      message: 'Debe incluir al menos una letra minúscula'
+                    - field: 'clave'
+                      message: 'Debe incluir al menos un número'
+                    - field: 'clave'
+                      message: 'Debe incluir al menos un carácter especial (ej. @, #, $, %)'
+      '401':
+        description: Credenciales incorrectas
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: La contraseña proporcionada es incorrecta
+      '404':
+        description: Registro no encontrado
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: No se encontró ningún usuario con el correo electrónico 'test@gmail.com'
+      '500':
+        description: Error interno del servidor
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor

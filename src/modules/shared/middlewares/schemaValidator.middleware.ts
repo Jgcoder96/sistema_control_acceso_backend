@@ -12,11 +12,15 @@ export const schemaValidator =
           field: issue.path[0],
           message: issue.message,
         }));
-        res.status(400).json({ success: false, issues });
+        res.status(400).json({
+          success: false,
+          message: 'Error de validación en los datos enviados',
+          issues,
+        });
       } else {
         res.status(500).json({
           success: false,
-          message: 'Error Interno del Servidor.',
+          message: 'Error Interno del Servidor',
         });
       }
     }

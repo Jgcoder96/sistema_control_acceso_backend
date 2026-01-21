@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import { Prisma } from '@prisma/client';
-import { logger } from '../../config/logger.config.js';
+import { logger } from '../../../config/logger.config.js';
 import { parsePrismaError } from '../errors/parsePrismaError.error.js';
 import { RecordNotFound, InvalidPassword } from '../errors/index.js';
 
