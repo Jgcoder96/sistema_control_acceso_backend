@@ -1,3 +1,4 @@
+import { RESPONSE_MESSAGES } from '../constants/index.js';
 import { signInService } from '../services/index.js';
 import type { Request, Response, NextFunction } from 'express';
 import type { RequestBodySignIn } from '../types/index.js';
@@ -14,7 +15,7 @@ export const signInController = async (
 
     res.status(200).json({
       success: true,
-      message: 'Login exitoso',
+      message: RESPONSE_MESSAGES.signIn,
       data: user,
     });
   } catch (error) {

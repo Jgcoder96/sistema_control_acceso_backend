@@ -1,0 +1,100 @@
+/api/config/all-devices:
+  post:
+    summary: Configurar parámetros de dispositivo
+    description: Recibe un objeto JSON con la estructura de configuración de todos los dispositivos. Realiza una validación de esquema y verifica la compatibilidad de la versión del firmware. Si la validación es exitosa, sincroniza los nuevos parámetros con el dispositivo y retorna un mensaje de confirmación junto con el timestamp de la última actualización.
+    tags:
+      - configuracion
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - config
+            properties:
+              config:
+                type: object
+                description: Configuración de la acción a realizar
+                required:
+                  - accion
+                properties:
+                  accion:
+                    type: string
+                    description: Tipo de acción (ej. apagar, encender)
+                    example: apagar
+    responses:
+      '200':
+        description: Todos los dispositivos configurados correctamente
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Todos los dispositivos configurados correctamente
+      '400':
+        description: Error de validación en los datos enviados
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                message: { type: string }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              campos_obligatorios:
+                summary: 1. Errores de campos faltantes
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados'
+                  issues:
+                    - field: 'config'
+                      message: 'La configuración es obligatoria'
+                    - field: 'config.accion'
+                      message: 'La acción es obligatoria'
+              formato_mac:
+                summary: 2. Error de formato de dirección MAC
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados'
+                  issues:
+                    - field: 'accion'
+                      message: 'La acción no debe exceder los 30 caracteres'
+      '500':
+        description: Error interno del servidor
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor
+      '502':
+        description: Error de comunicación con el broker
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: No se pudo establecer comunicación con el broker de mensajería

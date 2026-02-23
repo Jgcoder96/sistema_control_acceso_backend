@@ -3,7 +3,7 @@
     summary: Registro de usuario
     description: Endpoint para el registro de usuarios, se documenta en formato multipart/form-data para permitir la carga de la foto de perfil. Valida los datos de entrada y devuelve mensajes de error específicos en caso de fallos de validación. Al registrarse exitosamente, devuelve los datos del usuario creado junto con un mensaje de éxito.
     tags:
-      - auth
+      - autenticación
     requestBody:
       required: true
       content:

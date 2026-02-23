@@ -4,6 +4,21 @@ import { logger } from '../../config/logger.config.js';
 export const eventHandlers = (client: MqttClient) => {
   client.on('connect', () => {
     logger.info('Servicio MQTT: Conectado exitosamente');
+    client.subscribe('mesh/config', (err) => {
+      if (!err) {
+        console.log(`Suscrito con éxito`);
+      } else {
+        console.error('Error al suscribirse:', err);
+      }
+    });
+  });
+
+  client.on('message', (topic, message) => {
+    // El mensaje llega como un Buffer, hay que convertirlo a string
+    console.log(`Nuevo mensaje en el tópico [${topic}]: ${message.toString()}`);
+
+    // Si el mensaje es un JSON, puedes parsearlo así:
+    // const data = JSON.parse(message.toString());
   });
 
   client.on('reconnect', () => {

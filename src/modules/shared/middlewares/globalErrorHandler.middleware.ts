@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { logger } from '../../../config/logger.config.js';
 import { parsePrismaError } from '../errors/parsePrismaError.error.js';
 import { RecordNotFound, InvalidPassword } from '../errors/index.js';
+import { publishDataError } from '../../../mqtt/errors/index.js';
 
 export const globalErrorHandler = (
   err: Error,
@@ -42,6 +43,14 @@ export const globalErrorHandler = (
     return;
   } else if (err instanceof InvalidPassword) {
     logger.warn('Contraseña inválida', { ...meta });
+
+    res.status(err.statusCode).json({
+      success: false,
+      message: err.message,
+    });
+    return;
+  } else if (err instanceof publishDataError) {
+    logger.warn('Error al publicar mensaje MQTT', { ...meta });
 
     res.status(err.statusCode).json({
       success: false,

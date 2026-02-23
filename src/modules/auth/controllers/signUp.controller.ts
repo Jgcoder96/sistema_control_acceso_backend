@@ -1,3 +1,4 @@
+import { RESPONSE_MESSAGES } from '../constants/index.js';
 import { signUpService } from '../services/index.js';
 import type { Request, Response, NextFunction } from 'express';
 import type { RequestBodySignUp } from '../types/index.js';
@@ -17,7 +18,7 @@ export const signUpController = async (
 
     res.status(201).json({
       success: true,
-      message: 'Usuario registrado exitosamente',
+      message: RESPONSE_MESSAGES.signUp,
       data: user,
     });
   } catch (error) {
