@@ -1,22 +1,15 @@
 import { getClient } from '../connection/mqttClient.connection.js';
+import { publishDataError } from '../errors/index.js';
 
-export const publishMessage = (
+export const publishMessage = async (
   topic: string,
   message: string,
 ): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    const client = getClient();
+  const client = getClient();
 
-    if (!client || !client.connected) {
-      return reject(new Error('El cliente MQTT no está conectado.'));
-    }
+  if (!client || !client.connected) {
+    throw new publishDataError();
+  }
 
-    client.publish(topic, message, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
+  await client.publishAsync(topic, message);
 };

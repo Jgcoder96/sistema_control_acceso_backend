@@ -3,7 +3,7 @@
     summary: Inicio de sesión
     description: Endpoint para la autenticación de usuarios. Recibe las credenciales en formato JSON, valida que el correo y la contraseña cumplan con los requisitos de seguridad y devuelve los datos del usuario junto con un mensaje de éxito si la autenticación es correcta.
     tags:
-      - auth
+      - autenticación
     requestBody:
       required: true
       content:
