@@ -1,20 +1,16 @@
 import { comparePasswords, generateJWT, getFileUrl } from '../helpers/index.js';
+import { EmailDoesNotExist, InvalidPassWord } from '../errors/index.js';
 import { getUserByEmail } from '../models/index.js';
-import { RecordNotFound, InvalidPassword } from '../../shared/errors/index.js';
 import type { RequestBodySignIn } from '../types/index.js';
 
 export const signInService = async (data: RequestBodySignIn) => {
   const user = await getUserByEmail(data.correo_electronico);
 
-  if (!user) {
-    throw new RecordNotFound('user_email', data.correo_electronico);
-  }
+  if (!user) throw new EmailDoesNotExist();
 
   const isPasswordValid = await comparePasswords(data.clave, user.clave_hash);
 
-  if (!isPasswordValid) {
-    throw new InvalidPassword();
-  }
+  if (!isPasswordValid) throw new InvalidPassWord();
 
   const token = await generateJWT(user.id);
 

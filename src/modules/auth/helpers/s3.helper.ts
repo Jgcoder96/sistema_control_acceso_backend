@@ -1,4 +1,4 @@
-import { envs } from '../../../config/envs.config.js';
+import { envs } from '../../../config/index.js';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import {
   GetObjectCommand,
@@ -6,7 +6,7 @@ import {
   S3Client,
   type S3ClientConfig,
 } from '@aws-sdk/client-s3';
-import type { RequestFile } from '../../shared/types/RequestFile.type.js';
+import type { RequestFile } from '../../shared/types/index.js';
 
 const s3Config: S3ClientConfig = {
   region: process.env.AWS_REGION || 'us-east-1',

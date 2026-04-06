@@ -2,7 +2,7 @@ import { logger } from '../../../config/logger.config.js';
 import { parsePrismaError } from '../errors/index.js';
 import { Prisma } from '@prisma/client';
 import { publishDataError } from '../../../mqtt/errors/index.js';
-import { AppError, RecordNotFound, InvalidPassword } from '../errors/index.js';
+import { AppError } from '../errors/index.js';
 import type { Request, Response, NextFunction } from 'express';
 
 export const globalErrorHandler = (
@@ -39,23 +39,6 @@ export const globalErrorHandler = (
     message = err.message;
     //isOperational = true;
     logger.warn(`${err.constructor.name}: ${message}`, { ...meta });
-  } else if (err instanceof RecordNotFound) {
-    logger.warn('Registro no encontrado', { ...meta });
-
-    res.status(err.statusCode).json({
-      success: false,
-      message: err.message,
-    });
-
-    return;
-  } else if (err instanceof InvalidPassword) {
-    logger.warn('Contraseña inválida', { ...meta });
-
-    res.status(err.statusCode).json({
-      success: false,
-      message: err.message,
-    });
-    return;
   } else if (err instanceof publishDataError) {
     logger.warn('Error al publicar mensaje MQTT', { ...meta });
 

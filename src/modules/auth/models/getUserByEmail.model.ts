@@ -1,4 +1,4 @@
-import { prisma } from '../../../config/prismaConnection.config.js';
+import { prisma } from '../../../config/index.js';
 import type { usuarios } from '@prisma/client';
 
 export const getUserByEmail = async (

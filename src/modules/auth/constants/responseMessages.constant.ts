@@ -1,4 +1,4 @@
 export const RESPONSE_MESSAGES = {
-  signIn: 'Login exitoso',
-  signUp: 'Usuario registrado exitosamente',
+  signIn: 'Sesión iniciada exitosamente.',
+  signUp: 'Usuario registrado exitosamente.',
 };
