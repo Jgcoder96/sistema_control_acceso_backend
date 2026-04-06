@@ -3,7 +3,7 @@ export const parsePrismaError = (error: string) => {
     case 'P2002':
       return {
         statusCode: 409,
-        message: 'Ya existe una cuenta vinculada a estos datos',
+        message: 'Ya existe un registro con estos datos.',
       };
     default:
       return {

@@ -2,9 +2,10 @@ import type { Request, Response, NextFunction } from 'express';
 import { ZodObject, ZodError } from 'zod';
 
 export const schemaValidator =
-  (schema: ZodObject) => (req: Request, res: Response, next: NextFunction) => {
+  (schema: ZodObject, target: 'body' | 'params' | 'query' = 'body') =>
+  (req: Request, res: Response, next: NextFunction) => {
     try {
-      schema.parse(req.body);
+      schema.parse(req[target]);
       next();
     } catch (error) {
       if (error instanceof ZodError) {

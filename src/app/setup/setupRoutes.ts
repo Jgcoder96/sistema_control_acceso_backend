@@ -1,4 +1,5 @@
 import { authRoute } from '../../modules/auth/routes/auth.route.js';
+import { cardsRoute } from '../../modules/cards/routes/index.js';
 import { configRoute } from '../../modules/config/routes/index.js';
 import { envs } from '../../config/index.js';
 import { Router } from 'express';
@@ -10,6 +11,7 @@ import type { Express } from 'express';
 export const appRoutes: AppRoutes = {
   auth: authRoute(),
   config: configRoute(),
+  cards: cardsRoute(),
 };
 
 export const setupRoutes = (app: Express): Router => {
@@ -20,6 +22,8 @@ export const setupRoutes = (app: Express): Router => {
   }
 
   router.use('/auth', appRoutes.auth);
+
+  router.use('/cards', appRoutes.cards);
 
   router.use('/config', appRoutes.config);
 

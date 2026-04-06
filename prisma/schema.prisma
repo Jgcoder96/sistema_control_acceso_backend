@@ -8,14 +8,56 @@ datasource db {
 }
 
 model usuarios {
-  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  nombre             String   @db.VarChar(100)
-  apellido           String   @db.VarChar(100)
-  cedula             String   @unique @db.VarChar(20)
-  correo_electronico String   @unique @db.VarChar(255)
-  foto_url           String?  @db.VarChar(255)
-  estado             String   @default("activo") @db.VarChar(20)
-  clave_hash         String   @db.VarChar(255)
-  creado_el          DateTime @default(now()) @db.Timestamp(6)
-  actualizado_el     DateTime @default(now()) @db.Timestamp(6)
+  id                     String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nombre                 String                   @db.VarChar(100)
+  apellido               String                   @db.VarChar(100)
+  cedula                 String                   @unique @db.VarChar(20)
+  correo_electronico     String                   @unique @db.VarChar(255)
+  foto_url               String?                  @db.VarChar(255)
+  estado                 String                   @default("activo") @db.VarChar(20)
+  clave_hash             String                   @db.VarChar(255)
+  creado_el              DateTime                 @default(now()) @db.Timestamp(6)
+  actualizado_el         DateTime                 @default(now()) @db.Timestamp(6)
+  historial_asignaciones historial_asignaciones[]
+  tarjetas               tarjetas[]
+}
+
+model historial_asignaciones {
+  id         String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tarjeta_id String                @db.Uuid
+  usuario_id String                @db.Uuid
+  accion     tipo_accion_historial
+  fecha      DateTime              @default(now()) @db.Timestamp(6)
+  tarjetas   tarjetas              @relation(fields: [tarjeta_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  usuarios   usuarios              @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model tarjetas {
+  id                     String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  codigo                 String                   @unique @db.VarChar(20)
+  usuario_id             String?                  @db.Uuid
+  estado                 estado_tarjeta           @default(activable)
+  creado_el              DateTime                 @default(now()) @db.Timestamp(6)
+  actualizado_el         DateTime                 @default(now()) @db.Timestamp(6)
+  eliminado_el           DateTime?                @db.Timestamp(6)
+  asignada_el            DateTime?                @db.Timestamp(6)
+  historial_asignaciones historial_asignaciones[]
+  usuarios               usuarios?                @relation(fields: [usuario_id], references: [id], onUpdate: NoAction)
+}
+
+enum estado_tarjeta {
+  activable
+  activa
+  bloqueada
+  perdida
+  eliminada
+}
+
+enum tipo_accion_historial {
+  asignacion
+  devolucion
+  bloqueo
+  perdida
+  eliminacion
+  reactivacion
 }
