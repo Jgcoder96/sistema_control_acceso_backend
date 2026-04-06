@@ -16,7 +16,11 @@ export const authRoute = (): Router => {
     signUpController,
   );
 
-  router.post('/signin', [schemaValidator(signInSchema)], signInController);
+  router.post(
+    '/signin',
+    [schemaValidator(signInSchema, 'body')],
+    signInController,
+  );
 
   return router;
 };

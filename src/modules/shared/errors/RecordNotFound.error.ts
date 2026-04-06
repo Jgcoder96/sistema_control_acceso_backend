@@ -4,8 +4,14 @@ export class RecordNotFound extends Error {
     public readonly value: string,
     public readonly statusCode: number = 404,
   ) {
-    const message = `No se encontró ningún usuario con el ${fieldName} '${value}'`;
-
+    let message: string;
+    if (fieldName === 'user_id') {
+      message = `No se encontró ningún usuario con ID '${value}'`;
+    } else if (fieldName === 'user_email') {
+      message = `No se encontró ningún usuario con email '${value}'`;
+    } else {
+      message = `No se encontró ninguna tarjeta con el ID '${value}'`;
+    }
     super(message);
 
     this.name = 'RecordNotFound';

@@ -7,7 +7,7 @@ export const signInService = async (data: RequestBodySignIn) => {
   const user = await getUserByEmail(data.correo_electronico);
 
   if (!user) {
-    throw new RecordNotFound('correo electronico', data.correo_electronico);
+    throw new RecordNotFound('user_email', data.correo_electronico);
   }
 
   const isPasswordValid = await comparePasswords(data.clave, user.clave_hash);

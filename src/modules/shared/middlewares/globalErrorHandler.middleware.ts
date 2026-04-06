@@ -1,9 +1,9 @@
-import type { Request, Response, NextFunction } from 'express';
-import { Prisma } from '@prisma/client';
 import { logger } from '../../../config/logger.config.js';
-import { parsePrismaError } from '../errors/parsePrismaError.error.js';
-import { RecordNotFound, InvalidPassword } from '../errors/index.js';
+import { parsePrismaError } from '../errors/index.js';
+import { Prisma } from '@prisma/client';
 import { publishDataError } from '../../../mqtt/errors/index.js';
+import { AppError, RecordNotFound, InvalidPassword } from '../errors/index.js';
+import type { Request, Response, NextFunction } from 'express';
 
 export const globalErrorHandler = (
   err: Error,
@@ -13,6 +13,10 @@ export const globalErrorHandler = (
   _next: NextFunction,
 ): void => {
   const meta = { path: req.originalUrl, method: req.method };
+
+  let statusCode = 500;
+  let message = 'Error interno del servidor.';
+  //let isOperational = false;
 
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     const parsedError = parsePrismaError(err.code);
@@ -30,9 +34,12 @@ export const globalErrorHandler = (
       .json({ success: false, message: parsedError.message });
 
     return;
-  }
-
-  if (err instanceof RecordNotFound) {
+  } else if (err instanceof AppError) {
+    statusCode = err.statusCode;
+    message = err.message;
+    //isOperational = true;
+    logger.warn(`${err.constructor.name}: ${message}`, { ...meta });
+  } else if (err instanceof RecordNotFound) {
     logger.warn('Registro no encontrado', { ...meta });
 
     res.status(err.statusCode).json({
@@ -57,12 +64,18 @@ export const globalErrorHandler = (
       message: err.message,
     });
     return;
+  } else {
+    logger.error('Unhandled Exception', {
+      ...meta,
+      error: err.message,
+      stack: err.stack,
+    });
   }
 
-  logger.error('Error interno del servidor', { ...meta });
+  //logger.error('Error interno del servidor', { ...meta });
 
-  res.status(500).json({
+  res.status(statusCode).json({
     success: false,
-    message: 'Error interno del servidor.',
+    message: message,
   });
 };

@@ -14,13 +14,13 @@ export const configRoute = (): Router => {
 
   router.post(
     '/device',
-    [schemaValidator(deviceConfigSchema)],
+    [schemaValidator(deviceConfigSchema, 'body')],
     deviceConfigController,
   );
 
   router.post(
     '/all-devices',
-    [schemaValidator(configAllDevicesSchema)],
+    [schemaValidator(configAllDevicesSchema, 'body')],
     configAllDevicesController,
   );
 
