@@ -45,6 +45,14 @@ model tarjetas {
   usuarios               usuarios?                @relation(fields: [usuario_id], references: [id], onUpdate: NoAction)
 }
 
+model ubicaciones {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nombre         String    @db.VarChar(100)
+  creado_el      DateTime  @default(now()) @db.Timestamp(6)
+  actualizado_el DateTime  @default(now()) @db.Timestamp(6)
+  eliminado_el   DateTime? @db.Timestamp(6)
+}
+
 enum estado_tarjeta {
   activable
   activa
