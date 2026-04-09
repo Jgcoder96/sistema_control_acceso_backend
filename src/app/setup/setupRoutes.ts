@@ -1,17 +1,19 @@
-import { authRoute } from '../../modules/auth/routes/auth.route.js';
+import { authRoute } from '../../modules/auth/routes/index.js';
 import { cardsRoute } from '../../modules/cards/routes/index.js';
 import { configRoute } from '../../modules/config/routes/index.js';
+import { locationRoute } from '../../modules/location/routes/index.js';
 import { envs } from '../../config/index.js';
 import { Router } from 'express';
 import { swaggerConfig } from '../../docs/swaggerConfig.docs.js';
 import swaggerUi from 'swagger-ui-express';
-import type { AppRoutes } from '../types/AppRoutes.type.js';
+import type { AppRoutes } from '../types/index.js';
 import type { Express } from 'express';
 
 export const appRoutes: AppRoutes = {
   auth: authRoute(),
   config: configRoute(),
   cards: cardsRoute(),
+  location: locationRoute(),
 };
 
 export const setupRoutes = (app: Express): Router => {
@@ -24,6 +26,8 @@ export const setupRoutes = (app: Express): Router => {
   router.use('/auth', appRoutes.auth);
 
   router.use('/cards', appRoutes.cards);
+
+  router.use('/location', appRoutes.location);
 
   router.use('/config', appRoutes.config);
 
