@@ -5,4 +5,5 @@ export interface AppRoutes {
   config: Router;
   cards: Router;
   location: Router;
+  accessPoints: Router;
 }

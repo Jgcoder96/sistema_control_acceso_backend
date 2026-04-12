@@ -8,12 +8,14 @@ import { swaggerConfig } from '../../docs/swaggerConfig.docs.js';
 import swaggerUi from 'swagger-ui-express';
 import type { AppRoutes } from '../types/index.js';
 import type { Express } from 'express';
+import { accessPointsRoute } from '../../modules/access_points/routes/index.js';
 
 export const appRoutes: AppRoutes = {
   auth: authRoute(),
   config: configRoute(),
   cards: cardsRoute(),
   location: locationRoute(),
+  accessPoints: accessPointsRoute(),
 };
 
 export const setupRoutes = (app: Express): Router => {
@@ -28,6 +30,8 @@ export const setupRoutes = (app: Express): Router => {
   router.use('/cards', appRoutes.cards);
 
   router.use('/location', appRoutes.location);
+
+  router.use('/access-points', appRoutes.accessPoints);
 
   router.use('/config', appRoutes.config);
 
