@@ -46,11 +46,23 @@ model tarjetas {
 }
 
 model ubicaciones {
-  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  nombre         String    @db.VarChar(100)
-  creado_el      DateTime  @default(now()) @db.Timestamp(6)
-  actualizado_el DateTime  @default(now()) @db.Timestamp(6)
-  eliminado_el   DateTime? @db.Timestamp(6)
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nombre         String          @db.VarChar(100)
+  creado_el      DateTime        @default(now()) @db.Timestamp(6)
+  actualizado_el DateTime        @default(now()) @db.Timestamp(6)
+  eliminado_el   DateTime?       @db.Timestamp(6)
+  puntos_acceso  puntos_acceso[]
+}
+
+model puntos_acceso {
+  id             String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ubicacion_id   String      @db.Uuid
+  nombre         String      @db.VarChar(100)
+  mac            String      @unique @db.VarChar(17)
+  creado_el      DateTime    @default(now()) @db.Timestamp(6)
+  actualizado_el DateTime    @default(now()) @db.Timestamp(6)
+  eliminado_el   DateTime?   @db.Timestamp(6)
+  ubicaciones    ubicaciones @relation(fields: [ubicacion_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum estado_tarjeta {
