@@ -1,9 +1,10 @@
 import { Router } from 'express';
 
 export interface AppRoutes {
-  auth: Router;
-  config: Router;
-  cards: Router;
-  location: Router;
   accessPoints: Router;
+  auth: Router;
+  cards: Router;
+  config: Router;
+  horary: Router;
+  location: Router;
 }
