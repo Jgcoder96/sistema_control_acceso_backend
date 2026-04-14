@@ -9,13 +9,15 @@ import swaggerUi from 'swagger-ui-express';
 import type { AppRoutes } from '../types/index.js';
 import type { Express } from 'express';
 import { accessPointsRoute } from '../../modules/access_points/routes/index.js';
+import { horaryRoute } from '../../modules/horary/routes/index.js';
 
 export const appRoutes: AppRoutes = {
-  auth: authRoute(),
-  config: configRoute(),
-  cards: cardsRoute(),
-  location: locationRoute(),
   accessPoints: accessPointsRoute(),
+  auth: authRoute(),
+  cards: cardsRoute(),
+  config: configRoute(),
+  horary: horaryRoute(),
+  location: locationRoute(),
 };
 
 export const setupRoutes = (app: Express): Router => {
@@ -32,6 +34,8 @@ export const setupRoutes = (app: Express): Router => {
   router.use('/location', appRoutes.location);
 
   router.use('/access-points', appRoutes.accessPoints);
+
+  router.use('/horary', appRoutes.horary);
 
   router.use('/config', appRoutes.config);
 

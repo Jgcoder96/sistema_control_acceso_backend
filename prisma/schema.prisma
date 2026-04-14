@@ -65,6 +65,42 @@ model puntos_acceso {
   ubicaciones    ubicaciones @relation(fields: [ubicacion_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
+model festivos {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nombre         String    @db.VarChar(100)
+  dia            Int
+  mes            Int
+  anio           Int?
+  creado_el      DateTime  @default(now()) @db.Timestamp(6)
+  actualizado_el DateTime  @default(now()) @db.Timestamp(6)
+  eliminado_el   DateTime? @db.Timestamp(6)
+
+  @@unique([dia, mes, anio], map: "unique_holiday_date")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model horario_detalles {
+  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  horario_id     String           @db.Uuid
+  dia_semana     dia_semana_enum?
+  es_festivo     Boolean?         @default(false)
+  hora_inicio    DateTime         @db.Time(6)
+  hora_fin       DateTime         @db.Time(6)
+  creado_el      DateTime         @default(now()) @db.Timestamp(6)
+  actualizado_el DateTime         @default(now()) @db.Timestamp(6)
+  eliminado_el   DateTime?        @db.Timestamp(6)
+  horarios       horarios         @relation(fields: [horario_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model horarios {
+  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nombre           String             @db.VarChar(100)
+  creado_el        DateTime           @default(now()) @db.Timestamp(6)
+  actualizado_el   DateTime           @default(now()) @db.Timestamp(6)
+  eliminado_el     DateTime?          @db.Timestamp(6)
+  horario_detalles horario_detalles[]
+}
+
 enum estado_tarjeta {
   activable
   activa
@@ -80,4 +116,14 @@ enum tipo_accion_historial {
   perdida
   eliminacion
   reactivacion
+}
+
+enum dia_semana_enum {
+  domingo
+  lunes
+  martes
+  miercoles
+  jueves
+  viernes
+  sabado
 }
