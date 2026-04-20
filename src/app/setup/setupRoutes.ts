@@ -1,15 +1,17 @@
+import { accessPointsRoute } from '../../modules/access_points/routes/index.js';
 import { authRoute } from '../../modules/auth/routes/index.js';
 import { cardsRoute } from '../../modules/cards/routes/index.js';
 import { configRoute } from '../../modules/config/routes/index.js';
+import { horaryRoute } from '../../modules/horary/routes/index.js';
 import { locationRoute } from '../../modules/location/routes/index.js';
+import { physicalPermitRoute } from '../../modules/permissions/routes/index.js';
+
 import { envs } from '../../config/index.js';
 import { Router } from 'express';
-import { swaggerConfig } from '../../docs/swaggerConfig.docs.js';
+import { swaggerConfig } from '../../docs/index.js';
 import swaggerUi from 'swagger-ui-express';
 import type { AppRoutes } from '../types/index.js';
 import type { Express } from 'express';
-import { accessPointsRoute } from '../../modules/access_points/routes/index.js';
-import { horaryRoute } from '../../modules/horary/routes/index.js';
 
 export const appRoutes: AppRoutes = {
   accessPoints: accessPointsRoute(),
@@ -18,6 +20,7 @@ export const appRoutes: AppRoutes = {
   config: configRoute(),
   horary: horaryRoute(),
   location: locationRoute(),
+  physicalPermits: physicalPermitRoute(),
 };
 
 export const setupRoutes = (app: Express): Router => {
@@ -36,6 +39,8 @@ export const setupRoutes = (app: Express): Router => {
   router.use('/access-points', appRoutes.accessPoints);
 
   router.use('/horary', appRoutes.horary);
+
+  router.use('/permissions', appRoutes.physicalPermits);
 
   router.use('/config', appRoutes.config);
 

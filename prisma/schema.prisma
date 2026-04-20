@@ -19,6 +19,7 @@ model usuarios {
   creado_el              DateTime                 @default(now()) @db.Timestamp(6)
   actualizado_el         DateTime                 @default(now()) @db.Timestamp(6)
   historial_asignaciones historial_asignaciones[]
+  permisos_fisicos       permisos_fisicos[]
   tarjetas               tarjetas[]
 }
 
@@ -42,6 +43,7 @@ model tarjetas {
   eliminado_el           DateTime?                @db.Timestamp(6)
   asignada_el            DateTime?                @db.Timestamp(6)
   historial_asignaciones historial_asignaciones[]
+  logs_acceso            logs_acceso[]
   usuarios               usuarios?                @relation(fields: [usuario_id], references: [id], onUpdate: NoAction)
 }
 
@@ -55,14 +57,16 @@ model ubicaciones {
 }
 
 model puntos_acceso {
-  id             String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  ubicacion_id   String      @db.Uuid
-  nombre         String      @db.VarChar(100)
-  mac            String      @unique @db.VarChar(17)
-  creado_el      DateTime    @default(now()) @db.Timestamp(6)
-  actualizado_el DateTime    @default(now()) @db.Timestamp(6)
-  eliminado_el   DateTime?   @db.Timestamp(6)
-  ubicaciones    ubicaciones @relation(fields: [ubicacion_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ubicacion_id     String             @db.Uuid
+  nombre           String             @db.VarChar(100)
+  mac              String             @unique @db.VarChar(17)
+  creado_el        DateTime           @default(now()) @db.Timestamp(6)
+  actualizado_el   DateTime           @default(now()) @db.Timestamp(6)
+  eliminado_el     DateTime?          @db.Timestamp(6)
+  logs_acceso      logs_acceso[]
+  permisos_fisicos permisos_fisicos[]
+  ubicaciones      ubicaciones        @relation(fields: [ubicacion_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model festivos {
@@ -99,6 +103,31 @@ model horarios {
   actualizado_el   DateTime           @default(now()) @db.Timestamp(6)
   eliminado_el     DateTime?          @db.Timestamp(6)
   horario_detalles horario_detalles[]
+  permisos_fisicos permisos_fisicos[]
+}
+
+model logs_acceso {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tarjeta_id      String?       @db.Uuid
+  punto_acceso_id String        @db.Uuid
+  fecha           DateTime      @default(now()) @db.Timestamp(6)
+  autorizado      Boolean
+  puntos_acceso   puntos_acceso @relation(fields: [punto_acceso_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tarjetas        tarjetas?     @relation(fields: [tarjeta_id], references: [id], onUpdate: NoAction)
+}
+
+model permisos_fisicos {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  usuario_id      String        @db.Uuid
+  punto_acceso_id String        @db.Uuid
+  horario_id      String        @db.Uuid
+  creado_el       DateTime      @default(now()) @db.Timestamp(6)
+  eliminado_el    DateTime?     @db.Timestamp(6)
+  horarios        horarios      @relation(fields: [horario_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  puntos_acceso   puntos_acceso @relation(fields: [punto_acceso_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  usuarios        usuarios      @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([usuario_id, punto_acceso_id], map: "unique_usuario_punto")
 }
 
 enum estado_tarjeta {
