@@ -7,4 +7,5 @@ export interface AppRoutes {
   config: Router;
   horary: Router;
   location: Router;
+  physicalPermits: Router;
 }
