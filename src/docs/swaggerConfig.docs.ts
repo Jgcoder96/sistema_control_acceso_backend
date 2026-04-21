@@ -9,9 +9,10 @@ const options: swaggerJSDoc.Options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Backend: sistema control acceso',
+      title: 'TEG: Documentación de la API.',
       version: '1.0.0',
-      description: 'Documentación de la API del sistema de control de acceso',
+      description:
+        'Esta API REST actúa como el motor central del sistema de control de acceso, permitiendo la gestión integral de usuarios, credenciales, ubicaciones y puntos de entrada. Asimismo, facilita la administración de horarios, permisos y la configuración técnica de los dispositivos. La documentación, basada en el estándar OpenAPI mediante Swagger, ofrece una interfaz interactiva que optimiza la exploración, prueba y consumo de los diversos endpoints por parte del desarrollador.',
       contact: {
         name: 'jgcoder96',
       },
