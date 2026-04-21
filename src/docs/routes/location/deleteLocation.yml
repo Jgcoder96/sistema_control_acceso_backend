@@ -1,0 +1,80 @@
+/api/location/{id}:
+  delete:
+    summary: Eliminación de ubicación física.
+    description: Permite eliminar una ubicación física existente en el sistema de control de acceso.
+    tags:
+      - Ubicaciones
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Identificador único (UUID) de la ubicación física a eliminar.
+        schema:
+          type: string
+          format: uuid
+        example: '550e8400-e29b-41d4-a716-446655440000'
+    responses:
+      '200':
+        description: Ubicación eliminada exitosamente.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Ubicación eliminada exitosamente.
+      '400':
+        description: Error de validación en los datos enviados.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                message: { type: string }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              uuid_invalido:
+                summary: 1. Formato de ID inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'id'
+                      message: 'El formato del ID no es un UUID válido.'
+      '404':
+        description: La ubicación física no existe.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: La ubicación física no existe.
+      '500':
+        description: Error interno del servidor.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor.

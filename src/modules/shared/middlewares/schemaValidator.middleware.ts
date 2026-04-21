@@ -15,13 +15,13 @@ export const schemaValidator =
         }));
         res.status(400).json({
           success: false,
-          message: 'Error de validación en los datos enviados',
+          message: 'Error de validación en los datos enviados.',
           issues,
         });
       } else {
         res.status(500).json({
           success: false,
-          message: 'Error Interno del Servidor',
+          message: 'Error Interno del Servidor.',
         });
       }
     }

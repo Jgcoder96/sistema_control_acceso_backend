@@ -1,0 +1,178 @@
+/api/location:
+  get:
+    summary: Obtener lista de ubicaciones físicas.
+    description: Permite recuperar el listado de ubicaciones físicas con soporte para filtrado por estado (activas, eliminadas o todas), búsqueda por nombre y paginación de resultados.
+    tags:
+      - Ubicaciones
+    parameters:
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum: [active, deleted, all]
+          default: all
+        description: Filtra las ubicaciones por su estado de eliminación.
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Filtra por coincidencia parcial en el nombre de la ubicación.
+        example: 'Planta'
+      - in: query
+        name: page
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+        description: Número de página para la paginación.
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
+        description: Cantidad de registros por página.
+    responses:
+      '200':
+        description: Lista de ubicaciones obtenida exitosamente.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        example: '550e8400-e29b-41d4-a716-446655440000'
+                      nombre:
+                        type: string
+                        example: 'Planta Baja'
+                      creado_el:
+                        type: string
+                        format: date-time
+                      actualizado_el:
+                        type: string
+                        format: date-time
+                      eliminado_el:
+                        type: string
+                        format: date-time
+                        nullable: true
+                metadata:
+                  type: object
+                  properties:
+                    totalItems:
+                      type: integer
+                      example: 1
+                    page:
+                      type: integer
+                      example: 1
+                    limit:
+                      type: integer
+                      example: 10
+                    totalPages:
+                      type: integer
+                      example: 1
+      '400':
+        description: Error de validación en los parámetros de consulta (Query Params).
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                message:
+                  {
+                    type: string,
+                    example: 'Error de validación en los datos enviados.',
+                  }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              invalid_status:
+                summary: Error en el estado
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'status'
+                      message: "El estado debe ser 'active', 'deleted' o 'all'"
+              the_page_is_not_a_number:
+                summary: La Página no es un número
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'page'
+                      message: 'La página debe ser un número.'
+              the_page_is_not_an_integer:
+                summary: La Página no es un número entero
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'page'
+                      message: 'La página debe ser un número entero.'
+              minimum_page:
+                summary: El numero de página es menor a 1
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'page'
+                      message: 'El numero de página debe ser mayor a 1.'
+              limit_is_not_a_number:
+                summary: El límite no es un número
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'limit'
+                      message: 'El límite debe ser un número'
+              limit_is_not_an_integer:
+                summary: El límite no es un número entero
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'limit'
+                      message: 'El límite debe ser un número entero'
+              minimum_limit:
+                summary: El límite es menor a 1
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'limit'
+                      message: 'El límite debe ser mayor a 1.'
+              maximum_limit:
+                summary: El límite es mayor a 100
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'limit'
+                      message: 'El límite debe ser menor a 100.'
+      '500':
+        description: Error interno del servidor.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor.

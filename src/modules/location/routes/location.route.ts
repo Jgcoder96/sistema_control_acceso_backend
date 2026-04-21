@@ -3,15 +3,23 @@ import {
   createLocation,
   deleteLocation,
   updateLocation,
+  getLocations,
 } from '../controllers/index.js';
 import {
   validateIdInRequestParams,
+  validateLocationFiltersInQuery,
   validateNameInRequestBody,
 } from '../schemas/index.js';
 import { schemaValidator } from '../../shared/middlewares/index.js';
 
 export const locationRoute = (): Router => {
   const router = Router();
+
+  router.get(
+    '/',
+    [schemaValidator(validateLocationFiltersInQuery, 'query')],
+    getLocations,
+  );
 
   router.post(
     '/',

@@ -13,7 +13,7 @@ export const createLocation = async (
 
     await createLocationService(requestBody);
 
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       message: RESPONSE_MESSAGES.createLocation,
     });

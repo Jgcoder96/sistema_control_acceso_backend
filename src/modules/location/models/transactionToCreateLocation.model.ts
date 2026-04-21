@@ -10,13 +10,12 @@ export const transactionToCreateLocation = async (name: string) => {
     });
 
     if (location) {
-      if (location.eliminado_el === null)
-        throw new LocationAlreadyExists();
+      if (location.eliminado_el === null) throw new LocationAlreadyExists();
 
       const restoredLocation = await tx.ubicaciones.update({
         where: { id: location.id },
         data: {
-          eliminado_el: null, 
+          eliminado_el: null,
           actualizado_el: new Date(),
         },
       });
