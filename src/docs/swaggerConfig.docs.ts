@@ -17,6 +17,14 @@ const options: swaggerJSDoc.Options = {
         name: 'jgcoder96',
       },
     },
+    tags: [
+      {
+        name: 'Ubicaciones',
+      },
+      {
+        name: 'Puntos de Acceso',
+      },
+    ],
     servers: [
       {
         url: 'http://localhost:3000',

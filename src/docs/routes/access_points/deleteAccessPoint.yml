@@ -1,0 +1,90 @@
+/api/access-points/{id}:
+  delete:
+    summary: 'Eliminación de Punto de Acceso'
+    description: |
+      # 🗑️ Endpoint para la Baja Lógica de un Punto de Acceso
+
+      Inactiva un dispositivo en el sistema de manera segura, preservando su integridad histórica mediante un mecanismo de **borrado lógico**.
+
+      **Lo que garantiza este proceso:**
+
+      * 📅 **Persistencia de Estado:** En lugar de eliminar el registro, el sistema aplica un "timestamp" de baja. Si el campo es `null`, el dispositivo está operativo; de lo contrario, se marca como inactivo.
+      * 🛡️ **Trazabilidad Completa:** Permite conservar el historial de eventos, conexiones y métricas asociadas al dispositivo, facilitando auditorías futuras y análisis forense de la red.
+      * 🔗 **Consistencia Referencial:** Protege la integridad de la base de datos evitando registros "huérfanos". Todas las relaciones históricas (logs de sesión, alertas) permanecen vinculadas al ID del dispositivo.
+
+      > **Nota Operativa:** Un Punto de Acceso con fecha de baja es ignorado automáticamente por el controlador de red y los servicios de monitoreo en tiempo real, quedando restringido únicamente a consultas de reporte.
+    tags:
+      - Puntos de Acceso
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Identificador único (UUID) del Punto de Acceso a eliminar.
+        schema:
+          type: string
+        example: '550e8400-e29b-41d4-a716-446655440000'
+    responses:
+      '200':
+        description: Punto de Acceso eliminado exitosamente.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Punto de Acceso eliminado exitosamente.
+      '400':
+        description: Error de validación en los parámetros de la petición (ID).
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                message: { type: string }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              parametro_id_invalido:
+                summary: 1. ID de parámetro inválido (Path)
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'id'
+                      message: 'El parametro de la petición no es un UUID válido.'
+      '404':
+        description: El Punto de Acceso no existe.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: El Punto de Acceso no existe.
+      '500':
+        description: Error interno del servidor.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor.
