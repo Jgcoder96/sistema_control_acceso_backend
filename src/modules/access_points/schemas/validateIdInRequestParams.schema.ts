@@ -5,7 +5,6 @@ const uuidRegex =
 
 export const validateIdInRequestParams = z.object({
   id: z
-    .string('El ID es obligatorio')
-    .min(1, 'El ID de ubicación es obligatorio')
-    .regex(uuidRegex, 'El formato del ID no es un UUID válido'),
+    .string('El parametro de la petición es obligatorio.')
+    .regex(uuidRegex, 'El parametro de la petición no es un UUID válido.'),
 });

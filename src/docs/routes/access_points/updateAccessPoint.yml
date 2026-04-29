@@ -1,0 +1,172 @@
+/api/access-points/{id}:
+  put:
+    summary: 'Actualización de Punto de Acceso'
+    description: |
+      # 🔄 Endpoint para la Modificación de un Punto de Acceso
+
+      Permite la actualización integral de los parámetros operativos de un dispositivo existente, asegurando que los cambios no comprometan la estabilidad de la red.
+
+      **Lo que garantiza este proceso:**
+
+      * 🛡️ **Prevención de Duplicados:** Valida en tiempo real que el nuevo nombre o dirección MAC no entren en conflicto con otros dispositivos registrados (excluyendo el registro actual).
+      * 📍 **Relocalización Segura:** En caso de actualizar el `ubicacion_id`, el sistema verifica la existencia y disponibilidad de la nueva ubicación antes de aplicar el cambio.
+      * ✅ **Consistencia de Datos:** Aplica reglas de validación idénticas a las del registro inicial, garantizando que la información en la base de datos se mantenga íntegra y estandarizada.
+
+      > **Uso Sugerido:** Ideal para reubicar dispositivos físicamente, corregir errores de etiquetado o actualizar el direccionamiento físico (MAC) tras un reemplazo de hardware.
+    tags:
+      - Puntos de Acceso
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Identificador único (UUID) del Punto de Acceso a actualizar.
+        schema:
+          type: string
+        example: '550e8400-e29b-41d4-a716-446655440000'
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - mac
+            properties:
+              nombre:
+                type: string
+                description: Nombre único descriptivo del punto de acceso.
+                example: 'Puerta Principal'
+              mac:
+                type: string
+                description: Dirección MAC del punto de acceso.
+                example: '50:78:7D:16:3C:1E'
+              ubicacion_id:
+                type: string
+                description: Identificador único de la ubicación relacionada.
+                example: 'fc9835ed-0938-4d07-a55b-1aed1c83998b'
+    responses:
+      '200':
+        description: Punto de Acceso actualizado exitosamente.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Punto de Acceso actualizado exitosamente.
+      '400':
+        description: Error de validación en los datos enviados (Body o Parámetros).
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                message: { type: string }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              parametro_id_invalido:
+                summary: 1. ID de parámetro inválido (Path)
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'id'
+                      message: 'El parametro de la petición no es un UUID válido.'
+              nombre_longitud_minima:
+                summary: 2. Nombre demasiado corto
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'nombre'
+                      message: 'El nombre debe contener al menos 4 caracteres.'
+              nombre_longitud_maxima:
+                summary: 3. Nombre demasiado largo
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'nombre'
+                      message: 'El nombre no puede exceder los 100 caracteres.'
+              mac_invalida:
+                summary: 4. Dirección MAC no válida
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'mac'
+                      message: 'La dirección MAC no es válida.'
+              uuid_ubicacion_invalido:
+                summary: 5. ID de ubicación no es UUID válido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'ubicacion_id'
+                      message: 'El formato del ID de ubicación no es un UUID válido.'
+              estructura_invalida:
+                summary: 6. Estructura de JSON inválida
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura de la solicitud es inválida. Se requiere un objeto JSON.'
+      '404':
+        description: Recurso no encontrado.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+            examples:
+              ubicacion_no_existe:
+                summary: 1. Ubicación no encontrada
+                value:
+                  success: false
+                  message: 'La Ubicación física no existe.'
+              access_point_no_existe:
+                summary: 2. Punto de Acceso no encontrado
+                value:
+                  success: false
+                  message: 'El Punto de Acceso no existe.'
+      '409':
+        description: La dirección MAC ya está en uso.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: La dirección MAC ya está en uso.
+      '500':
+        description: Error interno del servidor.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor.

@@ -1,0 +1,229 @@
+/api/access-points:
+  get:
+    summary: 'Obtener la lista de puntos de acceso registrados.'
+    description: |
+      # 🔍 Endpoint para la Consulta de Puntos de Acceso
+
+      Retorna una lista paginada y filtrable de todos los puntos de acceso configurados en el sistema, proporcionando una visión detallada de la infraestructura de red.
+
+      **Lo que ofrece este proceso:**
+
+      * 📈 **Escalabilidad y Rendimiento:** Implementa una paginación estructurada (`page`, `limit`) que permite gestionar grandes volúmenes de dispositivos sin degradar la velocidad de respuesta.
+      * 🎯 **Filtrado Multi-nivel:** Facilita la localización de dispositivos específicos mediante filtros por estado operativo, pertenencia a una ubicación geográfica (UUID) o búsqueda semántica por nombre.
+      * 🔗 **Contexto Enriquecido:** Cada registro incluye un objeto anidado con la información de su ubicación actual, eliminando la necesidad de realizar consultas adicionales para obtener el nombre del área.
+      * 🛠️ **Transparencia de Datos:** Expone metadatos precisos sobre el total de registros y páginas, permitiendo una integración fluida con componentes de tablas y listas en el frontend.
+
+      > **Uso Sugerido:** Ideal para paneles de administración, monitoreo de dispositivos por planta o auditorías de inventario de hardware de red.
+    tags:
+      - Puntos de Acceso
+    parameters:
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum: [active, deleted, all]
+          default: all
+        description: Filtra los puntos de acceso por su estado de eliminación.
+      - in: query
+        name: location
+        schema:
+          type: string
+          format: uuid
+        description: Filtra por el UUID de la ubicación.
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Filtra por coincidencia parcial en el nombre del punto de acceso o MAC.
+        example: 'Puerta Principal'
+      - in: query
+        name: page
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+        description: Número de página.
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
+        description: Cantidad de registros por página.
+    responses:
+      '200':
+        description: Puntos de Acceso obtenidos exitosamente.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: 'Puntos de Acceso obtenidos exitosamente.'
+                data:
+                  type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                            example: '2c0766f2-5b93-4041-af31-dd9820f46e9d'
+                          nombre:
+                            type: string
+                            example: 'Puerta Principal'
+                          mac:
+                            type: string
+                            example: '50:78:7D:16:3C:1E'
+                          creado_el:
+                            type: string
+                            format: date-time
+                            example: '2026-04-28T18:56:08.163Z'
+                          actualizado_el:
+                            type: string
+                            format: date-time
+                            example: '2026-04-28T18:56:08.163Z'
+                          eliminado_el:
+                            type: string
+                            format: date-time
+                            nullable: true
+                            example: null
+                          ubicacion:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                format: uuid
+                                example: 'fc9835ed-0938-4d07-a55b-1aed1c83998b'
+                              nombre:
+                                type: string
+                                example: 'Planta Baja'
+                    metadata:
+                      type: object
+                      properties:
+                        totalItems:
+                          type: integer
+                          example: 3
+                        page:
+                          type: integer
+                          example: 1
+                        limit:
+                          type: integer
+                          example: 10
+                        totalPages:
+                          type: integer
+                          example: 1
+      400':
+        description: Error de validación en los parámetros de consulta (Query Params).
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: 'Error de validación en los datos enviados.'
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              invalid_location_uuid:
+                summary: El UUID de ubicación es inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'location'
+                      message: 'El término de búsqueda debe ser un UUID válido'
+              invalid_status:
+                summary: El estado no coincide con el enum
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'status'
+                      message: "El estado debe ser 'active', 'deleted' o 'all'"
+              page_is_not_a_number:
+                summary: La Página no es un número
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'page'
+                      message: 'La página debe ser un número'
+              page_is_not_an_integer:
+                summary: La Página no es un número entero
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'page'
+                      message: 'La página debe ser un número entero'
+              page_minimum:
+                summary: El número de página es menor a 1
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'page'
+                      message: 'La página mínima es 1'
+              limit_is_not_a_number:
+                summary: El límite no es un número
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'limit'
+                      message: 'El límite debe ser un número'
+              limit_is_not_an_integer:
+                summary: El límite no es un número entero
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'limit'
+                      message: 'El límite debe ser un número entero'
+              limit_minimum:
+                summary: El límite es menor a 1
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'limit'
+                      message: 'El límite mínimo es 1'
+              limit_maximum:
+                summary: El límite es mayor a 100
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'limit'
+                      message: 'El límite máximo es 100'
+      '500':
+        description: Error interno del servidor.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor.
