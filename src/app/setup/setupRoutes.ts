@@ -3,7 +3,7 @@ import { authRoute } from '../../modules/auth/routes/index.js';
 import { cardsRoute } from '../../modules/cards/routes/index.js';
 import { configRoute } from '../../modules/config/routes/index.js';
 import { horaryRoute } from '../../modules/horary/routes/index.js';
-import { locationRoute } from '../../modules/location/routes/index.js';
+import { locationRoute } from '../../modules/locations/routes/index.js';
 import { physicalPermitRoute } from '../../modules/permissions/routes/index.js';
 
 import { envs } from '../../config/index.js';
@@ -34,7 +34,7 @@ export const setupRoutes = (app: Express): Router => {
 
   router.use('/cards', appRoutes.cards);
 
-  router.use('/location', appRoutes.location);
+  router.use('/locations', appRoutes.location);
 
   router.use('/access-points', appRoutes.accessPoints);
 

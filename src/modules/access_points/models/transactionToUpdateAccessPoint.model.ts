@@ -2,14 +2,14 @@ import {
   AccessPointDoesNotExists,
   LocationDoesNotExists,
   MacAlreadyInUse,
+  AccessPointNameAlreadyInUse,
 } from '../errors/index.js';
 import { prisma } from '../../../config/index.js';
-import { Prisma } from '@prisma/client';
-import type { AccessPointToUpdate } from '../types/index.js';
+import type { AccessPoint } from '../types/index.js';
 
 export const transactionToUpdateAccessPoint = async (
   id: string,
-  accessPoint: AccessPointToUpdate,
+  accessPoint: AccessPoint,
 ) => {
   return await prisma.$transaction(async (tx) => {
     const accessPointExists = await tx.puntos_acceso.findFirst({
@@ -18,40 +18,46 @@ export const transactionToUpdateAccessPoint = async (
 
     if (!accessPointExists) throw new AccessPointDoesNotExists();
 
-    const dataUpdate: Prisma.puntos_accesoUpdateInput = {};
+    const locationExists = await tx.ubicaciones.findFirst({
+      where: { id: accessPoint.ubicacion_id, eliminado_el: null },
+    });
 
-    if (accessPoint.mac) {
-      const normalizedMac = accessPoint.mac.toUpperCase();
+    if (!locationExists) throw new LocationDoesNotExists();
 
-      const macInUse = await tx.puntos_acceso.findFirst({
-        where: {
-          mac: normalizedMac,
-          id: { not: id },
-          eliminado_el: null,
+    const normalizedMac = accessPoint.mac.toUpperCase();
+    const macInUse = await tx.puntos_acceso.findFirst({
+      where: {
+        mac: normalizedMac,
+        id: { not: id },
+        eliminado_el: null,
+      },
+    });
+
+    if (macInUse) throw new MacAlreadyInUse();
+
+    const nameInUseInLocation = await tx.puntos_acceso.findFirst({
+      where: {
+        nombre: {
+          equals: accessPoint.nombre,
+          mode: 'insensitive',
         },
-      });
+        ubicacion_id: accessPoint.ubicacion_id,
+        id: { not: id },
+        eliminado_el: null,
+      },
+    });
 
-      if (macInUse) throw new MacAlreadyInUse();
-    }
-
-    if (accessPoint.nombre) dataUpdate.nombre = accessPoint.nombre;
-    if (accessPoint.mac) dataUpdate.mac = accessPoint.mac.toUpperCase();
-
-    if (accessPoint.ubicacion_id) {
-      const locationExists = await tx.ubicaciones.findFirst({
-        where: { id: accessPoint.ubicacion_id, eliminado_el: null },
-      });
-
-      if (!locationExists) throw new LocationDoesNotExists();
-
-      dataUpdate.ubicaciones = {
-        connect: { id: accessPoint.ubicacion_id },
-      };
-    }
+    if (nameInUseInLocation) throw new AccessPointNameAlreadyInUse();
 
     const updateAccessPoint = await tx.puntos_acceso.update({
       where: { id },
-      data: dataUpdate,
+      data: {
+        nombre: accessPoint.nombre,
+        mac: normalizedMac,
+        ubicaciones: {
+          connect: { id: accessPoint.ubicacion_id },
+        },
+      },
     });
 
     return updateAccessPoint;

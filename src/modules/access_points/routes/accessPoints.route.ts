@@ -5,8 +5,7 @@ import {
   getAccessPoints,
 } from '../controllers/index.js';
 import {
-  validateAccessPointForCreateInBodyRequest,
-  validateAccessPointForUpdateInBodyRequest,
+  validateAccessPointInBodyRequest,
   validateIdInRequestParams,
   validateLocationFiltersInQuery,
 } from '../schemas/index.js';
@@ -24,7 +23,7 @@ export const accessPointsRoute = (): Router => {
 
   router.post(
     '/',
-    [schemaValidator(validateAccessPointForCreateInBodyRequest, 'body')],
+    [schemaValidator(validateAccessPointInBodyRequest, 'body')],
     createAccessPoint,
   );
 
@@ -32,7 +31,7 @@ export const accessPointsRoute = (): Router => {
     '/:id',
     [
       schemaValidator(validateIdInRequestParams, 'params'),
-      schemaValidator(validateAccessPointForUpdateInBodyRequest, 'body'),
+      schemaValidator(validateAccessPointInBodyRequest, 'body'),
     ],
     updateAccessPoint,
   );

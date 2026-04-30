@@ -14,8 +14,12 @@ export const transactionToUpdateLocation = async (id: string, name: string) => {
 
     const nameExistsInAnotherLocation = await tx.ubicaciones.findFirst({
       where: {
-        nombre: name,
+        nombre: {
+          equals: name,
+          mode: 'insensitive',
+        },
         id: { not: id },
+        eliminado_el: null,
       },
     });
 

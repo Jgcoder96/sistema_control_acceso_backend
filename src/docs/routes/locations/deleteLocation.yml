@@ -1,18 +1,18 @@
-/api/location/{id}:
+/api/locations/{id}:
   delete:
     summary: Eliminación de ubicación física.
     description: |
-      # 🗑️ Endpoint para la Baja de Ubicación Física
+      # 🗑️ Baja de Ubicación física
 
-      Elimina de forma definitiva un nodo geográfico de la infraestructura del sistema. Esta acción remueve la entidad de la jerarquía organizacional y libera los recursos asociados.
+      Realiza una **baja lógica** del nodo geográfico en el sistema. En lugar de eliminar el registro permanentemente, se marca como inactivo utilizando el atributo `eliminado_el`, preservando así la integridad histórica de los datos.
 
       **Consideraciones de seguridad e integridad:**
 
-      *   🚫 **Integridad Referencial:** El sistema rechazará la eliminación si existen dispositivos (Puntos de Acceso) vinculados activamente a esta ubicación, evitando así la creación de "registros huérfanos".
-      *   🆔 **Validación de Identidad:** Se requiere un identificador único de recurso (**UUID**) válido y existente para procesar la desvinculación.
-      *   ⚠️ **Acción Crítica:** Esta operación es irreversible. Una vez ejecutada, la ubicación dejará de estar disponible para la asignación de nuevo hardware.
+      *   💾 **Preservación de Datos (Soft Delete):** La ubicación dejará de ser visible en las consultas operativas, pero permanecerá en la base de datos para fines de auditoría y reportes históricos.
+      *   🆔 **Validación de Identificador:** Se requiere un **UUID** válido y el recurso debe estar actualmente activo para ser procesado.
+      *   ⚠️ **Efecto Operativo:** Una vez ejecutada la baja, esta ubicación no podrá ser utilizada para nuevas asignaciones de dispositivos.
 
-      > **Nota de Administración:** Antes de eliminar una ubicación, asegúrese de haber reubicado o dado de baja todos los dispositivos asociados a la misma.
+      > **Nota de Administración:** Esta operación actualiza el sello de tiempo en la columna `eliminado_el`. Si desea reactivar la ubicación en el futuro, deberá hacerse mediante una intervención administrativa en la base de datos.
     tags:
       - Ubicaciones
     parameters:

@@ -3,11 +3,13 @@ import { Prisma } from '@prisma/client';
 import type { AccessPointFilters } from '../types/index.js';
 
 export const getAccessPoints = async (filters: AccessPointFilters) => {
-  const where: Prisma.puntos_accesoWhereInput = {
-    ubicacion_id: filters.locationId,
-  };
+  const where: Prisma.puntos_accesoWhereInput = {};
 
-  const { status, search, page, limit } = filters;
+  const { status, search, page, limit, locationId } = filters;
+
+  if (locationId) {
+    where.ubicacion_id = locationId;
+  }
 
   if (status === 'active') where.eliminado_el = null;
   else if (status === 'deleted') where.eliminado_el = { not: null };

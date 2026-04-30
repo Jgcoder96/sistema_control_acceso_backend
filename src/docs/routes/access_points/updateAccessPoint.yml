@@ -30,7 +30,9 @@
           schema:
             type: object
             required:
+              - nombre
               - mac
+              - ubicacion_id
             properties:
               nombre:
                 type: string
@@ -83,8 +85,20 @@
                   issues:
                     - field: 'id'
                       message: 'El parametro de la petición no es un UUID válido.'
+              campos_obligatorios:
+                summary: 2. Campos obligatorios faltantes
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'nombre'
+                      message: "El campo 'nombre' es obligatorio."
+                    - field: 'mac'
+                      message: "El campo 'mac' es obligatorio."
+                    - field: 'ubicacion_id'
+                      message: "El campo 'ubicacion_id' es obligatorio."
               nombre_longitud_minima:
-                summary: 2. Nombre demasiado corto
+                summary: 3. Nombre demasiado corto
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -92,7 +106,7 @@
                     - field: 'nombre'
                       message: 'El nombre debe contener al menos 4 caracteres.'
               nombre_longitud_maxima:
-                summary: 3. Nombre demasiado largo
+                summary: 4. Nombre demasiado largo
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -100,15 +114,15 @@
                     - field: 'nombre'
                       message: 'El nombre no puede exceder los 100 caracteres.'
               mac_invalida:
-                summary: 4. Dirección MAC no válida
+                summary: 5. Dirección MAC no válida
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'mac'
                       message: 'La dirección MAC no es válida.'
-              uuid_ubicacion_invalido:
-                summary: 5. ID de ubicación no es UUID válido
+              uuid_invalido:
+                summary: 6. ID de ubicación no es UUID válido
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -116,12 +130,12 @@
                     - field: 'ubicacion_id'
                       message: 'El formato del ID de ubicación no es un UUID válido.'
               estructura_invalida:
-                summary: 6. Estructura de JSON inválida
+                summary: 7. Estructura de JSON inválida
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
-                    - message: 'La estructura de la solicitud es inválida. Se requiere un objeto JSON.'
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
       '404':
         description: Recurso no encontrado.
         content:
@@ -145,18 +159,23 @@
                   success: false
                   message: 'El Punto de Acceso no existe.'
       '409':
-        description: La dirección MAC ya está en uso.
+        description: Conflicto - El recurso ya existe.
         content:
           application/json:
             schema:
               type: object
               properties:
-                success:
-                  type: boolean
-                  example: true
                 message:
                   type: string
-                  example: La dirección MAC ya está en uso.
+            examples:
+              NombreDuplicado:
+                summary: El nombre ya existe
+                value:
+                  message: 'El nombre del punto de acceso ya está en uso.'
+              MacDuplicada:
+                summary: La dirección MAC ya existe
+                value:
+                  message: 'La dirección MAC ya está registrada en el sistema.'
       '500':
         description: Error interno del servidor.
         content:

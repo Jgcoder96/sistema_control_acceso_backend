@@ -28,7 +28,6 @@
         name: location
         schema:
           type: string
-          format: uuid
         description: Filtra por el UUID de la ubicación.
       - in: query
         name: search

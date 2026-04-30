@@ -1,19 +1,19 @@
-/api/location/{id}:
+/api/locations/{id}:
   put:
     summary: Actualización de ubicación física.
     description: |
-      📝 Actualización de Atributos de Ubicación
+      # 📝 Actualización de Ubicación física
 
-      Modifica las propiedades de un nodo geográfico existente en el sistema. Este proceso sincroniza los cambios en la base de datos asegurando que la información sea consistente y no genere duplicidad lógica.
+      Permite modificar los atributos de un nodo geográfico ya existente en el sistema. Este proceso sincroniza los cambios en la base de datos para asegurar que la información del inventario se mantenga vigente y organizada.
 
       **Lo que garantiza este proceso:**
 
-      * 🆔 **Referenciación Precisa:** Valida la existencia del recurso mediante su **UUID** antes de intentar cualquier operación de escritura.
-      * 🛡️ **Prevención de Colisiones:** Ejecuta una verificación de unicidad sobre el campo `nombre`, impidiendo que se asigne una denominación ya utilizada por otra ubicación activa.
-      * ⚙️ **Integridad de Esquema:** Somete los datos de entrada a un riguroso control de tipos y extensiones (mínimo 4, máximo 100 caracteres).
-      * 🔄 **Consistencia de Auditoría:** Actualiza automáticamente el sello de tiempo `actualizado_el` para mantener la trazabilidad del cambio.
+      * 🆔 **Referenciación Precisa:** Valida la existencia del recurso mediante su identificador único (**UUID**) antes de aplicar cualquier cambio.
+      * 🛡️ **Prevención de Conflictos:** Verifica que el nuevo nombre no esté siendo utilizado por otra ubicación, evitando duplicidades accidentales.
+      * ⚙️ **Integridad de Esquema:** Somete los nuevos datos a un control de formato y extensión para asegurar la calidad de la información.
+      * 🔄 **Trazabilidad de Cambios:** Actualiza automáticamente los registros de auditoría (`actualizado_el`) para dejar constancia de la última modificación.
 
-      > **Nota de Implementación:** Si el nombre enviado es idéntico al actual, el sistema procesará la solicitud sin disparar un error de conflicto (409), reconociendo que no hay cambio de identidad.
+      > **Nota de Implementación:** Si el nombre enviado es exactamente igual al actual, el sistema procesará la solicitud sin generar un error de conflicto (409), ya que entiende que no hay intención de cambiar la identidad del recurso.
     tags:
       - Ubicaciones
     parameters:
@@ -26,7 +26,6 @@
           format: uuid
         example: '550e8400-e29b-41d4-a716-446655440000'
     requestBody:
-      required: true
       content:
         application/json:
           schema:
@@ -107,8 +106,7 @@
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
-                    - field: 'body'
-                      message: 'La estructura de la solicitud es inválida. Se requiere un objeto JSON.'
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
       '404':
         description: La ubicación física no existe.
         content:

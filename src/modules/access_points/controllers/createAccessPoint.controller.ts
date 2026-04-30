@@ -1,6 +1,6 @@
 import { createAccessPointService } from '../services/index.js';
 import { RESPONSE_MESSAGES } from '../constants/index.js';
-import type { AccessPointToCreate } from '../types/index.js';
+import type { AccessPoint } from '../types/index.js';
 import type { Request, Response, NextFunction } from 'express';
 
 export const createAccessPoint = async (
@@ -9,7 +9,7 @@ export const createAccessPoint = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const requestBody: AccessPointToCreate = req.body;
+    const requestBody: AccessPoint = req.body;
 
     await createAccessPointService(requestBody);
 

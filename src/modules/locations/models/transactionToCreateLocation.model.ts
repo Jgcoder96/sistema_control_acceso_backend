@@ -5,7 +5,10 @@ export const transactionToCreateLocation = async (name: string) => {
   return await prisma.$transaction(async (tx) => {
     const location = await tx.ubicaciones.findFirst({
       where: {
-        nombre: name,
+        nombre: {
+          equals: name,
+          mode: 'insensitive',
+        },
       },
     });
 
@@ -15,6 +18,7 @@ export const transactionToCreateLocation = async (name: string) => {
       const restoredLocation = await tx.ubicaciones.update({
         where: { id: location.id },
         data: {
+          nombre: name,
           eliminado_el: null,
           actualizado_el: new Date(),
         },

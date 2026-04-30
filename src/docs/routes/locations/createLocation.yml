@@ -1,22 +1,21 @@
-/api/location:
+/api/locations:
   post:
-    summary: Registro de nueva ubicación física.
+    summary: Registro de nueva ubicación.
     description: |
-      # ⚡ Endpoint para el Alta de una ubicación física
+      # 📍 Registro de Ubicación física
 
-      Provisiona un nuevo nodo geográfico dentro de la infraestructura del sistema, estableciendo la base jerárquica necesaria para la posterior vinculación de dispositivos y puntos de acceso.
+      Este endpoint permite dar de alta un nuevo nodo geográfico dentro de la infraestructura del sistema. Es el paso inicial necesario para establecer la jerarquía donde se vincularán los dispositivos más adelante.
 
       **Lo que garantiza este proceso:**
 
-      * 🏷️ **Unicidad de Identidad:** Implementa una restricción estricta sobre el nombre para evitar duplicidad lógica y colisiones en la organización del inventario.
-      * 📏 **Validación de Esquema:** Aplica un control riguroso de tipos y longitudes sobre el objeto JSON para asegurar que la información cumpla con los estándares de calidad de datos.
-      * 🛠 **Integridad de Datos:** Valida la estructura de la solicitud mediante una inspección profunda de campos obligatorios antes de proceder con la persistencia.
+      * 🆔 **Unicidad de Registro:** Implementa una validación de duplicidad sobre el nombre para asegurar que cada ubicación sea única y evitar colisiones en el inventario.
+      * 📏 **Validación de Esquema:** Aplica un control riguroso sobre el tipo de dato y la longitud del texto, garantizando que la información cumpla con los estándares del sistema.
+      * 🛠  **Integridad de Datos:** Verifica la presencia de campos obligatorios y la estructura del JSON antes de proceder con la persistencia en la base de datos.
 
-      > **Nota de Implementación:** El nombre de la ubicación debe ser descriptivo (ej. "Planta Alta - Ala Norte") para facilitar la gestión administrativa y la generación de reportes de acceso.
+      > **Nota de Implementación:** Se recomienda utilizar nombres descriptivos y normalizados (ej. "Planta Alta - Ala Norte") para facilitar la gestión administrativa y la claridad en los reportes.
     tags:
       - Ubicaciones
     requestBody:
-      required: true
       content:
         application/json:
           schema:
@@ -89,8 +88,7 @@
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
-                    - field: 'body'
-                      message: 'La estructura de la solicitud es inválida. Se requiere un objeto JSON.'
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
       '409':
         description: Ya existe una ubicación con el mismo nombre.
         content:
@@ -103,7 +101,7 @@
                   example: false
                 message:
                   type: string
-                  example: Ya existe una ubicación con el mismo nombre.
+                  example: Este nombre ya está asignado a otra ubicación física.
       '500':
         description: Error interno del servidor.
         content:

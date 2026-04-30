@@ -8,5 +8,5 @@ export const validateNameInRequestBody = z.object(
       .max(100, 'El nombre no puede exceder los 100 caracteres.')
       .trim(),
   },
-  'La estructura de la solicitud es inválida. Se requiere un objeto JSON.',
+  'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.',
 );

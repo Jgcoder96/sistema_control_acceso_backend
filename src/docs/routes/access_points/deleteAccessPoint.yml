@@ -2,17 +2,18 @@
   delete:
     summary: 'Eliminación de Punto de Acceso'
     description: |
-      # 🗑️ Endpoint para la Baja Lógica de un Punto de Acceso
+      # 🗑️ Baja de **Punto de Acceso**
 
-      Inactiva un dispositivo en el sistema de manera segura, preservando su integridad histórica mediante un mecanismo de **borrado lógico**.
+      Inactiva un dispositivo en el sistema de manera segura mediante un mecanismo de **borrado lógico**. Esta acción marca al dispositivo como fuera de servicio sin eliminar sus registros históricos.
 
-      **Lo que garantiza este proceso:**
+      **Consideraciones de seguridad e integridad:**
 
-      * 📅 **Persistencia de Estado:** En lugar de eliminar el registro, el sistema aplica un "timestamp" de baja. Si el campo es `null`, el dispositivo está operativo; de lo contrario, se marca como inactivo.
-      * 🛡️ **Trazabilidad Completa:** Permite conservar el historial de eventos, conexiones y métricas asociadas al dispositivo, facilitando auditorías futuras y análisis forense de la red.
-      * 🔗 **Consistencia Referencial:** Protege la integridad de la base de datos evitando registros "huérfanos". Todas las relaciones históricas (logs de sesión, alertas) permanecen vinculadas al ID del dispositivo.
+      * 💾 **Preservación de Historial:** El registro permanece en la base de datos con un sello de tiempo en `eliminado_el`, lo que permite conservar logs de conexión y alertas pasadas para auditorías.
+      * 🛡️ **Aislamiento Operativo:** Una vez dada la baja, el dispositivo es ignorado automáticamente por los servicios de monitoreo y el controlador de red en tiempo real.
+      * 🔗 **Integridad de Datos:** Evita la creación de registros "huérfanos", manteniendo las relaciones con eventos pasados sin afectar las estadísticas históricas del sistema.
+      * 🆔 **Validación de Identidad:** Se requiere un **UUID** válido para asegurar que la operación se realice sobre el dispositivo correcto.
 
-      > **Nota Operativa:** Un Punto de Acceso con fecha de baja es ignorado automáticamente por el controlador de red y los servicios de monitoreo en tiempo real, quedando restringido únicamente a consultas de reporte.
+      > **Nota Operativa:** Si necesita reactivar el dispositivo o reutilizar su dirección MAC en una nueva ubicación, deberá gestionar la limpieza o reactivación del registro desde el panel de administración.
     tags:
       - Puntos de Acceso
     parameters:

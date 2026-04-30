@@ -1,19 +1,19 @@
-/api/location:
+/api/locations:
   get:
     summary: Obtener lista de ubicaciones físicas.
     description: |
-      # 🔍 Consulta de Inventario de Ubicaciones
+      # 🔍 Listado y Consulta de Ubicaciones físicas
 
-      Retorna el listado de nodos geográficos registrados en el sistema. Este endpoint está optimizado para la gestión de grandes volúmenes de datos mediante una estrategia de paginación y filtrado dinámico.
+      Recupera la lista de nodos geográficos registrados en el sistema. Este endpoint está diseñado para gestionar eficientemente grandes volúmenes de datos mediante herramientas de filtrado y paginación.
 
       **Capacidades del Endpoint:**
 
-      * 📑 **Paginación de Resultados:** Implementa un control de flujo de datos para asegurar tiempos de respuesta consistentes y optimizar el consumo de ancho de banda.
-      * 🚦 **Gestión del Ciclo de Vida:** Permite auditar registros activos o recuperados mediante el filtro de estado (Soft Delete support).
-      * 🔍 **Búsqueda Avanzada:** Motor de búsqueda por coincidencia parcial en el nombre para localización rápida de recursos.
-      * 🕒 **Trazabilidad de Auditoría:** Cada registro expone sus marcas temporales de creación, modificación y baja lógica.
+      * 📑 **Control de Paginación:** Divide los resultados en bloques manejables para asegurar respuestas rápidas y optimizar el consumo de datos.
+      * 🚦 **Filtros de Estado:** Permite alternar la vista entre registros activos, aquellos con baja lógica (soft delete) o el historial completo.
+      * 🔎 **Búsqueda Dinámica:** Facilita la localización rápida de recursos mediante coincidencias parciales en el nombre de la ubicación.
+      * 🕒 **Detalle Cronológico:** Expone marcas de tiempo detalladas que permiten auditar cuándo se creó, modificó o desactivó cada registro.
 
-      > **Nota de Rendimiento:** El límite máximo de registros por página está restringido a 100 para garantizar la estabilidad del servicio.
+      > **Nota de Rendimiento:** Para mantener la estabilidad del servicio, la cantidad máxima de registros permitida por página es de 100.
     tags:
       - Ubicaciones
     parameters:
