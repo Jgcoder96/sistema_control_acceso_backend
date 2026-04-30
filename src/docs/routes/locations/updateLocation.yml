@@ -1,9 +1,30 @@
-/api/location:
-  post:
-    summary: Registro de nueva ubicación física.
-    description: Permite dar de alta una nueva ubicación física en el sistema de control de acceso. Este proceso garantiza la integridad de los datos mediante la validación de formato y la verificación de unicidad, impidiendo el registro de nombres duplicados.
+/api/location/{id}:
+  put:
+    summary: Actualización de ubicación física.
+    description: |
+      📝 Actualización de Atributos de Ubicación
+
+      Modifica las propiedades de un nodo geográfico existente en el sistema. Este proceso sincroniza los cambios en la base de datos asegurando que la información sea consistente y no genere duplicidad lógica.
+
+      **Lo que garantiza este proceso:**
+
+      * 🆔 **Referenciación Precisa:** Valida la existencia del recurso mediante su **UUID** antes de intentar cualquier operación de escritura.
+      * 🛡️ **Prevención de Colisiones:** Ejecuta una verificación de unicidad sobre el campo `nombre`, impidiendo que se asigne una denominación ya utilizada por otra ubicación activa.
+      * ⚙️ **Integridad de Esquema:** Somete los datos de entrada a un riguroso control de tipos y extensiones (mínimo 4, máximo 100 caracteres).
+      * 🔄 **Consistencia de Auditoría:** Actualiza automáticamente el sello de tiempo `actualizado_el` para mantener la trazabilidad del cambio.
+
+      > **Nota de Implementación:** Si el nombre enviado es idéntico al actual, el sistema procesará la solicitud sin disparar un error de conflicto (409), reconociendo que no hay cambio de identidad.
     tags:
       - Ubicaciones
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Identificador único (UUID) de la ubicación física a actualizar.
+        schema:
+          type: string
+          format: uuid
+        example: '550e8400-e29b-41d4-a716-446655440000'
     requestBody:
       required: true
       content:
@@ -18,8 +39,8 @@
                 description: Nombre único de la ubicación física.
                 example: 'Planta Baja'
     responses:
-      '201':
-        description: Ubicación creada exitosamente.
+      '200':
+        description: Actualización de una ubicación física.
         content:
           application/json:
             schema:
@@ -30,7 +51,7 @@
                   example: true
                 message:
                   type: string
-                  example: Ubicación creada exitosamente.
+                  example: Ubicación actualizada exitosamente.
       '400':
         description: Error de validación en los datos enviados.
         content:
@@ -48,6 +69,14 @@
                       field: { type: string }
                       message: { type: string }
             examples:
+              uuid_invalido:
+                summary: 1. Formato de ID inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'id'
+                      message: 'El formato del ID no es un UUID válido.'
               campo_obligatorio:
                 summary: 1. Campo faltante
                 value:
@@ -80,8 +109,8 @@
                   issues:
                     - field: 'body'
                       message: 'La estructura de la solicitud es inválida. Se requiere un objeto JSON.'
-      '409':
-        description: Ya existe una ubicación con el mismo nombre.
+      '404':
+        description: La ubicación física no existe.
         content:
           application/json:
             schema:
@@ -92,7 +121,20 @@
                   example: false
                 message:
                   type: string
-                  example: Ya existe una ubicación con el mismo nombre.
+                  example: La ubicación física no existe.
+      '409':
+        description: Este nombre ya está asignado a otra ubicación física.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Este nombre ya está asignado a otra ubicación física.
       '500':
         description: Error interno del servidor.
         content:

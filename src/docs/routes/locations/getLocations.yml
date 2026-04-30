@@ -1,7 +1,19 @@
 /api/location:
   get:
     summary: Obtener lista de ubicaciones físicas.
-    description: Permite recuperar el listado de ubicaciones físicas con soporte para filtrado por estado (activas, eliminadas o todas), búsqueda por nombre y paginación de resultados.
+    description: |
+      # 🔍 Consulta de Inventario de Ubicaciones
+
+      Retorna el listado de nodos geográficos registrados en el sistema. Este endpoint está optimizado para la gestión de grandes volúmenes de datos mediante una estrategia de paginación y filtrado dinámico.
+
+      **Capacidades del Endpoint:**
+
+      * 📑 **Paginación de Resultados:** Implementa un control de flujo de datos para asegurar tiempos de respuesta consistentes y optimizar el consumo de ancho de banda.
+      * 🚦 **Gestión del Ciclo de Vida:** Permite auditar registros activos o recuperados mediante el filtro de estado (Soft Delete support).
+      * 🔍 **Búsqueda Avanzada:** Motor de búsqueda por coincidencia parcial en el nombre para localización rápida de recursos.
+      * 🕒 **Trazabilidad de Auditoría:** Cada registro expone sus marcas temporales de creación, modificación y baja lógica.
+
+      > **Nota de Rendimiento:** El límite máximo de registros por página está restringido a 100 para garantizar la estabilidad del servicio.
     tags:
       - Ubicaciones
     parameters:
