@@ -1,0 +1,226 @@
+/api/schedules:
+  get:
+    summary: Obtener Horarios
+    description: |
+      # 🔍 Obtener lista de Horarios
+    tags:
+      - Horarios
+    parameters:
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum: [active, deleted, all]
+          default: all
+        description: Filtra los horarios por su estado de eliminación.
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Filtra por coincidencia parcial en el nombre del horario.
+        example: 'Turno Administrativo'
+      - in: query
+        name: page
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+        description: Número de página para la paginación.
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
+        description: Cantidad de registros por página.
+    responses:
+      '200':
+        description: Lista de horarios obtenida exitosamente.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Lista de horarios obtenida exitosamente.
+                data:
+                  type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                            example: 'a4de9459-2033-4461-9c65-a73240e67298'
+                          nombre:
+                            type: string
+                            example: 'Turno Gerencial'
+                          creado_el:
+                            type: string
+                            format: date-time
+                            example: '2026-05-02T00:15:44.330Z'
+                          actualizado_el:
+                            type: string
+                            format: date-time
+                            example: '2026-05-02T00:15:44.330Z'
+                          eliminado_el:
+                            type: string
+                            format: date-time
+                            nullable: true
+                            example: null
+                          horario_detalles:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                  format: uuid
+                                  example: 'd74d851a-9336-412e-8127-2ff93d3f700b'
+                                dia_semana:
+                                  type: string
+                                  nullable: true
+                                  enum:
+                                    [
+                                      lunes,
+                                      martes,
+                                      miercoles,
+                                      jueves,
+                                      viernes,
+                                      sabado,
+                                      domingo,
+                                      null,
+                                    ]
+                                  example: 'lunes'
+                                es_festivo:
+                                  type: boolean
+                                  example: false
+                                hora_inicio:
+                                  type: string
+                                  format: date-time
+                                  example: '1970-01-01T07:00:00.000Z'
+                                hora_fin:
+                                  type: string
+                                  format: date-time
+                                  example: '1970-01-01T12:00:00.000Z'
+                    metadata:
+                      type: object
+                      properties:
+                        totalItems:
+                          type: integer
+                          example: 1
+                        page:
+                          type: integer
+                          example: 1
+                        limit:
+                          type: integer
+                          example: 10
+                        totalPages:
+                          type: integer
+                          example: 1
+      '400':
+        description: Error de validación en los parámetros de consulta (Query Params).
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                message:
+                  {
+                    type: string,
+                    example: 'Error de validación en los datos enviados.',
+                  }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              invalid_status:
+                summary: 1. Error en el estado
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'status'
+                      message: "El estado de la consulta debe ser 'active', 'deleted' o 'all'."
+              the_page_is_not_a_number:
+                summary: 2. La página no es un número
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'page'
+                      message: 'La página de la consulta debe ser un número.'
+              the_page_is_not_an_integer:
+                summary: 3. La página no es un número entero
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'page'
+                      message: 'La página de la consulta debe ser un número entero.'
+              minimum_page:
+                summary: 4. El numero de página es menor a 1
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'page'
+                      message: 'La página mínima de la consulta es 1.'
+              limit_is_not_a_number:
+                summary: 5. El límite no es un número
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'limit'
+                      message: 'El límite de la consulta debe ser un número.'
+              limit_is_not_an_integer:
+                summary: 6. El límite no es un número entero
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'limit'
+                      message: 'El límite de la consulta debe ser un número entero.'
+              minimum_limit:
+                summary: 7. El límite es menor a 1
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'limit'
+                      message: 'El límite mínimo de la consulta es 1.'
+              maximum_limit:
+                summary: 8. El límite es mayor a 100
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'limit'
+                      message: 'El límite máximo de la consulta es 100.'
+      '500':
+        description: Error interno del servidor.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor.

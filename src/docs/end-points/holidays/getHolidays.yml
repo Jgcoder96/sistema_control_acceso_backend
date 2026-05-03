@@ -1,0 +1,200 @@
+/api/schedules/holidays:
+  get:
+    summary: Obtener Feriados
+    description: |
+      # 🔍 Obtener lista de Feriados
+    tags:
+      - Feriados
+    parameters:
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum: [active, deleted, all]
+          default: all
+        description: Filtra los días feriados por su estado de eliminación.
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Filtra por coincidencia parcial en el nombre del días feriado.
+        example: 'Año Nuevo'
+      - in: query
+        name: page
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+        description: Número de página para la paginación.
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
+        description: Cantidad de registros por página.
+    responses:
+      '200':
+        description: Lista de feriados obtenida exitosamente.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Lista de feriados obtenida exitosamente.
+                data:
+                  type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                            example: '3d77ec83-b3da-4e99-911c-04a4b3860e35'
+                          nombre:
+                            type: string
+                            example: 'Mundial de Beisbol'
+                          dia:
+                            type: integer
+                            example: 20
+                          mes:
+                            type: integer
+                            example: 4
+                          anio:
+                            type: integer
+                            example: 2026
+                          creado_el:
+                            type: string
+                            format: date-time
+                            example: '2026-05-02T00:49:21.760Z'
+                          actualizado_el:
+                            type: string
+                            format: date-time
+                            example: '2026-05-02T00:49:21.760Z'
+                          eliminado_el:
+                            type: string
+                            format: date-time
+                            nullable: true
+                            example: null
+                    metadata:
+                      type: object
+                      properties:
+                        totalItems:
+                          type: integer
+                          example: 1
+                        page:
+                          type: integer
+                          example: 1
+                        limit:
+                          type: integer
+                          example: 10
+                        totalPages:
+                          type: integer
+                          example: 1
+      '400':
+        description: Error de validación en los parámetros de consulta (Query Params).
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                message:
+                  {
+                    type: string,
+                    example: 'Error de validación en los datos enviados.',
+                  }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              invalid_status:
+                summary: 1. Error en el estado
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'status'
+                      message: "El estado de la consulta debe ser 'active', 'deleted' o 'all'."
+              the_page_is_not_a_number:
+                summary: 2. La página no es un número
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'page'
+                      message: 'La página de la consulta debe ser un número.'
+              the_page_is_not_an_integer:
+                summary: 3. La página no es un número entero
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'page'
+                      message: 'La página de la consulta debe ser un número entero.'
+              minimum_page:
+                summary: 4. El numero de página es menor a 1
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'page'
+                      message: 'La página mínima de la consulta es 1.'
+              limit_is_not_a_number:
+                summary: 5. El límite no es un número
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'limit'
+                      message: 'El límite de la consulta debe ser un número.'
+              limit_is_not_an_integer:
+                summary: 6. El límite no es un número entero
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'limit'
+                      message: 'El límite de la consulta debe ser un número entero.'
+              minimum_limit:
+                summary: 7. El límite es menor a 1
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'limit'
+                      message: 'El límite mínimo de la consulta es 1.'
+              maximum_limit:
+                summary: 8. El límite es mayor a 100
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'limit'
+                      message: 'El límite máximo de la consulta es 100.'
+      '500':
+        description: Error interno del servidor.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor.

@@ -1,0 +1,211 @@
+/api/schedules:
+  post:
+    summary: Crear Horario
+    description: |
+      # 📅 Crear un nuevo Horario
+    tags:
+      - Horarios
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - nombre
+              - detalles
+            properties:
+              nombre:
+                type: string
+                minLength: 4
+                maxLength: 100
+                example: 'Turno Gerencial'
+              detalles:
+                type: array
+                minItems: 1
+                items:
+                  type: object
+                  required:
+                    - hora_inicio
+                    - hora_fin
+                    - es_festivo
+                  properties:
+                    dia_semana:
+                      type: string
+                      enum:
+                        [
+                          lunes,
+                          martes,
+                          miercoles,
+                          jueves,
+                          viernes,
+                          sabado,
+                          domingo,
+                        ]
+                      description: 'Opcional. Si no se envía, se puede usar para definir festivos generales.'
+                    hora_inicio:
+                      type: string
+                      pattern: '^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$'
+                      example: '09:00:00'
+                    hora_fin:
+                      type: string
+                      pattern: '^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$'
+                      example: '18:00:00'
+                    es_festivo:
+                      type: boolean
+                      example: false
+          example:
+            nombre: 'Turno Gerencial'
+            detalles:
+              - dia_semana: 'lunes'
+                hora_inicio: '07:00:00'
+                hora_fin: '12:00:00'
+                es_festivo: false
+              - dia_semana: 'lunes'
+                hora_inicio: '13:00:00'
+                hora_fin: '17:00:00'
+                es_festivo: false
+              - dia_semana: 'martes'
+                hora_inicio: '09:00:00'
+                hora_fin: '18:00:00'
+                es_festivo: false
+              - dia_semana: 'miercoles'
+                hora_inicio: '09:00:00'
+                hora_fin: '18:00:00'
+                es_festivo: false
+              - dia_semana: 'jueves'
+                hora_inicio: '09:00:00'
+                hora_fin: '18:00:00'
+                es_festivo: false
+              - dia_semana: 'viernes'
+                hora_inicio: '09:00:00'
+                hora_fin: '18:00:00'
+                es_festivo: false
+              - hora_inicio: '09:00:00'
+                hora_fin: '18:00:00'
+                es_festivo: true
+    responses:
+      '201':
+        description: Recurso creado exitosamente.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Horario creado exitosamente.
+      '400':
+        description: Error de validación en los datos enviados.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                message: { type: string }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              campos_obligatorios:
+                summary: 1. Inconsistencia en los campos
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'nombre'
+                      message: "El campo 'nombre' es obligatorio y debe ser una cadena de texto."
+                    - field: 'detalles'
+                      message: 'Los detalles del horario son obligatorios y deben ser un arreglo de objetos con la estructura correcta.'
+                    - field: 'hora_inicio'
+                      message: "El campo 'hora_inicio' es obligatorio y debe ser una cadena de texto."
+                    - field: 'hora_fin'
+                      message: "El campo 'hora_fin' es obligatorio y debe ser una cadena de texto."
+                    - field: 'es_festivo'
+                      message: "El campo 'es_festivo' es obligatorio y debe ser un valor booleano."
+              error_longitud:
+                summary: 2. Error de longitud
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'nombre'
+                      message: "El campo 'nombre' debe contener al menos 4 caracteres."
+                    - field: 'nombre'
+                      message: "El campo 'nombre' no debe exceder los 100 caracteres."
+              formato_hora:
+                summary: 3. Formato de hora inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'hora_inicio'
+                      message: 'El formato de la hora de inicio es inválido (HH:mm:ss).'
+                    - field: 'hora_fin'
+                      message: 'El formato de la hora de fin es inválido (HH:mm:ss).'
+              detalles_vacio:
+                summary: 4. Horario sin detalles
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'detalles'
+                      message: 'Debe incluir al menos un detalle en el horario.'
+              estructura_invalida:
+                summary: 5. Cuerpo JSON inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
+              integridad_dia_festivo:
+                summary: 6. Error - Día de semana marcado como festivo
+                value:
+                  success: false
+                  message: 'Un día de la semana no puede estar marcado como festivo.'
+              integridad_festivo_con_dia:
+                summary: 7. Error - Festivo con día asignado
+                value:
+                  success: false
+                  message: 'Feriado no puede tener un día de la semana asignado.'
+              solapamiento_dia:
+                summary: 8. Error - Solapamiento de horario
+                value:
+                  - success: false
+                    message: 'Conflicto de horario en el día lunes: el rango [08:00:00 - 14:00:00] se cruza con [12:00:00 - 18:00:00].'
+                  - success: false
+                    message: 'Conflicto de horario en los días festivos: el rango [10:00:00 - 16:00:00] se cruza con [15:00:00 - 20:00:00].'
+      '409':
+        description: El recurso ya existe en la base de datos.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Ya se encuentra registrado un horario con ese nombre.
+      '500':
+        description: Error interno del servidor.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor.
