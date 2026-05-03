@@ -1,0 +1,159 @@
+/api/access-points:
+  post:
+    summary: Crear Punto de Acceso
+    description: |
+      # 📶 Crear un nuevo Punto de Acceso
+    tags:
+      - Puntos de Acceso
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - nombre
+              - mac
+              - ubicacion_id
+            properties:
+              nombre:
+                type: string
+                description: Nombre único descriptivo del punto de acceso.
+                example: 'Puerta Principal'
+              mac:
+                type: string
+                description: Dirección MAC del punto de acceso.
+                example: '50:78:7D:16:3C:1E'
+              ubicacion_id:
+                type: string
+                description: Identificador único de la ubicación relacionada.
+                example: 'fc9835ed-0938-4d07-a55b-1aed1c83998b'
+    responses:
+      '201':
+        description: Punto de Acceso creado exitosamente.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Punto de acceso creado exitosamente.
+      '400':
+        description: Error de validación en los datos enviados.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                message: { type: string }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              campos_obligatorios:
+                summary: 1. Campos obligatorios faltantes
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'nombre'
+                      message: "El campo 'nombre' es obligatorio."
+                    - field: 'mac'
+                      message: "El campo 'mac' es obligatorio."
+                    - field: 'ubicacion_id'
+                      message: "El campo 'ubicacion_id' es obligatorio."
+              nombre_longitud_minima:
+                summary: 2. Nombre demasiado corto
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'nombre'
+                      message: 'El nombre debe contener al menos 4 caracteres.'
+              nombre_longitud_maxima:
+                summary: 3. Nombre demasiado largo
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'nombre'
+                      message: 'El nombre no puede exceder los 100 caracteres.'
+              mac_invalida:
+                summary: 4. Dirección MAC no válida
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'mac'
+                      message: 'La dirección MAC no es válida.'
+              uuid_invalido:
+                summary: 5. ID de ubicación no es UUID válido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'ubicacion_id'
+                      message: 'El formato del ID de ubicación no es un UUID válido.'
+              estructura_invalida:
+                summary: 6. Estructura de JSON inválida
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
+      '404':
+        description: Ubicación física no existe.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Ubicación física no existe.
+      '409':
+        description: Conflicto - El Punto de Acceso ya existe o el nombre está duplicado.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+            examples:
+              MacEnUso:
+                summary: La dirección MAC ya está en uso
+                value:
+                  success: false
+                  message: 'La dirección MAC ya está en uso.'
+              NombreEnUso:
+                summary: El nombre ya está en uso
+                value:
+                  success: false
+                  message: 'El nombre del punto de acceso ya está en uso.'
+      '500':
+        description: Error interno del servidor.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor.

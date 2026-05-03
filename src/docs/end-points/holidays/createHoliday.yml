@@ -1,0 +1,143 @@
+/api/schedules/holidays:
+  post:
+    summary: Crear Feriado
+    description: |
+      # 📅 Crear un nuevo Feriado
+    tags:
+      - Feriados
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - nombre
+              - dia
+              - mes
+            properties:
+              nombre:
+                type: string
+                minLength: 4
+                maxLength: 100
+                description: Nombre descriptivo del día festivo.
+                example: 'Día del Trabajador'
+              dia:
+                type: integer
+                minimum: 1
+                maximum: 31
+                description: Día del mes (1-31).
+                example: 1
+              mes:
+                type: integer
+                minimum: 1
+                maximum: 12
+                description: Mes del año (1-12).
+                example: 5
+              anio:
+                type: integer
+                minimum: 2026
+                maximum: 2100
+                nullable: true
+                description: Año específico. Si es null u omitido, se puede considerar recurrente.
+                example: 2026
+    responses:
+      '201':
+        description: Recurso creado exitosamente.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Feriado creado exitosamente.
+      '400':
+        description: Error de validación en los datos enviados.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                message: { type: string }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              campos_invalidos_o_incompletos:
+                summary: 1. Inconsistencia en los Campos
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'nombre'
+                      message: "El campo 'nombre' es obligatorio y debe ser una cadena de texto."
+                    - field: 'dia'
+                      message: "El campo 'día' es obligatorio y debe ser un número."
+                    - field: 'mes'
+                      message: "El campo 'mes' es obligatorio y debe ser un número."
+                    - field: 'anio'
+                      message: "El campo 'año' debe ser un número."
+              error_longitud:
+                summary: 2. Error de Longitud
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'nombre'
+                      message: "El campo 'nombre' debe contener al menos 4 caracteres."
+                    - field: 'nombre'
+                      message: "El campo 'nombre' no debe exceder los 100 caracteres."
+              error_rango_fecha:
+                summary: 3. Error de Rango en Fecha
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'dia'
+                      message: "El campo 'día' debe ser un número entre 1 y 31."
+                    - field: 'mes'
+                      message: "El campo 'mes' debe ser un número entre 1 y 12."
+                    - field: 'anio'
+                      message: "El campo 'año' debe ser un número entre 2026 y 2100."
+              estructura_invalida:
+                summary: 5. Estructura de JSON inválida
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
+      '409':
+        description: El recurso ya existe en la base de datos.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Ya se encuentra registrado un feriado con ese nombre.
+      '500':
+        description: Error interno del servidor.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor.
