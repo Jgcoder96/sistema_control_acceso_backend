@@ -6,17 +6,26 @@ const uuidRegex =
 export const validatePhysicalPermitInRequestBody = z.object(
   {
     usuario_id: z
-      .string('El ID es obligatorio.')
-      .min(1, 'El ID es obligatorio.')
-      .regex(uuidRegex, 'El formato del ID no es un UUID válido.'),
+      .string(
+        "El campo 'usuario_id' es obligatorio y debe ser una cadena de texto.",
+      )
+      .regex(
+        uuidRegex,
+        'El formato del ID de la ubicación no es un UUID válido.',
+      ),
     punto_acceso_id: z
-      .string('El ID es obligatorio.')
-      .min(1, 'El ID es obligatorio.')
-      .regex(uuidRegex, 'El formato del ID no es un UUID válido.'),
+      .string(
+        "El campo 'punto_acceso_id' es obligatorio y debe ser una cadena de texto.",
+      )
+      .regex(
+        uuidRegex,
+        'El formato del ID de punto de acceso no es un UUID válido.',
+      ),
     horario_id: z
-      .string('El ID es obligatorio.')
-      .min(1, 'El ID es obligatorio.')
-      .regex(uuidRegex, 'El formato del ID no es un UUID válido.'),
+      .string(
+        "El campo 'horario_id' es obligatorio y debe ser una cadena de texto.",
+      )
+      .regex(uuidRegex, 'El formato del ID de horario no es un UUID válido.'),
   },
-  'El cuerpo de la solicitud debe ser un json con los campos usuario_id, punto_acceso_id y horario_id.',
+  'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.',
 );

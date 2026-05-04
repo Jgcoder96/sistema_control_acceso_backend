@@ -34,6 +34,9 @@ const options: swaggerJSDoc.Options = {
       {
         name: 'Feriados',
       },
+      {
+        name: 'Permisos Físicos',
+      },
     ],
     servers: [
       {

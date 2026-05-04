@@ -1,0 +1,144 @@
+/api/permissions:
+  post:
+    summary: Crear Permisos Físicos
+    description: |
+      # 🪪 Crear nuevos Permisos Físicos
+    tags:
+      - Permisos Físicos
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - usuario_id
+              - punto_acceso_id
+              - horario_id
+            properties:
+              usuario_id:
+                type: string
+                description: Identificador único del usuario relacionado.
+                example: 'fc9835ed-0938-4d07-a55b-1aed1c83998b'
+              punto_acceso_id:
+                type: string
+                description: Identificador único del punto de acceso relacionado.
+                example: 'fc9835ed-0938-4d07-a55b-1aed1c83998b'
+              horario_id:
+                type: string
+                description: Identificador único del horario relacionado.
+                example: 'fc9835ed-0938-4d07-a55b-1aed1c83998b'
+    responses:
+      '201':
+        description: Recurso creado exitosamente.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Permiso físico creado exitosamente.
+      '400':
+        description: Error de validación en los datos enviados.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                message: { type: string }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              campos_obligatorios:
+                summary: 1. Inconsistencia en los campos
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'usuario_id'
+                      message: "El campo 'usuario_id' es obligatorio y debe ser una cadena de texto."
+                    - field: 'punto_acceso_id'
+                      message: "El campo 'punto_acceso_id' es obligatorio y debe ser una cadena de texto."
+                    - field: 'horario_id'
+                      message: "El campo 'horario_id' es obligatorio y debe ser una cadena de texto."
+              uuid_invalido:
+                summary: 2. ID no es UUID válido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'usuario_id'
+                      message: 'El formato del ID de la ubicación no es un UUID válido.'
+                    - field: 'punto_acceso_id'
+                      message: 'El formato del ID de punto de acceso no es un UUID válido.'
+                    - field: 'horario_id'
+                      message: 'El formato del ID de horario no es un UUID válido.'
+              estructura_invalida:
+                summary: 5. Cuerpo JSON inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
+      '404':
+        description: El recurso no existe en la base de datos.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+            examples:
+              usuario_no_existe:
+                summary: 1. El usuario no se encuentra registrado
+                value:
+                  success: false
+                  message: 'El usuario no se encuentra registrado.'
+              punto_acceso_no_existe:
+                summary: 2. El punto de acceso no se encuentra registrado
+                value:
+                  success: false
+                  message: 'El punto de acceso no se encuentra registrado.'
+              horario_no_existe:
+                summary: 3. El horario no se encuentra registrado
+                value:
+                  success: false
+                  message: 'El horario no se encuentra registrado.'
+      '409':
+        description: El recurso ya existe en la base de datos.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Ya existe un permiso asociado a este usuario en este control de acceso.
+      '500':
+        description: Error interno del servidor.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor.
