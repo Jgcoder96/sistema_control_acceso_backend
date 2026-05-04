@@ -12,6 +12,10 @@ export const transactionToUpdateLocation = async (id: string, name: string) => {
 
     if (!locationExists) throw new LocationDoesNotExists();
 
+    if (locationExists.nombre.toLowerCase() === name.toLowerCase()) {
+      return locationExists;
+    }
+
     const nameExistsInAnotherLocation = await tx.ubicaciones.findFirst({
       where: {
         nombre: {

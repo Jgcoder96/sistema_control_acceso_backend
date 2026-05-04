@@ -57,47 +57,41 @@
                       field: { type: string }
                       message: { type: string }
             examples:
-              uuid_invalido:
-                summary: 1. Formato de ID inválido
+              parametro_id_invalido:
+                summary: 1. ID de parámetro inválido (Path)
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'id'
-                      message: 'El formato del ID no es un UUID válido.'
+                      message: 'El parametro de la petición no es un UUID válido.'
               campo_obligatorio:
-                summary: 1. Campo faltante
+                summary: 2. Inconsistencia en los campos
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'nombre'
-                      message: "El campo 'nombre' es obligatorio."
-              longitud_minima:
-                summary: 2. Nombre demasiado corto
+                      message: "El campo 'nombre' es obligatorio y debe ser una cadena de texto."
+              error_longitud:
+                summary: 3. Error de longitud
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'nombre'
-                      message: 'El nombre debe contener al menos 4 caracteres.'
-              longitud_maxima:
-                summary: 3. Nombre demasiado largo
-                value:
-                  success: false
-                  message: 'Error de validación en los datos enviados.'
-                  issues:
+                      message: "El campo 'nombre' debe contener al menos 4 caracteres."
                     - field: 'nombre'
-                      message: 'El nombre no puede exceder los 100 caracteres.'
+                      message: "El campo 'nombre' no puede exceder los 100 caracteres."
               estructura_invalida:
-                summary: 4. Estructura de JSON inválida
+                summary: 4. Cuerpo JSON inválido
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
       '404':
-        description: La ubicación física no existe.
+        description: La ubicación física no se encuentra registrada.
         content:
           application/json:
             schema:
@@ -108,9 +102,9 @@
                   example: false
                 message:
                   type: string
-                  example: La ubicación física no existe.
+                  example: La ubicación física no se encuentra registrada.
       '409':
-        description: Este nombre ya está asignado a otra ubicación física.
+        description: El recurso ya existe en la base de datos.
         content:
           application/json:
             schema:
@@ -121,7 +115,7 @@
                   example: false
                 message:
                   type: string
-                  example: Este nombre ya está asignado a otra ubicación física.
+                  example: Ya se encuentra registrado una ubicación con ese nombre.
       '500':
         description: Error interno del servidor.
         content:

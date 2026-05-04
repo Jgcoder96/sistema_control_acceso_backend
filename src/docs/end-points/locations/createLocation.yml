@@ -19,7 +19,7 @@
                 example: 'Planta Baja'
     responses:
       '201':
-        description: Ubicación creada exitosamente.
+        description: Recurso creado exitosamente.
         content:
           application/json:
             schema:
@@ -49,38 +49,32 @@
                       message: { type: string }
             examples:
               campo_obligatorio:
-                summary: 1. Campo faltante
+                summary: 1. Inconsistencia en los campos
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'nombre'
-                      message: "El campo 'nombre' es obligatorio."
-              longitud_minima:
-                summary: 2. Nombre demasiado corto
+                      message: "El campo 'nombre' es obligatorio y debe ser una cadena de texto."
+              error_longitud:
+                summary: 2. Error de longitud
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'nombre'
-                      message: 'El nombre debe contener al menos 4 caracteres.'
-              longitud_maxima:
-                summary: 3. Nombre demasiado largo
-                value:
-                  success: false
-                  message: 'Error de validación en los datos enviados.'
-                  issues:
+                      message: "El campo 'nombre' debe contener al menos 4 caracteres."
                     - field: 'nombre'
-                      message: 'El nombre no puede exceder los 100 caracteres.'
+                      message: "El campo 'nombre' no puede exceder los 100 caracteres."
               estructura_invalida:
-                summary: 4. Estructura de JSON inválida
+                summary: 5. Cuerpo JSON inválido
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
       '409':
-        description: Ya existe una ubicación con el mismo nombre.
+        description: El recurso ya existe en la base de datos.
         content:
           application/json:
             schema:
@@ -91,7 +85,7 @@
                   example: false
                 message:
                   type: string
-                  example: Este nombre ya está asignado a otra ubicación física.
+                  example: Ya se encuentra registrado una ubicación con ese nombre.
       '500':
         description: Error interno del servidor.
         content:

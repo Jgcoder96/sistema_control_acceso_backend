@@ -101,69 +101,69 @@
                       message: { type: string }
             examples:
               invalid_status:
-                summary: Error en el estado
+                summary: 1. Error en el estado
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'status'
-                      message: "El estado debe ser 'active', 'deleted' o 'all'"
+                      message: "El estado de la consulta debe ser 'active', 'deleted' o 'all'."
               the_page_is_not_a_number:
-                summary: La Página no es un número
+                summary: 2. La página no es un número
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'page'
-                      message: 'La página debe ser un número.'
+                      message: 'La página de la consulta debe ser un número.'
               the_page_is_not_an_integer:
-                summary: La Página no es un número entero
+                summary: 3. La página no es un número entero
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'page'
-                      message: 'La página debe ser un número entero.'
+                      message: 'La página de la consulta debe ser un número entero.'
               minimum_page:
-                summary: El numero de página es menor a 1
+                summary: 4. El numero de página es menor a 1
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'page'
-                      message: 'El numero de página debe ser mayor a 1.'
+                      message: 'La página mínima de la consulta es 1.'
               limit_is_not_a_number:
-                summary: El límite no es un número
+                summary: 5. El límite no es un número
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'limit'
-                      message: 'El límite debe ser un número'
+                      message: 'El límite de la consulta debe ser un número.'
               limit_is_not_an_integer:
-                summary: El límite no es un número entero
+                summary: 6. El límite no es un número entero
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'limit'
-                      message: 'El límite debe ser un número entero'
+                      message: 'El límite de la consulta debe ser un número entero.'
               minimum_limit:
-                summary: El límite es menor a 1
+                summary: 7. El límite es menor a 1
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'limit'
-                      message: 'El límite debe ser mayor a 1.'
+                      message: 'El límite mínimo de la consulta es 1.'
               maximum_limit:
-                summary: El límite es mayor a 100
+                summary: 8. El límite es mayor a 100
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'limit'
-                      message: 'El límite debe ser menor a 100.'
+                      message: 'El límite máximo de la consulta es 100.'
       '500':
         description: Error interno del servidor.
         content:
