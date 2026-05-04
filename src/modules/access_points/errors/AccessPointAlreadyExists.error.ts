@@ -3,7 +3,9 @@ import { AppError } from '../../shared/errors/index.js';
 export class AccessPointAlreadyExists extends AppError {
   public readonly statusCode = 409;
 
-  constructor(message = 'El Punto de Acceso ya existe.') {
+  constructor(
+    message = 'Ya se encuentra registrado un Punto de Acceso con ese nombre.',
+  ) {
     super(message, true);
   }
 }

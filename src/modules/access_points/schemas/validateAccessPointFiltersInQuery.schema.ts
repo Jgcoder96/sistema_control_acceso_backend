@@ -1,30 +1,30 @@
 import { z } from 'zod';
 
-export const validateLocationFiltersInQuery = z.object({
+export const validateAccesspointFiltersInQuery = z.object({
+  status: z
+    .enum(
+      ['active', 'deleted', 'all'],
+      "El estado de la consulta debe ser 'active', 'deleted' o 'all'.",
+    )
+    .default('all'),
+
   location: z
     .string()
-    .uuid('El término de búsqueda debe ser un UUID válido')
+    .uuid('La ubicación de la consulta debe ser un UUID válido.')
     .optional(),
 
   search: z.string().optional(),
 
-  status: z
-    .enum(
-      ['active', 'deleted', 'all'],
-      "El estado debe ser 'active', 'deleted' o 'all'",
-    )
-    .default('all'),
-
   page: z.coerce
-    .number('La página debe ser un número')
-    .int('La página debe ser un número entero')
-    .min(1, 'La página mínima es 1')
+    .number('La página de la consulta debe ser un número.')
+    .int('La página de la consulta debe ser un número entero.')
+    .min(1, 'La página mínima de la consulta es 1.')
     .default(1),
 
   limit: z.coerce
-    .number('El límite debe ser un número')
-    .int('El límite debe ser un número entero')
-    .min(1, 'El límite mínimo es 1')
-    .max(100, 'El límite máximo es 100')
+    .number('El límite de la consulta debe ser un número.')
+    .int('El límite de la consulta debe ser un número entero.')
+    .min(1, 'El límite mínimo de la consulta es 1.')
+    .max(100, 'El límite máximo de la consulta es 100.')
     .default(10),
 });

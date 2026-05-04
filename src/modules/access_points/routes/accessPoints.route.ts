@@ -7,7 +7,7 @@ import {
 import {
   validateAccessPointInBodyRequest,
   validateIdInRequestParams,
-  validateLocationFiltersInQuery,
+  validateAccesspointFiltersInQuery,
 } from '../schemas/index.js';
 import { Router } from 'express';
 import { schemaValidator } from '../../shared/middlewares/index.js';
@@ -17,7 +17,7 @@ export const accessPointsRoute = (): Router => {
 
   router.get(
     '/',
-    [schemaValidator(validateLocationFiltersInQuery, 'query')],
+    [schemaValidator(validateAccesspointFiltersInQuery, 'query')],
     getAccessPoints,
   );
 

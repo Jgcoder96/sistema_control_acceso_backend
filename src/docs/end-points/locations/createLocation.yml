@@ -67,7 +67,7 @@
                     - field: 'nombre'
                       message: "El campo 'nombre' no puede exceder los 100 caracteres."
               estructura_invalida:
-                summary: 5. Cuerpo JSON inválido
+                summary: 3. Cuerpo JSON inválido
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
