@@ -1,3 +1,4 @@
-export { addCardsSchema } from './addNewCard.schema.js';
-export { assignCardBodySchema } from './assignCard.schema.js';
-export { validateIdCardParamsSchema } from './validateIdCardParams.schema.js';
+export { validateAccessCardFiltersInQuery } from './validateAccessCardFiltersInQuery.schema.js';
+export { validateAccessCardInRequestBody } from './validateAccessCardInRequestBody.schema.js';
+export { validateAccessCardToAssignInRequestBody } from './validateAccessCardToAssignInRequestBody.schema.js';
+export { validateIdInRequestParams } from './validateIdInRequestParams.schema.js';

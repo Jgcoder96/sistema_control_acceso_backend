@@ -1,6 +1,6 @@
 import { addNewCardService } from '../services/index.js';
 import { RESPONSE_MESSAGES } from '../constants/index.js';
-import type { CardToCreate } from '../types/index.js';
+import type { AccessCardInRequestBody } from '../types/index.js';
 import type { Request, Response, NextFunction } from 'express';
 
 export const addNewCard = async (
@@ -9,7 +9,7 @@ export const addNewCard = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const requestBody: CardToCreate = req.body;
+    const requestBody: AccessCardInRequestBody = req.body;
 
     await addNewCardService(requestBody);
 

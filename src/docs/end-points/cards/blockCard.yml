@@ -1,0 +1,102 @@
+/api/cards/{id}/block:
+  patch:
+    summary: Bloquear Tarjeta
+    description: |
+      # 🔒 Bloquear una Tarjeta de acceso
+    tags:
+      - Tarjetas de Acceso
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Identificador único (UUID) de la tarjeta de acceso a bloquear.
+        schema:
+          type: string
+        example: '550e8400-e29b-41d4-a716-446655440000'
+    responses:
+      '200':
+        description: Tarjeta de Acceso bloqueada exitosamente.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Tarjeta de Acceso bloqueada exitosamente.
+      '400':
+        description: Error de validación en los datos enviados.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                message: { type: string }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              parametro_id_invalido:
+                summary: 1. ID de parámetro inválido (Path)
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'id'
+                      message: 'El parametro de la petición no es un UUID válido.'
+      '404':
+        description: Recurso no encontrado.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: La Tarjeta de Acceso no se encuentra registrada.
+      '409':
+        description: Estado de Tarjeta no válido para devolución.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+            examples:
+              tarjeta_sin_usuario:
+                summary: 1. Tarjeta De Acceso sin usuario asignado
+                value:
+                  success: false
+                  message: 'La Tarjeta de Acceso no tiene un usuario asignado.'
+              estado_no_valido:
+                summary: 2. Tarjeta no se puede bloquear por su estado actual
+                value:
+                  success: false
+                  message: 'No se puede bloquear la tarjeta si no está activa.'
+      '500':
+        description: Error interno del servidor.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor.

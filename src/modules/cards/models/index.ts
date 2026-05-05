@@ -1,6 +1,7 @@
-export { createCard } from './createCard.model.js';
+export { getCards } from './getCards.model.js';
 export { transactionToAssignCard } from './transactionToAssignCard.model.js';
 export { transactionToBlockCard } from './transactionToBlockCard.model.js';
+export { transactionTocreateCard } from './transactionTocreateCard.model.js';
 export { transactionToDeleteCard } from './transactionToDeleteCard.model.js';
 export { transactionToReactivateCard } from './transactionToReactivateCard.model.js';
 export { transactionToReportLostCard } from './transactionToReportLostCard.model.js';

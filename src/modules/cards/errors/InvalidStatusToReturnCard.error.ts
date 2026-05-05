@@ -1,10 +1,10 @@
 import { AppError } from '../../shared/errors/index.js';
 
-export class UnlockableCard extends AppError {
+export class InvalidStatusToReturnCard extends AppError {
   public readonly statusCode = 409;
 
   constructor(
-    message = 'La tarjeta no se puede reactivar porque no está bloqueada.',
+    message = 'El estado de la Tarjeta de Acceso no es válido para su devolución.',
   ) {
     super(message, true);
   }

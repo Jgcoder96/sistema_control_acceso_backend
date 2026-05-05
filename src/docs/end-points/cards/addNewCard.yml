@@ -1,0 +1,100 @@
+/api/cards:
+  post:
+    summary: Crear Tarjeta
+    description: |
+      # 💳 Crear una nueva Tarjeta de Acceso
+    tags:
+      - Tarjetas de Acceso
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - codigo
+            properties:
+              codigo:
+                type: string
+                description: Código RFID único de la tarjeta.
+                example: '0010725571'
+    responses:
+      '201':
+        description: Recurso creado exitosamente.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Tarjeta de Acceso agregada exitosamente.
+      '400':
+        description: Error de validación en los datos enviados.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                message: { type: string }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              campo_obligatorio:
+                summary: 1. Inconsistencia en los campos
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'codigo'
+                      message: 'El código RFID es obligatorio y debe ser una cadena de texto.'
+              error_formato:
+                summary: 2. Error en el formato
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'codigo'
+                      message: 'El formato del código RFID no es válido.'
+              estructura_invalida:
+                summary: 3. Cuerpo JSON inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
+      '409':
+        description: El recurso ya existe en la base de datos.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Ya se encuentra registrada una Tarjeta de Acceso con ese código.
+      '500':
+        description: Error interno del servidor.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor.

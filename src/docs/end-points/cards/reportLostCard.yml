@@ -1,0 +1,93 @@
+/api/cards/{id}/lost:
+  patch:
+    summary: Reportar Tarjeta
+    description: |
+      # 🔓 Reportar una Tarjeta de acceso como perdida
+    tags:
+      - Tarjetas de Acceso
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Identificador único (UUID) de la Tarjeta de Acceso a reportar como perdida.
+        schema:
+          type: string
+        example: '550e8400-e29b-41d4-a716-446655440000'
+    responses:
+      '200':
+        description: Tarjeta de Acceso reportada exitosamente.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Tarjeta de Acceso reportada exitosamente.
+      '400':
+        description: Error de validación en los datos enviados.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                message: { type: string }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              parametro_id_invalido:
+                summary: 1. ID de parámetro inválido (Path)
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'id'
+                      message: 'El parametro de la petición no es un UUID válido.'
+      '404':
+        description: Recurso no encontrado.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: La Tarjeta de Acceso no se encuentra registrada.
+      '409':
+        description: Tarjeta sin usuario asignado.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: La Tarjeta de Acceso no tiene un usuario asignado.
+      '500':
+        description: Error interno del servidor.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor.

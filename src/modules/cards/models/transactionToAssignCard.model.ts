@@ -1,7 +1,7 @@
 import {
-  CardDoesNotExist,
+  CardDoesNotExists,
   CardIsNotAssignable,
-  UserDoesNotExist,
+  UserDoesNotExists,
 } from '../errors/index.js';
 import { prisma } from '../../../config/index.js';
 
@@ -14,13 +14,13 @@ export const transactionToAssignCard = async (
       where: { id: userID },
     });
 
-    if (!user) throw new UserDoesNotExist();
+    if (!user) throw new UserDoesNotExists();
 
     const card = await tx.tarjetas.findUnique({
       where: { id: cardID },
     });
 
-    if (!card) throw new CardDoesNotExist();
+    if (!card) throw new CardDoesNotExists();
 
     if (card.estado !== 'activable') throw new CardIsNotAssignable();
 

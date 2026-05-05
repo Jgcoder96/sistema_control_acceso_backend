@@ -1,6 +1,6 @@
 import { assignCardService } from '../services/index.js';
 import { RESPONSE_MESSAGES } from '../constants/index.js';
-import type { assignCardBody } from '../types/index.js';
+import type { AccessCardToAssignInRequestBody } from '../types/index.js';
 import type { Request, Response, NextFunction } from 'express';
 
 export const assignCard = async (
@@ -11,7 +11,7 @@ export const assignCard = async (
   try {
     const cardID = req.params.id as string;
 
-    const requestBody: assignCardBody = req.body;
+    const requestBody: AccessCardToAssignInRequestBody = req.body;
 
     const { usuario_id } = requestBody;
 

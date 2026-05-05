@@ -1,5 +1,5 @@
 import {
-  CardDoesNotExist,
+  CardDoesNotExists,
   CardIsNotActive,
   CardWithoutUser,
 } from '../errors/index.js';
@@ -13,11 +13,11 @@ export const transactionToBlockCard = async (cardID: string) => {
       },
     });
 
-    if (!card) throw new CardDoesNotExist();
-
-    if (card.usuario_id === null) throw new CardWithoutUser();
+    if (!card) throw new CardDoesNotExists();
 
     if (card.estado !== 'activa') throw new CardIsNotActive();
+
+    if (card.usuario_id === null) throw new CardWithoutUser();
 
     const updatedCard = await tx.tarjetas.update({
       where: { id: card.id },

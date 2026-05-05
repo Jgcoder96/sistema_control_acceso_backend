@@ -1,10 +1,10 @@
 import { AppError } from '../../shared/errors/index.js';
 
-export class UnlockableCard extends AppError {
+export class CardAlreadyExists extends AppError {
   public readonly statusCode = 409;
 
   constructor(
-    message = 'La tarjeta no se puede reactivar porque no está bloqueada.',
+    message = 'Ya se encuentra registrada una Tarjeta de Acceso con ese código.',
   ) {
     super(message, true);
   }
