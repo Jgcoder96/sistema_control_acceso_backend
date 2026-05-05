@@ -1,4 +1,4 @@
-import { CardDoesNotExist, CardWithoutUser } from '../errors/index.js';
+import { CardDoesNotExists, CardWithoutUser } from '../errors/index.js';
 import { prisma } from '../../../config/index.js';
 
 export const transactionToReportLostCard = async (cardID: string) => {
@@ -9,7 +9,7 @@ export const transactionToReportLostCard = async (cardID: string) => {
       },
     });
 
-    if (!card) throw new CardDoesNotExist();
+    if (!card) throw new CardDoesNotExists();
 
     if (card.usuario_id === null) throw new CardWithoutUser();
 

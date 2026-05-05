@@ -1,8 +1,8 @@
 import { prisma } from '../../../config/index.js';
 import {
-  CardWithoutUser,
   CardIsAlreadyDeleted,
-  CardDoesNotExist,
+  CardDoesNotExists,
+  CardIsActive,
 } from '../errors/index.js';
 
 export const transactionToDeleteCard = async (cardID: string) => {
@@ -11,13 +11,13 @@ export const transactionToDeleteCard = async (cardID: string) => {
       where: { id: cardID },
     });
 
-    if (!card) throw new CardDoesNotExist();
+    if (!card) throw new CardDoesNotExists();
 
     if (card.estado === 'eliminada') throw new CardIsAlreadyDeleted();
 
-    if (card.usuario_id === null) throw new CardWithoutUser();
+    if (card.estado === 'activa') throw new CardIsActive();
 
-    const updatedCard = await tx.tarjetas.update({
+    const deletedCard = await tx.tarjetas.update({
       where: { id: card.id },
       data: {
         estado: 'eliminada',
@@ -26,14 +26,16 @@ export const transactionToDeleteCard = async (cardID: string) => {
       },
     });
 
-    await tx.historial_asignaciones.create({
-      data: {
-        tarjeta_id: card.id,
-        usuario_id: card.usuario_id,
-        accion: 'eliminacion',
-      },
-    });
+    if (card.usuario_id) {
+      await tx.historial_asignaciones.create({
+        data: {
+          tarjeta_id: card.id,
+          usuario_id: card.usuario_id,
+          accion: 'eliminacion',
+        },
+      });
+    }
 
-    return updatedCard;
+    return deletedCard;
   });
 };

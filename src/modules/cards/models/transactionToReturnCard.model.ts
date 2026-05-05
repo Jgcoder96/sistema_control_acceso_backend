@@ -1,4 +1,8 @@
-import { CardDoesNotExist, CardWithoutUser } from '../errors/index.js';
+import {
+  CardDoesNotExists,
+  CardWithoutUser,
+  InvalidStatusToReturnCard,
+} from '../errors/index.js';
 import { prisma } from '../../../config/index.js';
 
 export const transactionToReturnCard = async (cardID: string) => {
@@ -9,7 +13,12 @@ export const transactionToReturnCard = async (cardID: string) => {
       },
     });
 
-    if (!card) throw new CardDoesNotExist();
+    if (!card) throw new CardDoesNotExists();
+
+    const estadosPermitidosParaDevolucion = ['activa', 'bloqueada'];
+    if (!estadosPermitidosParaDevolucion.includes(card.estado)) {
+      throw new InvalidStatusToReturnCard();
+    }
 
     if (card.usuario_id === null) throw new CardWithoutUser();
 
@@ -29,6 +38,7 @@ export const transactionToReturnCard = async (cardID: string) => {
         accion: 'devolucion',
       },
     });
+
     return updatedCard;
   });
 };

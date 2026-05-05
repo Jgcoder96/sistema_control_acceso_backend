@@ -1,0 +1,131 @@
+/api/cards/{id}/assign:
+  post:
+    summary: Asignar Tarjeta
+    description: |
+      # 👤 Asignar una Tarjeta de acceso
+    tags:
+      - Tarjetas de Acceso
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Identificador único (UUID) de la tarjeta de acceso a asignar.
+        schema:
+          type: string
+        example: '550e8400-e29b-41d4-a716-446655440000'
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - usuario_id
+            properties:
+              usuario_id:
+                type: string
+                description: Identificador único del usuario al que se asignará la tarjeta.
+                example: '550e8400-e29b-41d4-a716-446655440000'
+    responses:
+      '200':
+        description: Recurso actualizado exitosamente.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Tarjeta de Acceso asignada exitosamente.
+      '400':
+        description: Error de validación en los datos enviados.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                message: { type: string }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              parametro_id_invalido:
+                summary: 1. ID de parámetro inválido (Path)
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'id'
+                      message: 'El parametro de la petición no es un UUID válido.'
+              campos_obligatorios:
+                summary: 2. Inconsistencia en los campos
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'usuario_id'
+                      message: "El campo 'usuario_id' es obligatorio y debe ser una cadena de texto."
+              uuid_invalido:
+                summary: 5. ID del usuario no es UUID válido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'usuario_id'
+                      message: 'El formato del ID del usuario no es un UUID válido.'
+      '404':
+        description: Recurso no encontrado.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+            examples:
+              usuario_no_existe:
+                summary: 1. Usuario no encontrado
+                value:
+                  success: false
+                  message: 'El Usuario no se encuentra registrado.'
+              card_no_existe:
+                summary: 2. Tarjeta no encontrada
+                value:
+                  success: false
+                  message: 'La Tarjeta de Acceso no se encuentra registrada.'
+      '409':
+        description: Tarjeta de Acceso no asignable.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: No se puede asignar una Tarjeta de Acceso que no está activa.
+      '500':
+        description: Error interno del servidor.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor.

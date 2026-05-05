@@ -1,7 +1,7 @@
 import {
   CardWithoutUser,
   UnlockableCard,
-  CardDoesNotExist,
+  CardDoesNotExists,
 } from '../errors/index.js';
 import { prisma } from '../../../config/index.js';
 
@@ -11,11 +11,11 @@ export const transactionToReactivateCard = async (cardID: string) => {
       where: { id: cardID },
     });
 
-    if (!card) throw new CardDoesNotExist();
-
-    if (card.usuario_id === null) throw new CardWithoutUser();
+    if (!card) throw new CardDoesNotExists();
 
     if (card.estado !== 'bloqueada') throw new UnlockableCard();
+
+    if (card.usuario_id === null) throw new CardWithoutUser();
 
     const updatedCard = await tx.tarjetas.update({
       where: { id: card.id },
