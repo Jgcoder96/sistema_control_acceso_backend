@@ -22,6 +22,7 @@ model usuarios {
   historial_asignaciones historial_asignaciones[]
   permisos_fisicos       permisos_fisicos[]
   tarjetas               tarjetas[]
+  usuario_roles          usuario_roles[]
 }
 
 model historial_asignaciones {
@@ -128,6 +129,49 @@ model permisos_fisicos {
   usuarios        usuarios      @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([usuario_id, punto_acceso_id], map: "unique_usuario_punto")
+}
+
+model app_permisos {
+  id             String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug           String         @db.VarChar(100)
+  descripcion    String?        @db.VarChar(255)
+  creado_el      DateTime       @default(now()) @db.Timestamptz(6)
+  actualizado_el DateTime       @default(now()) @db.Timestamptz(6)
+  eliminado_el   DateTime?      @db.Timestamptz(6)
+  rol_permisos   rol_permisos[]
+}
+
+model rol_permisos {
+  rol_id         String       @db.Uuid
+  permiso_id     String       @db.Uuid
+  creado_el      DateTime     @default(now()) @db.Timestamptz(6)
+  actualizado_el DateTime     @default(now()) @db.Timestamptz(6)
+  eliminado_el   DateTime?    @db.Timestamptz(6)
+  app_permisos   app_permisos @relation(fields: [permiso_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_permiso")
+  roles          roles        @relation(fields: [rol_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rol_permiso")
+
+  @@id([rol_id, permiso_id])
+}
+
+model roles {
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nombre         String          @db.VarChar(50)
+  descripcion    String?         @db.VarChar(255)
+  creado_el      DateTime        @default(now()) @db.Timestamptz(6)
+  actualizado_el DateTime        @default(now()) @db.Timestamptz(6)
+  eliminado_el   DateTime?       @db.Timestamptz(6)
+  rol_permisos   rol_permisos[]
+  usuario_roles  usuario_roles[]
+}
+
+model usuario_roles {
+  usuario_id String   @db.Uuid
+  rol_id     String   @db.Uuid
+  creado_el  DateTime @default(now()) @db.Timestamptz(6)
+  roles      roles    @relation(fields: [rol_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_rol")
+  usuarios   usuarios @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_usuario")
+
+  @@id([usuario_id, rol_id])
 }
 
 enum estado_tarjeta {

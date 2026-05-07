@@ -1,0 +1,142 @@
+/api/roles/{id}:
+  put:
+    summary: Actualizar Rol
+    description: |
+      # 🔄 Actualizar un  Rol
+    tags:
+      - Roles
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Identificador único (UUID) del Rol a actualizar.
+        schema:
+          type: string
+          format: uuid
+        example: '550e8400-e29b-41d4-a716-446655440000'
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - nombre
+              - descripcion
+            properties:
+              nombre:
+                type: string
+                description: Nombre único del Rol.
+                example: 'Super Admin'
+              descripcion:
+                type: string
+                description: Descripción del Rol.
+                example: 'Gestión de Usuarios, Gestión de Roles, Gestión de Permisos Físicos y Visualización de Eventos.'
+    responses:
+      '200':
+        description: Recurso actualizado exitosamente.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Rol actualizado con éxito.
+      '400':
+        description: Error de validación en los datos enviados.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                message: { type: string }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              parametro_id_invalido:
+                summary: 1. ID de parámetro inválido (Path)
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'id'
+                      message: 'El parametro de la petición no es un UUID válido.'
+              campos_incorrectos:
+                summary: 2.  Campos Incorrectos
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'nombre'
+                      message: "El campo 'nombre' es obligatorio y debe ser una cadena de texto."
+                    - field: 'descripcion'
+                      message: "El campo 'descripcion' es obligatorio y debe ser una cadena de texto."
+              longitud_incorrecta:
+                summary: 3. Longitud Incorrecta
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'nombre'
+                      message: "El campo 'nombre' debe contener al menos 4 caracteres."
+                    - field: 'nombre'
+                      message: "El campo 'nombre' no puede exceder los 100 caracteres."
+                    - field: 'descripcion'
+                      message: "El campo 'descripcion' debe contener al menos 4 caracteres."
+                    - field: 'descripcion'
+                      message: "El campo 'descripcion' no puede exceder los 100 caracteres."
+              estructura_invalida:
+                summary: 4. Cuerpo JSON inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
+      '404':
+        description: Recurso no encontrado.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: El Rol no se encuentra registrado.
+      '409':
+        description: El recurso ya existe en la base de datos.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Ya se encuentra registrado un rol con ese nombre.
+      '500':
+        description: Error interno del servidor.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor.

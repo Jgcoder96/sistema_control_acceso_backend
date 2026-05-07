@@ -2,9 +2,10 @@ import { accessPointsRoute } from '../../modules/access_points/routes/index.js';
 import { authRoute } from '../../modules/auth/routes/index.js';
 import { cardsRoute } from '../../modules/cards/routes/index.js';
 import { configRoute } from '../../modules/config/routes/index.js';
-import { schedulesRoute } from '../../modules/schedules/routes/index.js';
 import { locationRoute } from '../../modules/locations/routes/index.js';
 import { physicalPermitRoute } from '../../modules/permissions/routes/index.js';
+import { rolesRoute } from '../../modules/roles/routes/routeRoles.route.js';
+import { schedulesRoute } from '../../modules/schedules/routes/index.js';
 
 import { envs } from '../../config/index.js';
 import { Router } from 'express';
@@ -21,6 +22,7 @@ export const appRoutes: AppRoutes = {
   horary: schedulesRoute(),
   location: locationRoute(),
   physicalPermits: physicalPermitRoute(),
+  roles: rolesRoute(),
 };
 
 export const setupRoutes = (app: Express): Router => {
@@ -59,6 +61,8 @@ export const setupRoutes = (app: Express): Router => {
   router.use('/schedules', appRoutes.horary);
 
   router.use('/permissions', appRoutes.physicalPermits);
+
+  router.use('/roles', appRoutes.roles);
 
   router.use('/config', appRoutes.config);
 
