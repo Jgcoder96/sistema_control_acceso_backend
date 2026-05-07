@@ -1,15 +1,15 @@
-/api/app/roles/{id}:
+/api/app/permissions/{id}:
   delete:
-    summary: Eliminar Rol
+    summary: Eliminar Permiso
     description: |
-      # 🗑️ Eliminar un Rol
+      # 🗑️ Eliminar un permiso
     tags:
-      - Roles
+      - Permisos de App
     parameters:
       - name: id
         in: path
         required: true
-        description: Identificador único (UUID) del Rol a eliminar.
+        description: Identificador único (UUID) del Permiso a eliminar.
         schema:
           type: string
           format: uuid
@@ -27,7 +27,7 @@
                   example: true
                 message:
                   type: string
-                  example: Rol eliminado con éxito.
+                  example: Permiso eliminado con éxito.
       '400':
         description: Error de validación en los datos enviados.
         content:
@@ -65,7 +65,7 @@
                   example: false
                 message:
                   type: string
-                  example: El Rol no se encuentra registrado.
+                  example: El Permiso no se encuentra registrado.
       '500':
         description: Error interno del servidor.
         content:

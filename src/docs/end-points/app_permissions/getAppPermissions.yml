@@ -1,10 +1,10 @@
-/api/app/roles:
+/api/app/permissions:
   get:
-    summary: Obtener Roles
+    summary: Obtener Permisos
     description: |
-      # 🔍 Obtener lista de Roles
+      # 🔍 Obtener lista de permisos
     tags:
-      - Roles
+      - Permisos de App
     parameters:
       - in: query
         name: status
@@ -12,13 +12,13 @@
           type: string
           enum: [active, deleted, all]
           default: all
-        description: Filtra los roles por su estado de eliminación.
+        description: Filtra los permisos por su estado de eliminación.
       - in: query
         name: search
         schema:
           type: string
-        description: Filtra por coincidencia parcial en el nombre del rol.
-        example: 'Administrador'
+        description: Filtra por coincidencia parcial por el slug del permiso.
+        example: 'usuarios.crear'
       - in: query
         name: page
         schema:
@@ -36,7 +36,7 @@
         description: Cantidad de registros por página.
     responses:
       '200':
-        description: Lista de Roles obtenida exitosamente.
+        description: Lista de Permisos obtenida exitosamente.
         content:
           application/json:
             schema:
@@ -47,7 +47,7 @@
                   example: true
                 message:
                   type: string
-                  example: Lista de Roles obtenida exitosamente.
+                  example: Lista de permisos obtenida exitosamente.
                 data:
                   type: object
                   properties:
@@ -59,21 +59,21 @@
                           id:
                             type: string
                             format: uuid
-                            example: '6a3ab7e9-0f60-4483-9912-b8fcd046a9d0'
-                          nombre:
+                            example: '1d250952-0a7e-4feb-84b5-9ec798e7bc60'
+                          slug:
                             type: string
-                            example: 'Administrador'
+                            example: 'usuarios.actualizar'
                           descripcion:
                             type: string
-                            example: 'Gestión de Usuarios, Gestión de Roles, Gestión de Permisos Físicos y Visualización de Eventos.'
+                            example: 'Permite actualizar usuarios.'
                           creado_el:
                             type: string
                             format: date-time
-                            example: '2026-05-06T18:29:26.039Z'
+                            example: '2026-05-07T15:07:30.701Z'
                           actualizado_el:
                             type: string
                             format: date-time
-                            example: '2026-05-06T18:29:26.039Z'
+                            example: '2026-05-07T15:07:30.701Z'
                           eliminado_el:
                             type: string
                             format: date-time
@@ -84,7 +84,7 @@
                       properties:
                         totalItems:
                           type: integer
-                          example: 1
+                          example: 2
                         page:
                           type: integer
                           example: 1

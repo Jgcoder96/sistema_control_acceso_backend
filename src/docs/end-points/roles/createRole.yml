@@ -1,4 +1,4 @@
-/api/roles:
+/api/app/roles:
   post:
     summary: Crear Rol
     description: |

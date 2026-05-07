@@ -2,11 +2,12 @@ import { Router } from 'express';
 
 export interface AppRoutes {
   accessPoints: Router;
+  appPermisions: Router;
   auth: Router;
   cards: Router;
   config: Router;
-  horary: Router;
-  location: Router;
+  schedules: Router;
+  locations: Router;
   physicalPermits: Router;
   roles: Router;
 }

@@ -1,39 +1,34 @@
-/api/app/roles/{id}:
-  put:
-    summary: Actualizar Rol
+/api/app/permissions:
+  post:
+    summary: Crear Permiso
     description: |
-      # 🔄 Actualizar un  Rol
+      # 🔑 Crear un nuevo permiso
     tags:
-      - Roles
-    parameters:
-      - name: id
-        in: path
-        required: true
-        description: Identificador único (UUID) del Rol a actualizar.
-        schema:
-          type: string
-          format: uuid
-        example: '550e8400-e29b-41d4-a716-446655440000'
+      - Permisos de App
     requestBody:
+      description: Datos necesarios para crear un permiso.
+      required: true
       content:
         application/json:
           schema:
             type: object
             required:
-              - nombre
+              - slug
               - descripcion
             properties:
-              nombre:
+              slug:
                 type: string
-                description: Nombre único del Rol.
-                example: 'Super Admin'
+                maxLength: 100
+                description: Identificador único del permiso en formato slug (sin espacios).
+                example: 'usuarios.crear'
               descripcion:
                 type: string
-                description: Descripción del Rol.
-                example: 'Gestión de Usuarios, Gestión de Roles, Gestión de Permisos Físicos y Visualización de Eventos.'
+                maxLength: 100
+                description: Explicación detallada de lo que permite hacer este permiso.
+                example: 'Permite crear nuevos usuarios.'
     responses:
-      '200':
-        description: Recurso actualizado exitosamente.
+      '201':
+        description: Recurso creado exitosamente.
         content:
           application/json:
             schema:
@@ -44,7 +39,7 @@
                   example: true
                 message:
                   type: string
-                  example: Rol actualizado con éxito.
+                  example: Permiso creado con éxito.
       '400':
         description: Error de validación en los datos enviados.
         content:
@@ -62,38 +57,38 @@
                       field: { type: string }
                       message: { type: string }
             examples:
-              parametro_id_invalido:
-                summary: 1. ID de parámetro inválido (Path)
-                value:
-                  success: false
-                  message: 'Error de validación en los datos enviados.'
-                  issues:
-                    - field: 'id'
-                      message: 'El parametro de la petición no es un UUID válido.'
               campos_incorrectos:
-                summary: 2.  Campos Incorrectos
+                summary: 1.  Campos Incorrectos
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
-                    - field: 'nombre'
-                      message: "El campo 'nombre' es obligatorio y debe ser una cadena de texto."
+                    - field: 'slug'
+                      message: "El campo 'slug' es obligatorio y debe ser una cadena de texto."
                     - field: 'descripcion'
                       message: "El campo 'descripcion' es obligatorio y debe ser una cadena de texto."
               longitud_incorrecta:
-                summary: 3. Longitud Incorrecta
+                summary: 2. Longitud Incorrecta
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
-                    - field: 'nombre'
-                      message: "El campo 'nombre' debe contener al menos 4 caracteres."
-                    - field: 'nombre'
-                      message: "El campo 'nombre' no puede exceder los 100 caracteres."
+                    - field: 'slug'
+                      message: "El campo 'slug' debe contener al menos 4 caracteres."
+                    - field: 'slug'
+                      message: "El campo 'slug' no puede exceder los 100 caracteres."
                     - field: 'descripcion'
                       message: "El campo 'descripcion' debe contener al menos 4 caracteres."
                     - field: 'descripcion'
                       message: "El campo 'descripcion' no puede exceder los 100 caracteres."
+              slug_invalido:
+                summary: 3. Campo 'slug' inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'slug'
+                      message: 'El slug solo puede contener letras minúsculas, números, puntos, guiones y guiones bajos (sin espacios).'
               estructura_invalida:
                 summary: 4. Cuerpo JSON inválido
                 value:
@@ -101,19 +96,6 @@
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
-      '404':
-        description: Recurso no encontrado.
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                success:
-                  type: boolean
-                  example: false
-                message:
-                  type: string
-                  example: El Rol no se encuentra registrado.
       '409':
         description: El recurso ya existe en la base de datos.
         content:
@@ -126,7 +108,7 @@
                   example: false
                 message:
                   type: string
-                  example: Ya se encuentra registrado un rol con ese nombre.
+                  example: Ya se encuentra registrado un permiso activo con este slug.
       '500':
         description: Error interno del servidor.
         content:

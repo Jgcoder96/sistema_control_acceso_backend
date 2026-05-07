@@ -1,4 +1,5 @@
 import { accessPointsRoute } from '../../modules/access_points/routes/index.js';
+import { appPermissionsRoute } from '../../modules/app_permissions/routes/index.js';
 import { authRoute } from '../../modules/auth/routes/index.js';
 import { cardsRoute } from '../../modules/cards/routes/index.js';
 import { configRoute } from '../../modules/config/routes/index.js';
@@ -16,13 +17,14 @@ import type { Express } from 'express';
 
 export const appRoutes: AppRoutes = {
   accessPoints: accessPointsRoute(),
+  appPermisions: appPermissionsRoute(),
   auth: authRoute(),
   cards: cardsRoute(),
   config: configRoute(),
-  horary: schedulesRoute(),
-  location: locationRoute(),
+  locations: locationRoute(),
   physicalPermits: physicalPermitRoute(),
   roles: rolesRoute(),
+  schedules: schedulesRoute(),
 };
 
 export const setupRoutes = (app: Express): Router => {
@@ -54,15 +56,17 @@ export const setupRoutes = (app: Express): Router => {
 
   router.use('/cards', appRoutes.cards);
 
-  router.use('/locations', appRoutes.location);
+  router.use('/locations', appRoutes.locations);
 
   router.use('/access-points', appRoutes.accessPoints);
 
-  router.use('/schedules', appRoutes.horary);
+  router.use('/schedules', appRoutes.schedules);
 
   router.use('/permissions', appRoutes.physicalPermits);
 
-  router.use('/roles', appRoutes.roles);
+  router.use('/app/roles', appRoutes.roles);
+
+  router.use('/app/permissions', appRoutes.appPermisions);
 
   router.use('/config', appRoutes.config);
 

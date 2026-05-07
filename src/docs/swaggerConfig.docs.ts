@@ -26,6 +26,9 @@ const options: swaggerJSDoc.Options = {
         name: 'Roles',
       },
       {
+        name: 'Permisos de App',
+      },
+      {
         name: 'Tarjetas de Acceso',
       },
       {
