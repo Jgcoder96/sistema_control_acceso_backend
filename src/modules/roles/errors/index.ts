@@ -1,2 +1,3 @@
-export { RoleAlreadyExists } from './RoleAlreadyExists.error.js';
-export { RoleDoesNotExists } from './RoleDoesNotExists.error.js';
+export { PermissionsDoesNotExist } from './PermissionDoesNotExist.error.js';
+export { RoleAlreadyExist } from './RoleAlreadyExist.error.js';
+export { RoleDoesNotExist } from './RoleDoesNotExist.error.js';

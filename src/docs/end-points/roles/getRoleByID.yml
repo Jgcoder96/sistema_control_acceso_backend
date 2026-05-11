@@ -1,0 +1,130 @@
+/api/app/roles/{id}/permissions:
+  get:
+    summary: Obtener Rol por ID
+    description: |
+      # 🔍 Obtener Rol por ID
+    tags:
+      - Roles
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Identificador único (UUID) del Rol a buscar.
+        schema:
+          type: string
+          format: uuid
+        example: '550e8400-e29b-41d4-a716-446655440000'
+    responses:
+      '200':
+        description: Rol obtenido exitosamente.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Rol obtenido exitosamente.
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                      example: '6a3ab7e9-0f60-4483-9912-b8fcd046a9d0'
+                    nombre:
+                      type: string
+                      example: 'Administrador'
+                    descripcion:
+                      type: string
+                      example: 'Gestión de Usuarios, Gestión de Roles, Gestión de Permisos Físicos y Visualización de Eventos.'
+                    creado_el:
+                      type: string
+                      format: date-time
+                      example: '2026-05-06T18:29:26.039Z'
+                    actualizado_el:
+                      type: string
+                      format: date-time
+                      example: '2026-05-06T18:29:26.039Z'
+                    permisos:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                            example: '8b2a73a8-dfc4-434f-9373-d6443eee5e80'
+                          slug:
+                            type: string
+                            example: 'usuarios.crear'
+                          descripcion:
+                            type: string
+                            example: 'Permite crear nuevos usuarios.'
+                          creado_el:
+                            type: string
+                            format: date-time
+                            example: '2026-05-07T15:06:38.898Z'
+                          actualizado_el:
+                            type: string
+                            format: date-time
+                            example: '2026-05-07T18:48:01.876Z'
+                          eliminado_el:
+                            type: string
+                            format: date-time
+                            nullable: true
+                            example: null
+      '400':
+        description: Error de validación en los datos enviados.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                message: { type: string }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              parametro_id_invalido:
+                summary: 1. ID de parámetro inválido (Path)
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'id'
+                      message: 'El parametro de la petición no es un UUID válido.'
+      '404':
+        description: Recurso no encontrado.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: El Rol no se encuentra registrado.
+      '500':
+        description: Error interno del servidor.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor.

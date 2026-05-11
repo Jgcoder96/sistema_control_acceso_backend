@@ -1,4 +1,4 @@
-import { RoleAlreadyExists, RoleDoesNotExists } from '../errors/index.js';
+import { RoleAlreadyExist, RoleDoesNotExist } from '../errors/index.js';
 import { prisma } from '../../../config/index.js';
 
 export interface RoleInBodyRequest {
@@ -21,7 +21,7 @@ export const transactionToUpdateRole = async (
       },
     });
 
-    if (!currentRole) throw new RoleDoesNotExists();
+    if (!currentRole) throw new RoleDoesNotExist();
 
     const isSameName =
       currentRole.nombre.toLowerCase() === nombre.toLowerCase();
@@ -43,7 +43,7 @@ export const transactionToUpdateRole = async (
         },
       });
 
-      if (nameExistsInAnotherRole) throw new RoleAlreadyExists();
+      if (nameExistsInAnotherRole) throw new RoleAlreadyExist();
     }
 
     const updatedRole = await tx.roles.update({

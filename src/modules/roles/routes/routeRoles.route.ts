@@ -1,6 +1,8 @@
 import {
+  assignPermissionsToRole,
   createRole,
   deleteRole,
+  getRoleByID,
   getRoles,
   updateRole,
 } from '../controllers/index.js';
@@ -10,6 +12,7 @@ import { validateIdInRequestParams } from '../../shared/schemas/index.js';
 import {
   validateRoleInRequestBody,
   validateRoleFiltersInQuery,
+  validatePermissionsInRequestBody,
 } from '../schemas/index.js';
 
 export const rolesRoute = (): Router => {
@@ -40,6 +43,18 @@ export const rolesRoute = (): Router => {
     '/:id',
     [schemaValidator(validateIdInRequestParams, 'params')],
     deleteRole,
+  );
+
+  router.post(
+    '/:id/permissions',
+    [schemaValidator(validatePermissionsInRequestBody, 'body')],
+    assignPermissionsToRole,
+  );
+
+  router.get(
+    '/:id/permissions',
+    [schemaValidator(validateIdInRequestParams, 'params')],
+    getRoleByID,
   );
 
   return router;

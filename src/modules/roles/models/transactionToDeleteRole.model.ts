@@ -1,5 +1,5 @@
 import { prisma } from '../../../config/index.js';
-import { RoleDoesNotExists } from '../errors/index.js';
+import { RoleDoesNotExist } from '../errors/index.js';
 
 export const transactionToDeleteRole = async (id: string) => {
   return await prisma.$transaction(async (tx) => {
@@ -10,7 +10,7 @@ export const transactionToDeleteRole = async (id: string) => {
       },
     });
 
-    if (!roleExists) throw new RoleDoesNotExists();
+    if (!roleExists) throw new RoleDoesNotExist();
 
     const deletedRole = await tx.roles.update({
       where: { id: id },

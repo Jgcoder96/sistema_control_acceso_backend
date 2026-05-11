@@ -1,4 +1,4 @@
-import { RoleAlreadyExists } from '../errors/index.js';
+import { RoleAlreadyExist } from '../errors/index.js';
 import { prisma } from '../../../config/index.js';
 import type { RoleInBodyRequest } from '../types/index.js';
 
@@ -19,7 +19,7 @@ export const transactionToCreateRole = async (data: RoleInBodyRequest) => {
     });
 
     if (role) {
-      if (role.eliminado_el === null) throw new RoleAlreadyExists();
+      if (role.eliminado_el === null) throw new RoleAlreadyExist();
 
       const restoredRole = await tx.roles.update({
         where: { id: role.id },
