@@ -1,8 +1,8 @@
-/api/app/roles/{id}/permissions:
+/api/app/roles/{id}/user:
   post:
-    summary: Asignar Permisos
+    summary: Asignar Roles
     description: |
-      # ➕ Asignar Permisos a un Rol
+      # ➕ Asignar Roles a un Usuario
     tags:
       - Roles
     parameters:
@@ -15,7 +15,7 @@
           format: uuid
         example: '550e8400-e29b-41d4-a716-446655440000'
     requestBody:
-      description: Cuerpo de la solicitud para validar y asignar permisos.
+      description: Cuerpo de la solicitud para validar y asignar roles.
       required: true
       content:
         application/json:
@@ -24,21 +24,21 @@
             required:
               - permisosIds
             properties:
-              permisosIds:
+              rolesIds:
                 type: array
-                description: Lista de identificadores únicos (UUID) de los permisos.
+                description: Lista de identificadores únicos (UUID) de los roles.
                 minItems: 1
                 items:
                   type: string
                   format: uuid
                   pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$'
-                  description: ID del permiso en formato UUID.
+                  description: ID del role en formato UUID.
                 example:
                   - '550e8400-e29b-41d4-a716-446655440000'
                   - '123e4567-e89b-12d3-a456-426614174000'
     responses:
       '200':
-        description: Permisos asignados exitosamente.
+        description: Roles asignados exitosamente.
         content:
           application/json:
             schema:
@@ -49,7 +49,7 @@
                   example: true
                 message:
                   type: string
-                  example: Permisos asignados exitosamente.
+                  example: Roles asignados exitosamente.
       '400':
         description: Error de validación en los datos enviados.
         content:
@@ -82,24 +82,23 @@
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
-
               campo_no_arreglo:
                 summary: 3. El campo no es un arreglo
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
-                    - field: 'permisosIds'
-                      message: "El campo 'permisosIds' es obligatorio y debe ser un arreglo."
+                    - field: 'rolesIds'
+                      message: "El campo 'rolesIds' es obligatorio y debe ser un arreglo."
               formato_uuid_invalido:
                 summary: 4. Error en los elementos del arreglo
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
-                    - field: 'permisosIds'
+                    - field: 'rolesIds'
                       message: 'Los elementos del arreglo deben ser un string.'
-                    - field: 'permisosIds'
+                    - field: 'rolesIds'
                       message: 'Los elementos del arreglo no son un UUID válido.'
       '404':
         description: Recurso no encontrado.
@@ -113,16 +112,16 @@
                 message:
                   type: string
             examples:
-              rol_no_encontrado:
-                summary: 1. Rol no encontrado
+              usuario_no_encontrado:
+                summary: 1. Usuario no encontrado
+                value:
+                  success: false
+                  message: 'El Usuario no se encuentra registrado.'
+              roles_no_encontrados:
+                summary: 2. Roles no encontrados
                 value:
                   success: false
                   message: 'El Rol no se encuentra registrado.'
-              permisos_no_encontrados:
-                summary: 2. Permisos no encontrados
-                value:
-                  success: false
-                  message: 'Los permisos no se encuentran registrados.'
       '500':
         description: Error interno del servidor.
         content:

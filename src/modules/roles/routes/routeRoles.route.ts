@@ -1,18 +1,21 @@
 import {
   assignPermissionsToRole,
+  assignRolesToUser,
   createRole,
   deleteRole,
   getRoleByID,
   getRoles,
+  getUserRolesByID,
   updateRole,
 } from '../controllers/index.js';
 import { Router } from 'express';
 import { schemaValidator } from '../../shared/middlewares/index.js';
 import { validateIdInRequestParams } from '../../shared/schemas/index.js';
 import {
-  validateRoleInRequestBody,
-  validateRoleFiltersInQuery,
   validatePermissionsInRequestBody,
+  validateRoleFiltersInQuery,
+  validateRoleInRequestBody,
+  validateRolesInRequestBody,
 } from '../schemas/index.js';
 
 export const rolesRoute = (): Router => {
@@ -47,7 +50,10 @@ export const rolesRoute = (): Router => {
 
   router.post(
     '/:id/permissions',
-    [schemaValidator(validatePermissionsInRequestBody, 'body')],
+    [
+      schemaValidator(validateIdInRequestParams, 'params'),
+      schemaValidator(validatePermissionsInRequestBody, 'body'),
+    ],
     assignPermissionsToRole,
   );
 
@@ -55,6 +61,21 @@ export const rolesRoute = (): Router => {
     '/:id/permissions',
     [schemaValidator(validateIdInRequestParams, 'params')],
     getRoleByID,
+  );
+
+  router.post(
+    '/:id/user',
+    [
+      schemaValidator(validateRolesInRequestBody, 'body'),
+      schemaValidator(validateIdInRequestParams, 'params'),
+    ],
+    assignRolesToUser,
+  );
+
+  router.get(
+    '/:id/users',
+    [schemaValidator(validateIdInRequestParams, 'params')],
+    getUserRolesByID,
   );
 
   return router;
