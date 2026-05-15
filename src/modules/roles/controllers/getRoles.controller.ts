@@ -23,12 +23,13 @@ export const getRoles = async (
       limit: (req.query.limit as string) || '10',
     };
 
-    const roles = await getRolesService(filters);
+    const { data, metadata } = await getRolesService(filters);
 
     res.status(200).json({
       success: true,
       message: RESPONSE_MESSAGES.getRoles,
-      data: roles,
+      data,
+      metadata,
     });
   } catch (error) {
     next(error);

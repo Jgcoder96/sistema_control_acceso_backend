@@ -1,4 +1,4 @@
-/api/schedules:
+/api/firmware/schedules:
   get:
     summary: Obtener Horarios
     description: |

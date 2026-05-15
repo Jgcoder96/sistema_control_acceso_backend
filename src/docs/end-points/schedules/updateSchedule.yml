@@ -1,4 +1,4 @@
-/api/schedules/{id}:
+/api/firmware/schedules/{id}:
   put:
     summary: Actualizar Horario
     description: |
@@ -94,7 +94,7 @@
                 es_festivo: true
     responses:
       '200':
-        description: Horario actualizado exitosamente.
+        description: Recurso actualizado exitosamente.
         content:
           application/json:
             schema:
@@ -131,8 +131,15 @@
                   issues:
                     - field: 'id'
                       message: 'El parametro de la petición no es un UUID válido.'
-              campos_obligatorios:
-                summary: 2. Inconsistencia en los campos
+              estructura_invalida:
+                summary: 2. Cuerpo JSON inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
+              campos_invalidos:
+                summary: 3. Campos Inválidos
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -148,7 +155,7 @@
                     - field: 'es_festivo'
                       message: "El campo 'es_festivo' es obligatorio y debe ser un valor booleano."
               error_longitud:
-                summary: 3. Error de longitud
+                summary: 4. Error de longitud
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -158,7 +165,7 @@
                     - field: 'nombre'
                       message: "El campo 'nombre' no debe exceder los 100 caracteres."
               formato_hora:
-                summary: 4. Formato de hora inválido
+                summary: 5. Formato de hora inválido
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -168,20 +175,13 @@
                     - field: 'hora_fin'
                       message: 'El formato de la hora de fin es inválido (HH:mm:ss).'
               detalles_vacio:
-                summary: 5. Horario sin detalles
+                summary: 6. Horario sin detalles
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'detalles'
                       message: 'Debe incluir al menos un detalle en el horario.'
-              estructura_invalida:
-                summary: 6. Cuerpo JSON inválido
-                value:
-                  success: false
-                  message: 'Error de validación en los datos enviados.'
-                  issues:
-                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
               integridad_dia_festivo:
                 summary: 7. Error - Día de semana marcado como festivo
                 value:
@@ -200,7 +200,7 @@
                   - success: false
                     message: 'Conflicto de horario en los días festivos: el rango [10:00:00 - 16:00:00] se cruza con [15:00:00 - 20:00:00].'
       '404':
-        description: El horario no se encuentra registrado.
+        description: Recurso no encontrado.
         content:
           application/json:
             schema:

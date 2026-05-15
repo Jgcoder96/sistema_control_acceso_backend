@@ -1,4 +1,4 @@
-/api/cards/{id}/reactivate:
+/api/firmware/cards/{id}/reactivate:
   patch:
     summary: Reactivar Tarjeta
     description: |
@@ -15,7 +15,7 @@
         example: '550e8400-e29b-41d4-a716-446655440000'
     responses:
       '200':
-        description: Tarjeta de Acceso reactivada exitosamente.
+        description: Recurso reactivado exitosamente.
         content:
           application/json:
             schema:
@@ -78,12 +78,12 @@
                   type: string
             examples:
               tarjeta_sin_usuario:
-                summary: 1. Tarjeta De Acceso sin usuario asignado
+                summary: 1. Tarjeta sin usuario
                 value:
                   success: false
                   message: 'La Tarjeta de Acceso no tiene un usuario asignado.'
               estado_no_valido:
-                summary: 2. Tarjeta no se puede reactivar por su estado actual
+                summary: 2. Tarjeta no bloqueada
                 value:
                   success: false
                   message: 'La tarjeta no se puede reactivar porque no está bloqueada.'

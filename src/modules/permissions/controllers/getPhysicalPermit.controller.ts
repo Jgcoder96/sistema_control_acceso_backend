@@ -26,12 +26,13 @@ export const getPhysicalPermits = async (
       limit: (req.query.limit as string) || '10',
     };
 
-    const physicalPermits = await getPhysicalPermitsService(filters);
+    const { data, metadata } = await getPhysicalPermitsService(filters);
 
     res.status(200).json({
       success: true,
       message: RESPONSE_MESSAGES.getPhysicalPermits,
-      data: physicalPermits,
+      data,
+      metadata,
     });
   } catch (error) {
     next(error);

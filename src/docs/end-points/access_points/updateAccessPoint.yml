@@ -1,4 +1,4 @@
-/api/access-points/{id}:
+/api/firmware/access-points/{id}:
   put:
     summary: Actualizar Punto de Acceso
     description: |
@@ -38,7 +38,7 @@
                 example: 'fc9835ed-0938-4d07-a55b-1aed1c83998b'
     responses:
       '200':
-        description: Punto de Acceso actualizado exitosamente.
+        description: Recurso actualizado exitosamente.
         content:
           application/json:
             schema:
@@ -75,8 +75,15 @@
                   issues:
                     - field: 'id'
                       message: 'El parametro de la petición no es un UUID válido.'
-              campos_obligatorios:
-                summary: 2. Inconsistencia en los campos
+              estructura_invalida:
+                summary: 2. Cuerpo JSON inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
+              campos_invalidos:
+                summary: 3. Campos Inválidos
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -88,7 +95,7 @@
                     - field: 'ubicacion_id'
                       message: "El campo 'ubicacion_id' es obligatorio y debe ser una cadena de texto."
               error_longitud:
-                summary: 3. Error de longitud
+                summary: 4. Error de longitud
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -98,7 +105,7 @@
                     - field: 'nombre'
                       message: "El campo 'nombre' no puede exceder los 100 caracteres."
               mac_invalida:
-                summary: 4. Dirección MAC no válida
+                summary: 5. Dirección MAC no válida
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -106,22 +113,15 @@
                     - field: 'mac'
                       message: 'La dirección MAC no es válida.'
               uuid_invalido:
-                summary: 5. ID de ubicación no es UUID válido
+                summary: 6. ID de ubicación no es UUID válido
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'ubicacion_id'
                       message: 'El formato del ID de la ubicación no es un UUID válido.'
-              estructura_invalida:
-                summary: 6. Cuerpo JSON inválido
-                value:
-                  success: false
-                  message: 'Error de validación en los datos enviados.'
-                  issues:
-                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
       '404':
-        description: Recurso no encontrado - El Punto de Acceso o la Ubicación física no existen.
+        description: Recurso no encontrado.
         content:
           application/json:
             schema:
@@ -155,12 +155,12 @@
                   type: string
             examples:
               MacEnUso:
-                summary: Ya se encuentra registrado un Punto de Acceso con esa dirección MAC
+                summary: 1. Dirección MAC ya existe
                 value:
                   success: false
                   message: 'Ya se encuentra registrado un Punto de Acceso con esa dirección MAC.'
               NombreEnUso:
-                summary: Ya se encuentra registrado un Punto de Acceso con ese nombre
+                summary: 2. Punto de Acceso ya existe
                 value:
                   success: false
                   message: 'Ya se encuentra registrado un Punto de Acceso con ese nombre.'

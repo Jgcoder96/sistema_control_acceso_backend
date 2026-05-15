@@ -23,12 +23,13 @@ export const getLocations = async (
       limit: (req.query.limit as string) || '10',
     };
 
-    const locations = await getLocationsService(filters);
+    const { data, metadata } = await getLocationsService(filters);
 
     res.status(200).json({
       success: true,
       message: RESPONSE_MESSAGES.getLocations,
-      data: locations,
+      data,
+      metadata,
     });
   } catch (error) {
     next(error);

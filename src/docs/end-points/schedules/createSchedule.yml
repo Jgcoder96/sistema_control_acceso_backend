@@ -1,4 +1,4 @@
-/api/schedules:
+/api/firmware/schedules:
   post:
     summary: Crear Horario
     description: |
@@ -115,8 +115,15 @@
                       field: { type: string }
                       message: { type: string }
             examples:
-              campos_obligatorios:
-                summary: 1. Inconsistencia en los campos
+              estructura_invalida:
+                summary: 1. Cuerpo JSON inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
+              campos_invalidos:
+                summary: 2. Campos Inválidos
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -132,7 +139,7 @@
                     - field: 'es_festivo'
                       message: "El campo 'es_festivo' es obligatorio y debe ser un valor booleano."
               error_longitud:
-                summary: 2. Error de longitud
+                summary: 3. Error de longitud
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -142,7 +149,7 @@
                     - field: 'nombre'
                       message: "El campo 'nombre' no debe exceder los 100 caracteres."
               formato_hora:
-                summary: 3. Formato de hora inválido
+                summary: 4. Formato de hora inválido
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -152,20 +159,13 @@
                     - field: 'hora_fin'
                       message: 'El formato de la hora de fin es inválido (HH:mm:ss).'
               detalles_vacio:
-                summary: 4. Horario sin detalles
+                summary: 5. Horario sin detalles
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'detalles'
                       message: 'Debe incluir al menos un detalle en el horario.'
-              estructura_invalida:
-                summary: 5. Cuerpo JSON inválido
-                value:
-                  success: false
-                  message: 'Error de validación en los datos enviados.'
-                  issues:
-                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
               integridad_dia_festivo:
                 summary: 6. Error - Día de semana marcado como festivo
                 value:

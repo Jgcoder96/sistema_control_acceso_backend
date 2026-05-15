@@ -1,4 +1,4 @@
-/api/schedules/holidays:
+/api/firmware/schedules/holidays:
   get:
     summary: Obtener Feriados
     description: |

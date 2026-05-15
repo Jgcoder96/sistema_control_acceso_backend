@@ -70,8 +70,15 @@
                   issues:
                     - field: 'id'
                       message: 'El parametro de la petición no es un UUID válido.'
-              campos_incorrectos:
-                summary: 2.  Campos Incorrectos
+              estructura_invalida:
+                summary: 2. Cuerpo JSON inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
+              campos_invalidos:
+                summary: 3.  Campos Inválidos
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -81,7 +88,7 @@
                     - field: 'descripcion'
                       message: "El campo 'descripcion' es obligatorio y debe ser una cadena de texto."
               longitud_incorrecta:
-                summary: 3. Longitud Incorrecta
+                summary: 4. Longitud Incorrecta
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -94,13 +101,6 @@
                       message: "El campo 'descripcion' debe contener al menos 4 caracteres."
                     - field: 'descripcion'
                       message: "El campo 'descripcion' no puede exceder los 100 caracteres."
-              estructura_invalida:
-                summary: 4. Cuerpo JSON inválido
-                value:
-                  success: false
-                  message: 'Error de validación en los datos enviados.'
-                  issues:
-                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
       '404':
         description: Recurso no encontrado.
         content:

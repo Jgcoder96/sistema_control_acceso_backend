@@ -23,12 +23,13 @@ export const getAccessPoints = async (
       search: req.query.search as string,
     };
 
-    const accessPoints = await getAccessPointsService(filters);
+    const { data, metadata } = await getAccessPointsService(filters);
 
     res.status(200).json({
       success: true,
       message: RESPONSE_MESSAGES.getAccessPoints,
-      data: accessPoints,
+      data,
+      metadata,
     });
   } catch (error) {
     next(error);

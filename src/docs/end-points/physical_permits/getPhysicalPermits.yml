@@ -1,4 +1,4 @@
-/api/permissions:
+/api/firmware/permissions:
   get:
     summary: Obtener Permisos Físicos
     description: |

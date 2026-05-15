@@ -53,8 +53,15 @@
                       field: { type: string }
                       message: { type: string }
             examples:
-              campos_incorrectos:
-                summary: 1.  Campos Incorrectos
+              estructura_invalida:
+                summary: 1. Cuerpo JSON inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
+              campos_invalidos:
+                summary: 2.  Campos Inválidos
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -64,7 +71,7 @@
                     - field: 'descripcion'
                       message: "El campo 'descripcion' es obligatorio y debe ser una cadena de texto."
               longitud_incorrecta:
-                summary: 2. Longitud Incorrecta
+                summary: 3. Longitud Incorrecta
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -77,13 +84,6 @@
                       message: "El campo 'descripcion' debe contener al menos 4 caracteres."
                     - field: 'descripcion'
                       message: "El campo 'descripcion' no puede exceder los 100 caracteres."
-              estructura_invalida:
-                summary: 3. Cuerpo JSON inválido
-                value:
-                  success: false
-                  message: 'Error de validación en los datos enviados.'
-                  issues:
-                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
       '409':
         description: El recurso ya existe en la base de datos.
         content:

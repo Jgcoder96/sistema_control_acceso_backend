@@ -1,4 +1,4 @@
-/api/locations:
+/api/firmware/locations:
   get:
     summary: Obtener Ubicaciones
     description: |
@@ -42,6 +42,12 @@
             schema:
               type: object
               properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Lista de ubicaciones obtenida exitosamente.
                 data:
                   type: array
                   items:

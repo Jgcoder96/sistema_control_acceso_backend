@@ -1,4 +1,4 @@
-/api/cards/:
+/api/firmware/cards/:
   get:
     summary: Obtener Tarjetas
     description: |

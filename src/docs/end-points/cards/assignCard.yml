@@ -1,15 +1,15 @@
-/api/cards/{id}/assign:
+/api/firmware/cards/{id}/assign:
   post:
     summary: Asignar Tarjeta
     description: |
-      # 👤 Asignar una Tarjeta de acceso
+      # 👤 Asignar una Tarjeta de Acceso
     tags:
       - Tarjetas de Acceso
     parameters:
       - name: id
         in: path
         required: true
-        description: Identificador único (UUID) de la tarjeta de acceso a asignar.
+        description: Identificador único (UUID) de la Tarjeta de Acceso a asignar.
         schema:
           type: string
         example: '550e8400-e29b-41d4-a716-446655440000'
@@ -28,7 +28,7 @@
                 example: '550e8400-e29b-41d4-a716-446655440000'
     responses:
       '200':
-        description: Recurso actualizado exitosamente.
+        description: Recurso asignado exitosamente.
         content:
           application/json:
             schema:
@@ -65,8 +65,15 @@
                   issues:
                     - field: 'id'
                       message: 'El parametro de la petición no es un UUID válido.'
-              campos_obligatorios:
-                summary: 2. Inconsistencia en los campos
+              estructura_invalida:
+                summary: 2. Cuerpo JSON inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
+              campos_incorrectos:
+                summary: 3. Campos Incorrectos
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -74,7 +81,7 @@
                     - field: 'usuario_id'
                       message: "El campo 'usuario_id' es obligatorio y debe ser una cadena de texto."
               uuid_invalido:
-                summary: 5. ID del usuario no es UUID válido
+                summary: 4. ID del usuario inválido
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'

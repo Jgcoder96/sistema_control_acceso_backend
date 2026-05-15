@@ -54,15 +54,15 @@ export const setupRoutes = (app: Express): Router => {
 
   router.use('/auth', appRoutes.auth);
 
-  router.use('/cards', appRoutes.cards);
+  router.use('/firmware/cards', appRoutes.cards);
 
-  router.use('/locations', appRoutes.locations);
+  router.use('/firmware/locations', appRoutes.locations);
 
-  router.use('/access-points', appRoutes.accessPoints);
+  router.use('/firmware/access-points', appRoutes.accessPoints);
 
-  router.use('/schedules', appRoutes.schedules);
+  router.use('/firmware/schedules', appRoutes.schedules);
 
-  router.use('/permissions', appRoutes.physicalPermits);
+  router.use('/firmware/permissions', appRoutes.physicalPermits);
 
   router.use('/app/roles', appRoutes.roles);
 

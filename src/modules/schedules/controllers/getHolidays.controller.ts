@@ -22,12 +22,13 @@ export const getHolidays = async (
       search: req.query.search as string,
     };
 
-    const holidays = await getHolidaysService(filters);
+    const { data, metadata } = await getHolidaysService(filters);
 
     res.status(200).json({
       success: true,
       message: RESPONSE_MESSAGES.getHolidays,
-      data: holidays,
+      data,
+      metadata,
     });
   } catch (error) {
     next(error);

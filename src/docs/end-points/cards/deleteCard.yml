@@ -1,4 +1,4 @@
-/api/cards/{id}/delete:
+/api/firmware/cards/{id}/delete:
   delete:
     summary: Eliminar Tarjeta
     description: |
@@ -15,7 +15,7 @@
         example: '550e8400-e29b-41d4-a716-446655440000'
     responses:
       '200':
-        description: Tarjeta de Acceso eliminada exitosamente.
+        description: Recurso eliminado exitosamente.
         content:
           application/json:
             schema:
@@ -66,7 +66,7 @@
                   type: string
                   example: La Tarjeta de Acceso no se encuentra registrada.
       '409':
-        description: Estado de Tarjeta no válido para devolución.
+        description: Estado de Tarjeta no válido para la eliminación.
         content:
           application/json:
             schema:

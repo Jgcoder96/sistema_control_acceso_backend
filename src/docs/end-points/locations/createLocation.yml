@@ -1,4 +1,4 @@
-/api/locations:
+/api/firmware/locations:
   post:
     summary: Crear Ubicación
     description: |
@@ -16,7 +16,7 @@
               nombre:
                 type: string
                 description: Nombre único de la ubicación física.
-                example: 'Planta Baja'
+                example: 'Cuarto de Servidores'
     responses:
       '201':
         description: Recurso creado exitosamente.
@@ -48,8 +48,15 @@
                       field: { type: string }
                       message: { type: string }
             examples:
-              campo_obligatorio:
-                summary: 1. Inconsistencia en los campos
+              estructura_invalida:
+                summary: 1. Cuerpo JSON inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
+              campos_invalidos:
+                summary: 2. Campos Inválidos
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -57,7 +64,7 @@
                     - field: 'nombre'
                       message: "El campo 'nombre' es obligatorio y debe ser una cadena de texto."
               error_longitud:
-                summary: 2. Error de longitud
+                summary: 3. Error de longitud
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -66,13 +73,7 @@
                       message: "El campo 'nombre' debe contener al menos 4 caracteres."
                     - field: 'nombre'
                       message: "El campo 'nombre' no puede exceder los 100 caracteres."
-              estructura_invalida:
-                summary: 3. Cuerpo JSON inválido
-                value:
-                  success: false
-                  message: 'Error de validación en los datos enviados.'
-                  issues:
-                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
+
       '409':
         description: El recurso ya existe en la base de datos.
         content:

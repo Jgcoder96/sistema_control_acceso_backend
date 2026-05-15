@@ -1,4 +1,4 @@
-/api/locations/{id}:
+/api/firmware/locations/{id}:
   delete:
     summary: Eliminar Ubicación
     description: |
@@ -54,7 +54,7 @@
                     - field: 'id'
                       message: 'El parametro de la petición no es un UUID válido.'
       '404':
-        description: La ubicación física no se encuentra registrada.
+        description: Recurso no encontrado.
         content:
           application/json:
             schema:

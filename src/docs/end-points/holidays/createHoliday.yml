@@ -1,4 +1,4 @@
-/api/schedules/holidays:
+/api/firmware/schedules/holidays:
   post:
     summary: Crear Feriado
     description: |
@@ -72,8 +72,15 @@
                       field: { type: string }
                       message: { type: string }
             examples:
-              campos_invalidos_o_incompletos:
-                summary: 1. Inconsistencia en los Campos
+              estructura_invalida:
+                summary: 1. Estructura de JSON inválida
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
+              campos_invalidos:
+                summary: 2. Campos Inválidos
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -87,7 +94,7 @@
                     - field: 'anio'
                       message: "El campo 'año' debe ser un número."
               error_longitud:
-                summary: 2. Error de Longitud
+                summary: 3. Error de Longitud
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -97,7 +104,7 @@
                     - field: 'nombre'
                       message: "El campo 'nombre' no debe exceder los 100 caracteres."
               error_rango_fecha:
-                summary: 3. Error de Rango en Fecha
+                summary: 4. Error de Rango en Fecha
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -108,13 +115,6 @@
                       message: "El campo 'mes' debe ser un número entre 1 y 12."
                     - field: 'anio'
                       message: "El campo 'año' debe ser un número entre 2026 y 2100."
-              estructura_invalida:
-                summary: 5. Estructura de JSON inválida
-                value:
-                  success: false
-                  message: 'Error de validación en los datos enviados.'
-                  issues:
-                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
       '409':
         description: El recurso ya existe en la base de datos.
         content:

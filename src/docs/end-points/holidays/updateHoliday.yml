@@ -1,4 +1,4 @@
-/api/schedules/holidays/{id}:
+/api/firmware/schedules/holidays/{id}:
   put:
     summary: Actualizar Feriado
     description: |
@@ -51,7 +51,7 @@
                 example: 2026
     responses:
       '200':
-        description: Feriado actualizado exitosamente.
+        description: Recurso actualizado exitosamente.
         content:
           application/json:
             schema:
@@ -88,8 +88,15 @@
                   issues:
                     - field: 'id'
                       message: 'El parametro de la petición no es un UUID válido.'
-              campos_invalidos_o_incompletos:
-                summary: 2. Inconsistencia en los Campos
+              estructura_invalida:
+                summary: 2. Estructura de JSON inválida
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
+              campos_invalidos:
+                summary: 3. Campos Inválidos
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -103,7 +110,7 @@
                     - field: 'anio'
                       message: "El campo 'año' debe ser un número."
               error_longitud:
-                summary: 3. Error de Longitud
+                summary: 4. Error de Longitud
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -113,7 +120,7 @@
                     - field: 'nombre'
                       message: "El campo 'nombre' no debe exceder los 100 caracteres."
               error_rango_fecha:
-                summary: 4. Error de Rango en Fecha
+                summary: 5. Error de Rango en Fecha
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -124,15 +131,8 @@
                       message: "El campo 'mes' debe ser un número entre 1 y 12."
                     - field: 'anio'
                       message: "El campo 'año' debe ser un número entre 2026 y 2100."
-              estructura_invalida:
-                summary: 5. Estructura de JSON inválida
-                value:
-                  success: false
-                  message: 'Error de validación en los datos enviados.'
-                  issues:
-                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
       '404':
-        description: El Feriado no se encuentra registrado.
+        description: Recurso no encontrado.
         content:
           application/json:
             schema:

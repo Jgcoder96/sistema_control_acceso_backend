@@ -22,9 +22,9 @@ CREATE TABLE usuarios (
     foto_url VARCHAR(255),
     estado VARCHAR(20) NOT NULL DEFAULT 'activo' CHECK (estado IN ('activo', 'inactivo')),
     clave_hash VARCHAR(255) NOT NULL,
-    creado_el TIMESTAMP NOT NULL DEFAULT NOW(),
-    actualizado_el TIMESTAMP NOT NULL DEFAULT NOW(),
-    eliminado_el TIMESTAMP DEFAULT NULL 
+    creado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    actualizado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    eliminado_el TIMESTAMPTZ DEFAULT NULL 
 );
 
 CREATE TRIGGER set_timestamp_usuarios
@@ -59,10 +59,10 @@ CREATE TABLE tarjetas (
     codigo VARCHAR(20) NOT NULL UNIQUE,
     usuario_id UUID REFERENCES usuarios(id) ON DELETE SET NULL,
     estado estado_tarjeta NOT NULL DEFAULT 'activable',
-    creado_el TIMESTAMP NOT NULL DEFAULT NOW(),
-    actualizado_el TIMESTAMP NOT NULL DEFAULT NOW(),
-    eliminado_el TIMESTAMP DEFAULT NULL,
-    asignada_el TIMESTAMP DEFAULT NULL
+    creado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    actualizado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    eliminado_el TIMESTAMPTZ DEFAULT NULL,
+    asignada_el TIMESTAMPTZ DEFAULT NULL
 );
 
 CREATE TABLE historial_asignaciones (
@@ -70,7 +70,7 @@ CREATE TABLE historial_asignaciones (
     tarjeta_id UUID NOT NULL REFERENCES tarjetas(id) ON DELETE CASCADE,
     usuario_id UUID NOT NULL REFERENCES usuarios(id),
     accion tipo_accion_historial NOT NULL,
-    fecha TIMESTAMP NOT NULL DEFAULT NOW()
+    fecha TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TRIGGER set_timestamp_tarjetas
@@ -86,9 +86,9 @@ CREATE TRIGGER set_timestamp_tarjetas
 CREATE TABLE ubicaciones (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     nombre VARCHAR(100) NOT NULL UNIQUE,
-    creado_el TIMESTAMP NOT NULL DEFAULT NOW(),
-    actualizado_el TIMESTAMP NOT NULL DEFAULT NOW(),
-    eliminado_el TIMESTAMP DEFAULT NULL 
+    creado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    actualizado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    eliminado_el TIMESTAMPTZ DEFAULT NULL 
 );
 
 CREATE TRIGGER set_timestamp_ubicaciones
@@ -106,9 +106,9 @@ CREATE TABLE puntos_acceso (
     ubicacion_id UUID NOT NULL REFERENCES ubicaciones(id),
     nombre VARCHAR(100) NOT NULL,
     mac VARCHAR(17) NOT NULL UNIQUE,
-    creado_el TIMESTAMP NOT NULL DEFAULT NOW(),
-    actualizado_el TIMESTAMP NOT NULL DEFAULT NOW(),
-    eliminado_el TIMESTAMP DEFAULT NULL, 
+    creado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    actualizado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    eliminado_el TIMESTAMPTZ DEFAULT NULL, 
     CONSTRAINT nombre_unico_por_ubicacion UNIQUE (ubicacion_id, nombre)
 );
 
@@ -161,9 +161,9 @@ CREATE TYPE dia_semana_enum AS ENUM (
 CREATE TABLE horarios (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     nombre VARCHAR(100) NOT NULL UNIQUE,
-    creado_el TIMESTAMP NOT NULL DEFAULT NOW(),
-    actualizado_el TIMESTAMP NOT NULL DEFAULT NOW(),
-    eliminado_el TIMESTAMP DEFAULT NULL
+    creado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    actualizado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    eliminado_el TIMESTAMPTZ DEFAULT NULL
 );
 
 CREATE TABLE horario_detalles (
@@ -196,9 +196,9 @@ CREATE TABLE festivos (
 	dia INTEGER NOT NULL CHECK (dia >= 1 AND dia <= 31),
 	mes INTEGER NOT NULL CHECK (mes >= 1 AND mes <= 12),
 	anio INTEGER, 
-	creado_el TIMESTAMP NOT NULL DEFAULT NOW(),
-	actualizado_el TIMESTAMP NOT NULL DEFAULT NOW(),
-	eliminado_el TIMESTAMP DEFAULT NULL,
+	creado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+	actualizado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+	eliminado_el TIMESTAMPTZ DEFAULT NULL,
 	    
 	CONSTRAINT unique_holiday_date UNIQUE(dia, mes, anio)
 );
@@ -219,8 +219,8 @@ CREATE TABLE permisos_fisicos (
     punto_acceso_id UUID NOT NULL REFERENCES puntos_acceso(id) ON DELETE CASCADE,
     horario_id UUID NOT NULL REFERENCES horarios(id),
     
-    creado_el TIMESTAMP NOT NULL DEFAULT NOW(),
-    eliminado_el TIMESTAMP DEFAULT NULL,
+    creado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    eliminado_el TIMESTAMPTZ DEFAULT NULL,
     
     CONSTRAINT unique_usuario_punto UNIQUE (usuario_id, punto_acceso_id)
 );
@@ -243,38 +243,59 @@ CREATE TABLE logs_acceso (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     tarjeta_id UUID REFERENCES tarjetas(id) ON DELETE SET NULL,
     punto_acceso_id UUID NOT NULL REFERENCES puntos_acceso(id),
-    fecha TIMESTAMP NOT NULL DEFAULT NOW(), 
+    fecha TIMESTAMPTZ NOT NULL DEFAULT NOW(), 
     autorizado BOOLEAN NOT NULL
 );
 
 
 
 
--- SELECT ----
+--- MÓDULO PERMISOS DE APLICACIÓN ----
 
-SELECT jsonb_build_object(
-    'ubicacion', u.nombre,
-    'puntos_acceso', jsonb_agg(DISTINCT jsonb_build_object(
-        'nombre_punto', pa.nombre,
-        'mac', pa.mac,
-        'tarjetas_autorizadas', (
-            SELECT jsonb_agg(t.codigo)
-            FROM permisos_fisicos pf
-            JOIN usuarios usr ON pf.usuario_id = usr.id
-            JOIN tarjetas t ON usr.id = t.usuario_id
-            WHERE pf.punto_acceso_id = pa.id
-              AND pf.eliminado_el IS NULL
-              AND usr.eliminado_el IS NULL
-              AND usr.estado = 'activo'
-              AND t.eliminado_el IS NULL
-              AND t.estado = 'activa'
-        )
-    ))
-) as listado_jerarquico
-FROM ubicaciones u
-JOIN puntos_acceso pa ON u.id = pa.ubicacion_id
-WHERE u.eliminado_el IS NULL 
-  AND pa.eliminado_el IS NULL
-GROUP BY u.nombre;
+CREATE TABLE roles (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    nombre VARCHAR(50) NOT NULL UNIQUE, 
+    descripcion VARCHAR(255),
+    creado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    actualizado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    eliminado_el TIMESTAMPTZ DEFAULT NULL
+);
+
+CREATE TRIGGER tr_actualizar_fecha_roles
+    BEFORE UPDATE ON roles
+    FOR EACH ROW
+    EXECUTE FUNCTION trigger_set_timestamp();
+
+CREATE TABLE app_permisos (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    slug VARCHAR(100) NOT NULL UNIQUE,
+    descripcion VARCHAR(255),
+    creado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    actualizado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    eliminado_el TIMESTAMPTZ DEFAULT NULL
+);
+
+CREATE TRIGGER tr_actualizar_fecha_app_permisos
+    BEFORE UPDATE ON app_permisos
+    FOR EACH ROW
+    EXECUTE FUNCTION trigger_set_timestamp();
+
+CREATE TABLE rol_permisos (
+    rol_id UUID NOT NULL,
+    permiso_id UUID NOT NULL,
+    creado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (rol_id, permiso_id),
+    CONSTRAINT fk_rol_permiso FOREIGN KEY (rol_id) REFERENCES roles(id) ON DELETE CASCADE,
+    CONSTRAINT fk_permiso FOREIGN KEY (permiso_id) REFERENCES app_permisos(id) ON DELETE CASCADE
+);
+
+CREATE TABLE usuario_roles (
+    usuario_id UUID NOT NULL,
+    rol_id UUID NOT NULL,
+    creado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (usuario_id, rol_id),
+    CONSTRAINT fk_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    CONSTRAINT fk_rol FOREIGN KEY (rol_id) REFERENCES roles(id) ON DELETE CASCADE
+);
 
 

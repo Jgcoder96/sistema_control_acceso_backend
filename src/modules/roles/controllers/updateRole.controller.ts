@@ -16,7 +16,7 @@ export const updateRole = async (
 
     res.status(200).json({
       success: true,
-      message: RESPONSE_MESSAGES.updateRoles,
+      message: RESPONSE_MESSAGES.updateRole,
     });
   } catch (error) {
     next(error);

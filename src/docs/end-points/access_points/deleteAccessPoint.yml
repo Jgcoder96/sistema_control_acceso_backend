@@ -1,4 +1,4 @@
-/api/access-points/{id}:
+/api/firmware/access-points/{id}:
   delete:
     summary: Eliminar Punto de Acceso
     description: |
@@ -15,7 +15,7 @@
         example: '550e8400-e29b-41d4-a716-446655440000'
     responses:
       '200':
-        description: Punto de Acceso eliminado exitosamente.
+        description: Recurso eliminado exitosamente.
         content:
           application/json:
             schema:
@@ -53,7 +53,7 @@
                     - field: 'id'
                       message: 'El parametro de la petición no es un UUID válido.'
       '404':
-        description: El Punto de Acceso no se encuentra registrado.
+        description: Recurso no encontrado.
         content:
           application/json:
             schema:

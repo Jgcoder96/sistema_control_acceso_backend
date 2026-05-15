@@ -32,12 +32,13 @@ export const getCards = async (
       limit: (req.query.limit as string) || '10',
     };
 
-    const cards = await getCardsService(filters);
+    const { data, metadata } = await getCardsService(filters);
 
     res.status(200).json({
       success: true,
       message: RESPONSE_MESSAGES.getCards,
-      data: cards,
+      data,
+      metadata,
     });
   } catch (error) {
     next(error);

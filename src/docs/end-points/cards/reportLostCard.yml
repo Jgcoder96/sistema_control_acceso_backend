@@ -1,8 +1,8 @@
-/api/cards/{id}/lost:
+/api/firmware/cards/{id}/lost:
   patch:
     summary: Reportar Tarjeta
     description: |
-      # 🔓 Reportar una Tarjeta de acceso como perdida
+      # 🔓 Reportar una Tarjeta de Acceso como perdida
     tags:
       - Tarjetas de Acceso
     parameters:

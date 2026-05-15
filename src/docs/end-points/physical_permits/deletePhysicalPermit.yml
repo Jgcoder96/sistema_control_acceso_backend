@@ -1,4 +1,4 @@
-/api/permissions/{id}:
+/api/firmware/permissions/{id}:
   delete:
     summary: Eliminar Permisos Físicos
     description: |
@@ -16,7 +16,7 @@
         example: '550e8400-e29b-41d4-a716-446655440000'
     responses:
       '200':
-        description: Permiso físico eliminado exitosamente.
+        description: Recurso eliminado exitosamente.
         content:
           application/json:
             schema:
@@ -54,7 +54,7 @@
                     - field: 'id'
                       message: 'El parametro de la petición no es un UUID válido.'
       '404':
-        description: El permiso no se encuentra registrado.
+        description: Recurso no encontrado.
         content:
           application/json:
             schema:

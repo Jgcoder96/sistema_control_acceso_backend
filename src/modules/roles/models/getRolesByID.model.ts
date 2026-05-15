@@ -9,9 +9,6 @@ export const getRoleByID = async (roleId: string) => {
     },
     include: {
       rol_permisos: {
-        where: {
-          eliminado_el: null,
-        },
         include: {
           app_permisos: true,
         },
@@ -27,6 +24,7 @@ export const getRoleByID = async (roleId: string) => {
     descripcion: role.descripcion,
     creado_el: role.creado_el,
     actualizado_el: role.actualizado_el,
+    eliminado_el: role.eliminado_el,
     permisos: role.rol_permisos
       .map((rp) => rp.app_permisos)
       .filter((p) => p.eliminado_el === null),

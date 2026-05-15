@@ -1,4 +1,4 @@
-/api/access-points:
+/api/firmware/access-points:
   get:
     summary: Obtener Puntos de Acceso
     description: |

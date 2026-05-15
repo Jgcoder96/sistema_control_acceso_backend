@@ -1,4 +1,4 @@
-/api/locations/{id}:
+/api/firmware/locations/{id}:
   put:
     summary: Actualizar Ubicación
     description: |
@@ -25,10 +25,10 @@
               nombre:
                 type: string
                 description: Nombre único de la ubicación física.
-                example: 'Planta Baja'
+                example: 'Cuarto de Servidores'
     responses:
       '200':
-        description: Actualización de una ubicación física.
+        description: Recurso actualizado exitosamente.
         content:
           application/json:
             schema:
@@ -65,8 +65,15 @@
                   issues:
                     - field: 'id'
                       message: 'El parametro de la petición no es un UUID válido.'
-              campo_obligatorio:
-                summary: 2. Inconsistencia en los campos
+              estructura_invalida:
+                summary: 2. Cuerpo JSON inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
+              campos_invalidos:
+                summary: 3. Campos Inválidos
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -74,7 +81,7 @@
                     - field: 'nombre'
                       message: "El campo 'nombre' es obligatorio y debe ser una cadena de texto."
               error_longitud:
-                summary: 3. Error de longitud
+                summary: 4. Error de longitud
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -83,15 +90,9 @@
                       message: "El campo 'nombre' debe contener al menos 4 caracteres."
                     - field: 'nombre'
                       message: "El campo 'nombre' no puede exceder los 100 caracteres."
-              estructura_invalida:
-                summary: 4. Cuerpo JSON inválido
-                value:
-                  success: false
-                  message: 'Error de validación en los datos enviados.'
-                  issues:
-                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
+
       '404':
-        description: La ubicación física no se encuentra registrada.
+        description: Recurso no encontrado.
         content:
           application/json:
             schema:

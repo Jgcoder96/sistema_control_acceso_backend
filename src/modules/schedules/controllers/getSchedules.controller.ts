@@ -22,12 +22,13 @@ export const getSchedules = async (
       search: req.query.search as string,
     };
 
-    const schedules = await getSchedulesService(filters);
+    const { data, metadata } = await getSchedulesService(filters);
 
     res.status(200).json({
       success: true,
       message: RESPONSE_MESSAGES.getSchedules,
-      data: schedules,
+      data,
+      metadata,
     });
   } catch (error) {
     next(error);

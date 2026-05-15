@@ -1,4 +1,4 @@
-/api/schedules/holidays/{id}:
+/api/firmware/schedules/holidays/{id}:
   delete:
     summary: Eliminar Feriado
     description: |
@@ -15,7 +15,7 @@
         example: '550e8400-e29b-41d4-a716-446655440000'
     responses:
       '200':
-        description: Feriado eliminado exitosamente.
+        description: Recurso eliminado exitosamente.
         content:
           application/json:
             schema:
@@ -53,7 +53,7 @@
                     - field: 'id'
                       message: 'El parametro de la petición no es un UUID válido.'
       '404':
-        description: El Feriado no existe.
+        description: Recurso no encontrado.
         content:
           application/json:
             schema:
@@ -64,7 +64,7 @@
                   example: false
                 message:
                   type: string
-                  example: El Feriado no existe.
+                  example: El Feriado no se encuentra registrado.
       '500':
         description: Error interno del servidor.
         content:

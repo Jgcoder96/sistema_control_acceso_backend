@@ -1,4 +1,4 @@
-/api/cards:
+/api/firmware/cards:
   post:
     summary: Crear Tarjeta
     description: |
@@ -49,29 +49,29 @@
                       field: { type: string }
                       message: { type: string }
             examples:
-              campo_obligatorio:
-                summary: 1. Inconsistencia en los campos
+              estructura_invalida:
+                summary: 1. Cuerpo JSON inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
+              campos_incorrectos:
+                summary: 2. Campos Incorrectos
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'codigo'
-                      message: 'El código RFID es obligatorio y debe ser una cadena de texto.'
+                      message: "El campo 'codigo' es obligatorio y debe ser una cadena de texto."
               error_formato:
-                summary: 2. Error en el formato
+                summary: 3. Error en el formato
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'codigo'
                       message: 'El formato del código RFID no es válido.'
-              estructura_invalida:
-                summary: 3. Cuerpo JSON inválido
-                value:
-                  success: false
-                  message: 'Error de validación en los datos enviados.'
-                  issues:
-                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
       '409':
         description: El recurso ya existe en la base de datos.
         content:
