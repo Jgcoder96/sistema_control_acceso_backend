@@ -25,7 +25,7 @@ const BUCKET_NAME = envs.S3_BUCKET_NAME;
 export const uploadFile = async (file: RequestFile): Promise<string> => {
   const uploadParams = {
     Bucket: BUCKET_NAME,
-    Key: `fotos/${Date.now()}-${file.originalname}`,
+    Key: `fotos/${Date.now()}`,
     Body: file.buffer,
     ContentType: file.mimetype,
   };

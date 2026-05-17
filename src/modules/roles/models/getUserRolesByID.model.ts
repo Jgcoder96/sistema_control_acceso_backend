@@ -13,9 +13,6 @@ export const getUserRolesByID = async (userId: string) => {
             roles: {
               include: {
                 rol_permisos: {
-                  where: {
-                    eliminado_el: null,
-                  },
                   include: {
                     app_permisos: true,
                   },

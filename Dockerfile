@@ -1,5 +1,5 @@
 # ETAPA 1: Construcción (Builder)
-FROM node:22-alpine3.21 AS builder
+FROM node:26-alpine3.22 AS builder
 
 RUN apk add --no-cache openssl libc6-compat
 
@@ -18,7 +18,7 @@ RUN npm run build
 RUN npm prune --omit=dev
 
 # ETAPA 2: Producción (Runner)
-FROM node:22-alpine3.21 AS runner
+FROM node:26-alpine3.22 AS runner
 
 RUN apk add --no-cache openssl libc6-compat
 
