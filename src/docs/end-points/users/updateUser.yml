@@ -1,0 +1,206 @@
+/api/users/{id}:
+  put:
+    summary: Actualizar Usuario
+    description: |
+      # 🔄 Actualizar un  Usuario
+    tags:
+      - Usuarios
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Identificador único (UUID) del Usuario a actualizar.
+        schema:
+          type: string
+          format: uuid
+        example: '550e8400-e29b-41d4-a716-446655440000'
+    requestBody:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+              - nombre
+              - apellido
+              - cedula
+              - correo_electronico
+              - estado
+            properties:
+              nombre:
+                type: string
+                description: Nombre del usuario
+                example: José
+              apellido:
+                type: string
+                description: Apellido del usuario
+                example: Pérez
+              cedula:
+                type: string
+                description: Cedula de identidad del usuario
+                example: '25542586'
+              correo_electronico:
+                type: string
+                format: email
+                description: Correo electrónico del usuario
+                example: test@gmail.com
+              clave:
+                type: string
+                format: password
+                description: Contraseña de acceso del usuario
+                example: Test.123456
+              foto:
+                type: string
+                format: binary
+                description: Foto de perfil del usuario
+              estado:
+                type: string
+                description: Estado actual del usuario
+                enum:
+                  - activo
+                  - inactivo
+                example: activo
+    responses:
+      '200':
+        description: Recurso actualizado exitosamente.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Usuario actualizado exitosamente.
+      '400':
+        description: Error de validación en los datos enviados
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              campos_invalidos:
+                summary: 1. Campos Inválidos
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados'
+                  issues:
+                    - field: 'nombre'
+                      message: "El campo 'nombre' es obligatorio y debe ser una cadena de texto."
+                    - field: 'apellido'
+                      message: "El campo 'apellido' es obligatorio y debe ser una cadena de texto."
+                    - field: 'cedula'
+                      message: "El campo 'cedula' es obligatorio y debe ser una cadena de texto."
+                    - field: 'correo_electronico'
+                      message: "El campo 'correo_electronico' es obligatorio y debe ser una cadena de texto."
+                    - field: 'clave'
+                      message: "El campo 'clave' debe ser una cadena de texto."
+              longitud_incorrecta:
+                summary: 2. Longitud Incorrecta
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados'
+                  issues:
+                    - field: 'nombre'
+                      message: "El campo 'nombre' debe contener al menos 4 caracteres."
+                    - field: 'nombre'
+                      message: "El campo 'nombre' no puede exceder los 100 caracteres."
+                    - field: 'apellido'
+                      message: "El campo 'apellido' debe contener al menos 4 caracteres."
+                    - field: 'apellido'
+                      message: "El campo 'apellido' no puede exceder los 100 caracteres."
+                    - field: 'cedula'
+                      message: "El campo 'cedula' debe contener al menos 7 digitos."
+                    - field: 'cedula'
+                      message: "El campo 'cedula' no puede exceder los 8 digitos."
+                    - field: 'cedula'
+                      message: "El campo 'cedula' debe contener solo números"
+                    - field: 'correo_electronico'
+                      message: 'Formato de correo electrónico no válido.'
+                    - field: 'clave'
+                      message: 'La contraseña debe tener al menos 8 caracteres.'
+                    - field: 'clave'
+                      message: 'La contraseña no puede exceder los 100 caracteres.'
+              complejidad_clave:
+                summary: 3. Reglas de seguridad de contraseña
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados'
+                  issues:
+                    - field: 'clave'
+                      message: 'La contraseña debe incluir al menos una letra mayúscula.'
+                    - field: 'clave'
+                      message: 'La contraseña debe incluir al menos una letra minúscula.'
+                    - field: 'clave'
+                      message: 'La contraseña debe incluir al menos un número.'
+                    - field: 'clave'
+                      message: 'La contraseña debe incluir al menos un carácter especial.'
+              validacion_foto:
+                summary: 4. Reglas de la imagen
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados'
+                  issues:
+                    - field: 'foto'
+                      message: 'La foto no debe pesar más de 5MB.'
+                    - field: 'foto'
+                      message: 'Solo se permiten formatos Jpeg, PNG y WebP.'
+      '404':
+        description: Recurso no encontrado.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: El Usuario no se encuentra registrado.
+      '409':
+        description: El recurso ya existe en la base de datos.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+            examples:
+              cedula_ya_registrada:
+                summary: 1. Cedula ya registrada
+                value:
+                  success: false
+                  message: 'Ya se encuentra registrado un usuario con esa cédula.'
+              correo_electronico_ya_registrado:
+                summary: 2. Correo electrónico ya registrado
+                value:
+                  success: false
+                  message: 'Ya se encuentra registrado un usuario con el correo electrónico.'
+      '500':
+        description: Error interno del servidor
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor
