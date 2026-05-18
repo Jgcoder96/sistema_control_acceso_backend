@@ -1,6 +1,6 @@
 import { accessPointsRoute } from '../../modules/access_points/routes/index.js';
 import { appPermissionsRoute } from '../../modules/app_permissions/routes/index.js';
-import { authRoute } from '../../modules/auth/routes/index.js';
+import { authRoute } from '../../modules/users/routes/index.js';
 import { cardsRoute } from '../../modules/cards/routes/index.js';
 import { configRoute } from '../../modules/config/routes/index.js';
 import { locationRoute } from '../../modules/locations/routes/index.js';
@@ -52,7 +52,7 @@ export const setupRoutes = (app: Express): Router => {
     );
   }
 
-  router.use('/auth', appRoutes.auth);
+  router.use('/users', appRoutes.auth);
 
   router.use('/firmware/cards', appRoutes.cards);
 

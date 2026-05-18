@@ -13,7 +13,6 @@ export const transactionToUpdateRole = async (
   const { nombre, descripcion } = data;
 
   return await prisma.$transaction(async (tx) => {
-    // 1. Check if the role exists and is not deleted
     const currentRole = await tx.roles.findFirst({
       where: {
         id,
@@ -28,7 +27,7 @@ export const transactionToUpdateRole = async (
     const isSameDescription = (currentRole.descripcion || '') === descripcion;
 
     if (isSameName && isSameDescription) {
-      return currentRole; // Return immediately without updating the DB
+      return currentRole;
     }
 
     if (!isSameName) {

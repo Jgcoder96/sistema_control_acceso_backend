@@ -1,0 +1,157 @@
+/api/users/login:
+  post:
+    summary: Iniciar sesión
+    description: |
+      # 👤🔑 Iniciar sesión
+    tags:
+      - Iniciar Sesión
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - correo_electronico
+              - clave
+            properties:
+              correo_electronico:
+                type: string
+                format: email
+                description: Correo electrónico del usuario
+                example: example@example.com
+              clave:
+                type: string
+                format: password
+                description: Contraseña de acceso
+                example: Example.123456
+    responses:
+      '200':
+        description: Login exitoso
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Login exitoso
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                      example: c15498c8-9f6c-4212-8560-e073512364f8
+                    nombre:
+                      type: string
+                      example: José
+                    apellido:
+                      type: string
+                      example: Pérez
+                    cedula:
+                      type: string
+                      example: '123456789'
+                    correo_electronico:
+                      type: string
+                      format: email
+                      example: example@example.com
+                    token:
+                      type: string
+                      example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImVjNDAzOTA0LTc2ODUtNDc2Mi1iMzFlLTdlODYxMzg2MWRiYyIsImlhdCI6MTc2OTAwODM3NywiZXhwIjoxNzY5MDExOTc3fQ.KNFqChyA_iEDne54ffVbYC4ENVaNV-qYBbwJAF5SIh8
+                    foto_url:
+                      type: string
+                      format: uri
+                      example: 'https://sistema-control-acceso-s3.s3.amazonaws.com/fotos/perfil.jpg'
+      '400':
+        description: Error de validación en los datos enviados
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              campos_invalidos:
+                summary: 1. Campos Inválidos
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados'
+                  issues:
+                    - field: 'correo_electronico'
+                      message: "El campo 'correo_electronico' es obligatorio y debe ser una cadena de texto."
+                    - field: 'clave'
+                      message: "El campo 'clave' es obligatorio y debe ser una cadena de texto."
+              longitud_incorrecta:
+                summary: 2. Longitud Incorrecta
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados'
+                  issues:
+                    - field: 'clave'
+                      message: 'La contraseña debe tener al menos 8 caracteres.'
+                    - field: 'clave'
+                      message: 'La contraseña no puede exceder los 100 caracteres.'
+              complejidad_clave:
+                summary: 3. Reglas de seguridad de contraseña
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados'
+                  issues:
+                    - field: 'clave'
+                      message: 'La contraseña debe incluir al menos una letra mayúscula.'
+                    - field: 'clave'
+                      message: 'La contraseña debe incluir al menos una letra minúscula.'
+                    - field: 'clave'
+                      message: 'La contraseña debe incluir al menos un número.'
+                    - field: 'clave'
+                      message: 'La contraseña debe incluir al menos un carácter especial.'
+      '401':
+        description: Credenciales incorrectas
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: La contraseña proporcionada es incorrecta.
+      '404':
+        description: Registro no encontrado
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: No se encontró ningún usuario con el correo electrónico proporcionado.
+      '500':
+        description: Error interno del servidor
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor

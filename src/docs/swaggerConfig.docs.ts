@@ -23,6 +23,12 @@ const options: swaggerJSDoc.Options = {
     },
     tags: [
       {
+        name: 'Iniciar Sesión',
+      },
+      {
+        name: 'Usuarios',
+      },
+      {
         name: 'Roles',
       },
       {
