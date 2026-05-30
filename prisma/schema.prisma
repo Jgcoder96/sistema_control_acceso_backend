@@ -51,6 +51,7 @@ model tarjetas {
 
 model ubicaciones {
   id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  mesh_id        String          @unique @db.VarChar(17)
   nombre         String          @unique @db.VarChar(100)
   creado_el      DateTime        @default(now()) @db.Timestamptz(6)
   actualizado_el DateTime        @default(now()) @db.Timestamptz(6)
@@ -59,16 +60,19 @@ model ubicaciones {
 }
 
 model puntos_acceso {
-  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  ubicacion_id     String             @db.Uuid
-  nombre           String             @db.VarChar(100)
-  mac              String             @unique @db.VarChar(17)
-  creado_el        DateTime           @default(now()) @db.Timestamptz(6)
-  actualizado_el   DateTime           @default(now()) @db.Timestamptz(6)
-  eliminado_el     DateTime?          @db.Timestamptz(6)
-  logs_acceso      logs_acceso[]
-  permisos_fisicos permisos_fisicos[]
-  ubicaciones      ubicaciones        @relation(fields: [ubicacion_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ubicacion_id      String             @db.Uuid
+  nombre            String             @db.VarChar(100)
+  mac               String             @unique @db.VarChar(17)
+  version           Int                @default(1)
+  esta_conectado    Boolean            @default(false)
+  esta_sincronizado Boolean            @default(false)
+  creado_el         DateTime           @default(now()) @db.Timestamptz(6)
+  actualizado_el    DateTime           @default(now()) @db.Timestamptz(6)
+  eliminado_el      DateTime?          @db.Timestamptz(6)
+  logs_acceso       logs_acceso[]
+  permisos_fisicos  permisos_fisicos[]
+  ubicaciones       ubicaciones        @relation(fields: [ubicacion_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([ubicacion_id, nombre], map: "nombre_unico_por_ubicacion")
 }

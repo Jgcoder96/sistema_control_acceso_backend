@@ -5,7 +5,8 @@ export const updateLocationService = async (
   id: string,
   location: LocationBodyRequest,
 ) => {
-  const locationName = location.nombre.trim();
+  location.nombre = location.nombre.trim();
+  location.mesh_id = location.mesh_id.trim();
 
-  return await transactionToUpdateLocation(id, locationName);
+  return await transactionToUpdateLocation(id, location);
 };

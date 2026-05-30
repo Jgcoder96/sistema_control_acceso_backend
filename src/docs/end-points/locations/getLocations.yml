@@ -60,6 +60,9 @@
                       nombre:
                         type: string
                         example: 'Planta Baja'
+                      mesh_id:
+                        type: string
+                        example: '77:77:77:77:77:77'
                       creado_el:
                         type: string
                         format: date-time

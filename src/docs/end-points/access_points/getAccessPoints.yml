@@ -22,7 +22,7 @@
         name: search
         schema:
           type: string
-        description: Filtra por coincidencia parcial en el nombre del punto de acceso o MAC.
+        description: Filtra por coincidencia parcial en el nombre del punto de acceso.
         example: 'Puerta Principal'
       - in: query
         name: page

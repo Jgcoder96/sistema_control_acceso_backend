@@ -12,11 +12,16 @@
             type: object
             required:
               - nombre
+              - mesh_id
             properties:
               nombre:
                 type: string
                 description: Nombre único de la ubicación física.
                 example: 'Cuarto de Servidores'
+              mesh_id:
+                type: string
+                description: ID único de la malla a la que pertenece la ubicación.
+                example: '77:77:77:77:77:77'
     responses:
       '201':
         description: Recurso creado exitosamente.
@@ -63,8 +68,18 @@
                   issues:
                     - field: 'nombre'
                       message: "El campo 'nombre' es obligatorio y debe ser una cadena de texto."
+                    - field: 'mesh_id'
+                      message: "El campo 'mesh_id' es obligatorio y debe ser una cadena de texto."
+              error_formato_mesh_id:
+                summary: 3. Formato de mesh_id inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'mesh_id'
+                      message: "El 'mesh_id' debe ser un formato hexadecimal válido (ej: 77:77:77:77:77:77)."
               error_longitud:
-                summary: 3. Error de longitud
+                summary: 4. Error de longitud
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados.'
@@ -73,7 +88,6 @@
                       message: "El campo 'nombre' debe contener al menos 4 caracteres."
                     - field: 'nombre'
                       message: "El campo 'nombre' no puede exceder los 100 caracteres."
-
       '409':
         description: El recurso ya existe en la base de datos.
         content:
@@ -86,7 +100,7 @@
                   example: false
                 message:
                   type: string
-                  example: Ya se encuentra registrado una ubicación con ese nombre.
+                  example: Ya se encuentra registrado una ubicación con ese nombre o el mismo ID de malla.
       '500':
         description: Error interno del servidor.
         content:

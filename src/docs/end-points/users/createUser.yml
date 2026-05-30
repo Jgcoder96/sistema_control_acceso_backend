@@ -40,7 +40,7 @@
                 type: string
                 format: password
                 description: Contraseña de acceso del usuario
-                example: Test.123456
+                example: Prueba.123
               foto:
                 type: string
                 format: binary

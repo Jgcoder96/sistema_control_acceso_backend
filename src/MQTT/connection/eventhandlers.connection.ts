@@ -11,6 +11,13 @@ export const eventHandlers = (client: MqttClient) => {
         console.error('Error al suscribirse:', err);
       }
     });
+    client.subscribe('device/sync', (err) => {
+      if (!err) {
+        console.log(`Suscrito con éxito`);
+      } else {
+        console.error('Error al suscribirse:', err);
+      }
+    });
   });
 
   client.on('message', (topic, message) => {

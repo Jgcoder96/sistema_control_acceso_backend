@@ -8,7 +8,7 @@ import {
 import {
   validateIdInRequestParams,
   validateLocationFiltersInQuery,
-  validateNameInRequestBody,
+  validateLocationInRequestBody,
 } from '../schemas/index.js';
 import { schemaValidator } from '../../shared/middlewares/index.js';
 
@@ -23,7 +23,7 @@ export const locationRoute = (): Router => {
 
   router.post(
     '/',
-    [schemaValidator(validateNameInRequestBody, 'body')],
+    [schemaValidator(validateLocationInRequestBody, 'body')],
     createLocation,
   );
 
@@ -31,7 +31,7 @@ export const locationRoute = (): Router => {
     '/:id',
     [
       schemaValidator(validateIdInRequestParams, 'params'),
-      schemaValidator(validateNameInRequestBody, 'body'),
+      schemaValidator(validateLocationInRequestBody, 'body'),
     ],
     updateLocation,
   );

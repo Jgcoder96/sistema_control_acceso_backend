@@ -1,14 +1,29 @@
 import { LocationAlreadyExists } from '../errors/index.js';
 import { prisma } from '../../../config/index.js';
+import type { LocationBodyRequest } from '../types/index.js';
 
-export const transactionToCreateLocation = async (name: string) => {
+export const transactionToCreateLocation = async (
+  locationData: LocationBodyRequest,
+) => {
+  const { nombre, mesh_id } = locationData;
+
   return await prisma.$transaction(async (tx) => {
     const location = await tx.ubicaciones.findFirst({
       where: {
-        nombre: {
-          equals: name,
-          mode: 'insensitive',
-        },
+        OR: [
+          {
+            nombre: {
+              equals: nombre,
+              mode: 'insensitive',
+            },
+          },
+          {
+            mesh_id: {
+              equals: mesh_id,
+              mode: 'insensitive',
+            },
+          },
+        ],
       },
     });
 
@@ -18,7 +33,8 @@ export const transactionToCreateLocation = async (name: string) => {
       const restoredLocation = await tx.ubicaciones.update({
         where: { id: location.id },
         data: {
-          nombre: name,
+          nombre: locationData.nombre,
+          mesh_id: mesh_id,
           eliminado_el: null,
           actualizado_el: new Date(),
         },
@@ -28,7 +44,10 @@ export const transactionToCreateLocation = async (name: string) => {
     }
 
     const newLocation = await tx.ubicaciones.create({
-      data: { nombre: name },
+      data: {
+        nombre: nombre,
+        mesh_id: mesh_id,
+      },
     });
 
     return newLocation;
