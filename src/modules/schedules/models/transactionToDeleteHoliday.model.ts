@@ -19,6 +19,16 @@ export const transactionToDeleteHoliday = async (id: string) => {
       },
     });
 
+    await tx.puntos_acceso.updateMany({
+      where: {
+        eliminado_el: null,
+      },
+      data: {
+        version: { increment: 1 },
+        esta_sincronizado: false,
+      },
+    });
+
     return deletedHoliday;
   });
 };

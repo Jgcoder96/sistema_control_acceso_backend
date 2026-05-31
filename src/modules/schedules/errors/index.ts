@@ -3,3 +3,4 @@ export { HolidayDoesNotExists } from './HolidayDoesNotExists.error.js';
 export { InvalidSchedule } from './InvalidSchedule.error.js';
 export { ScheduleAlreadyExists } from './ScheduleAlreadyExists.error.js';
 export { ScheduleDoesNotExists } from './ScheduleDoesNotExists.error.js';
+export { ScheduleInUse } from './ScheduleInUse.error.js';

@@ -12,10 +12,27 @@ export const transactionToDeleteLocation = async (id: string) => {
 
     if (!locationExists) throw new LocationDoesNotExists();
 
+    const deleteDate = new Date();
+
+    // 2. Realizar el soft delete de la ubicación
     const deletedLocation = await tx.ubicaciones.update({
       where: { id: id },
       data: {
-        eliminado_el: new Date(),
+        eliminado_el: deleteDate,
+      },
+    });
+
+    await tx.puntos_acceso.updateMany({
+      where: {
+        ubicacion_id: id,
+        eliminado_el: null,
+      },
+      data: {
+        eliminado_el: deleteDate,
+        version: {
+          increment: 1,
+        },
+        esta_sincronizado: false,
       },
     });
 

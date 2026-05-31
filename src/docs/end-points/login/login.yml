@@ -24,7 +24,7 @@
                 type: string
                 format: password
                 description: Contraseña de acceso
-                example: Prueba.123
+                example: Test.1234
     responses:
       '200':
         description: Login exitoso

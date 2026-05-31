@@ -18,7 +18,7 @@
               nombre:
                 type: string
                 description: Nombre único descriptivo del punto de acceso.
-                example: 'Puerta Principal'
+                example: 'LIDE'
               mac:
                 type: string
                 description: Dirección MAC del punto de acceso.

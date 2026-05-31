@@ -38,17 +38,17 @@
               cedula:
                 type: string
                 description: Cedula de identidad del usuario
-                example: '25542586'
+                example: '12345678'
               correo_electronico:
                 type: string
                 format: email
                 description: Correo electrónico del usuario
-                example: test@gmail.com
+                example: example@example.com
               clave:
                 type: string
                 format: password
                 description: Contraseña de acceso del usuario
-                example: Prueba.123
+                example: Test.1234
               foto:
                 type: string
                 format: binary

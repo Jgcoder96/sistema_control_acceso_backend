@@ -11,6 +11,8 @@ CREATE OR REPLACE FUNCTION trigger_set_timestamp()
 
 
 
+
+
 --- MÓDULO USUARIOS ---
 
 CREATE TABLE usuarios (
@@ -27,10 +29,60 @@ CREATE TABLE usuarios (
     eliminado_el TIMESTAMPTZ DEFAULT NULL 
 );
 
+
 CREATE TRIGGER set_timestamp_usuarios
 	BEFORE UPDATE ON usuarios
 	FOR EACH ROW
 	EXECUTE PROCEDURE trigger_set_timestamp();
+
+
+CREATE OR REPLACE FUNCTION trigger_usuario_cascada()
+	RETURNS TRIGGER AS $$
+		BEGIN
+    		IF (OLD.eliminado_el IS NULL AND NEW.eliminado_el IS NOT NULL) THEN
+        		UPDATE puntos_acceso
+        		SET 
+            		version = version + 1,
+            		esta_sincronizado = FALSE
+        		WHERE id IN (
+            		SELECT punto_acceso_id 
+            		FROM permisos_fisicos 
+            		WHERE usuario_id = NEW.id AND eliminado_el IS NULL
+        		);
+
+        		UPDATE permisos_fisicos
+        		SET eliminado_el = NEW.eliminado_el
+        		WHERE usuario_id = NEW.id AND eliminado_el IS NULL;
+
+    		END IF;
+    
+    		IF (OLD.eliminado_el IS NOT NULL AND NEW.eliminado_el IS NULL) THEN
+        		UPDATE permisos_fisicos
+        		SET eliminado_el = NULL
+        		WHERE usuario_id = NEW.id AND eliminado_el = OLD.eliminado_el;
+
+        		UPDATE puntos_acceso
+        		SET 
+            		version = version + 1,
+            		esta_sincronizado = FALSE
+        		WHERE id IN (
+            		SELECT punto_acceso_id 
+            		FROM permisos_fisicos 
+            		WHERE usuario_id = NEW.id AND eliminado_el IS NULL -- Ahora ya están en NULL
+        		);
+
+    		END IF;
+    		RETURN NEW;
+		END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER tr_usuario_cascada
+    AFTER UPDATE ON usuarios
+    FOR EACH ROW
+    EXECUTE PROCEDURE trigger_usuario_cascada();
+
+
 
 
 
@@ -45,6 +97,7 @@ CREATE TYPE estado_tarjeta AS ENUM (
     'eliminada'
 );
 
+
 CREATE TYPE tipo_accion_historial AS ENUM (
     'asignacion', 
     'devolucion', 
@@ -53,6 +106,7 @@ CREATE TYPE tipo_accion_historial AS ENUM (
     'eliminacion', 
     'reactivacion'
 );
+
 
 CREATE TABLE tarjetas (
 	id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -65,6 +119,7 @@ CREATE TABLE tarjetas (
     asignada_el TIMESTAMPTZ DEFAULT NULL
 );
 
+
 CREATE TABLE historial_asignaciones (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     tarjeta_id UUID NOT NULL REFERENCES tarjetas(id) ON DELETE CASCADE,
@@ -72,6 +127,7 @@ CREATE TABLE historial_asignaciones (
     accion tipo_accion_historial NOT NULL,
     fecha TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
 
 CREATE TRIGGER set_timestamp_tarjetas
 	BEFORE UPDATE ON tarjetas
@@ -81,20 +137,73 @@ CREATE TRIGGER set_timestamp_tarjetas
 
 
 
+
+
 --- MÓDULO UBICACIONES FÍSICAS ---
 
 CREATE TABLE ubicaciones (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    mesh_id VARCHAR(17) NOT NULL UNIQUE,
     nombre VARCHAR(100) NOT NULL UNIQUE,
     creado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     actualizado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     eliminado_el TIMESTAMPTZ DEFAULT NULL 
 );
 
+
 CREATE TRIGGER set_timestamp_ubicaciones
     BEFORE UPDATE ON ubicaciones
     FOR EACH ROW
     EXECUTE PROCEDURE trigger_set_timestamp();
+
+
+--  TRIGGER PARA ELIMINAR Y RESTAURAR LOS PUNTOS DE ACCESO Y PERMISOS ASOCIADOS A UNA UBICACIÓN
+
+CREATE OR REPLACE FUNCTION trigger_soft_delete_puntos_acceso()
+	RETURNS TRIGGER AS $$
+		BEGIN
+    		IF (OLD.eliminado_el IS NULL AND NEW.eliminado_el IS NOT NULL) THEN
+        		UPDATE puntos_acceso 
+        		SET 
+            		eliminado_el = NEW.eliminado_el,
+            		version = version + 1,
+            		esta_sincronizado = FALSE
+        		WHERE ubicacion_id = NEW.id 
+          		AND eliminado_el IS NULL;
+
+        		UPDATE permisos_fisicos
+        		SET eliminado_el = NEW.eliminado_el
+        		WHERE punto_acceso_id IN (SELECT id FROM puntos_acceso WHERE ubicacion_id = NEW.id)
+          		AND eliminado_el IS NULL;
+    		END IF;
+    
+    		IF (OLD.eliminado_el IS NOT NULL AND NEW.eliminado_el IS NULL) THEN
+        		UPDATE puntos_acceso 
+        		SET 
+            		eliminado_el = NULL,
+            		version = version + 1,
+            		esta_sincronizado = FALSE
+        		WHERE ubicacion_id = NEW.id 
+          		AND eliminado_el = OLD.eliminado_el;
+
+        		UPDATE permisos_fisicos
+        		SET eliminado_el = NULL
+        		WHERE punto_acceso_id IN (SELECT id FROM puntos_acceso WHERE ubicacion_id = NEW.id)
+          		AND eliminado_el = OLD.eliminado_el;
+
+    		END IF;
+
+    		RETURN NEW;
+		END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER soft_delete_ubicaciones_cascade
+    AFTER UPDATE ON ubicaciones
+    FOR EACH ROW
+    EXECUTE PROCEDURE trigger_soft_delete_puntos_acceso();
+
+
 
 
 
@@ -106,42 +215,57 @@ CREATE TABLE puntos_acceso (
     ubicacion_id UUID NOT NULL REFERENCES ubicaciones(id),
     nombre VARCHAR(100) NOT NULL,
     mac VARCHAR(17) NOT NULL UNIQUE,
+    version INTEGER NOT NULL DEFAULT 1,
+    esta_conectado BOOLEAN NOT NULL DEFAULT FALSE,
+    esta_sincronizado BOOLEAN NOT NULL DEFAULT FALSE,
     creado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     actualizado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     eliminado_el TIMESTAMPTZ DEFAULT NULL, 
     CONSTRAINT nombre_unico_por_ubicacion UNIQUE (ubicacion_id, nombre)
 );
 
+
 CREATE TRIGGER set_timestamp_puntos_acceso
     BEFORE UPDATE ON puntos_acceso
     FOR EACH ROW
     EXECUTE PROCEDURE trigger_set_timestamp();
 
---  TRIGGER PARA ELIMINAR EN CASCADA LOS PUNTOS DE ACCESO ASOCIADOS A UNA UBICACIÓN 
 
-CREATE OR REPLACE FUNCTION trigger_soft_delete_puntos_acceso()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF (OLD.eliminado_el IS NULL AND NEW.eliminado_el IS NOT NULL) THEN
-        UPDATE puntos_acceso 
-        SET eliminado_el = NEW.eliminado_el 
-        WHERE ubicacion_id = NEW.id AND eliminado_el IS NULL;
-    END IF;
+--  TRIGGER PARA ELIMINAR Y RESTAURAR PERMISOS ASOCIADOS A UN PUNTO DE ACCESO
+
+CREATE OR REPLACE FUNCTION trigger_punto_acceso_cascada()
+	RETURNS TRIGGER AS $$
+		BEGIN
+    		IF (OLD.eliminado_el IS DISTINCT FROM NEW.eliminado_el) THEN
+        		NEW.version := OLD.version + 1;
+        		NEW.esta_sincronizado := FALSE;
+    		END IF;
+
+    		IF (OLD.eliminado_el IS NULL AND NEW.eliminado_el IS NOT NULL) THEN
+        		UPDATE permisos_fisicos
+        		SET eliminado_el = NEW.eliminado_el
+        		WHERE punto_acceso_id = NEW.id 
+          		AND eliminado_el IS NULL;
+    		END IF;
     
-    IF (OLD.eliminado_el IS NOT NULL AND NEW.eliminado_el IS NULL) THEN
-        UPDATE puntos_acceso 
-        SET eliminado_el = NULL 
-        WHERE ubicacion_id = NEW.id AND eliminado_el = OLD.eliminado_el;
-    END IF;
+    		IF (OLD.eliminado_el IS NOT NULL AND NEW.eliminado_el IS NULL) THEN
+        		UPDATE permisos_fisicos
+        		SET eliminado_el = NULL
+        		WHERE punto_acceso_id = NEW.id 
+          		AND eliminado_el = OLD.eliminado_el;
+    		END IF;
 
-    RETURN NEW;
-END;
+    		RETURN NEW;
+		END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER soft_delete_ubicaciones_cascade
-    AFTER UPDATE ON ubicaciones
+
+CREATE TRIGGER tr_punto_acceso_cascada
+    BEFORE UPDATE ON puntos_acceso
     FOR EACH ROW
-    EXECUTE PROCEDURE trigger_soft_delete_puntos_acceso();
+    EXECUTE PROCEDURE trigger_punto_acceso_cascada();
+
+
 
 
 
@@ -158,6 +282,7 @@ CREATE TYPE dia_semana_enum AS ENUM (
     'sabado'
 );
 
+
 CREATE TABLE horarios (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     nombre VARCHAR(100) NOT NULL UNIQUE,
@@ -165,6 +290,7 @@ CREATE TABLE horarios (
     actualizado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     eliminado_el TIMESTAMPTZ DEFAULT NULL
 );
+
 
 CREATE TABLE horario_detalles (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -180,10 +306,13 @@ CREATE TABLE horario_detalles (
     )
 );
 
+
 CREATE TRIGGER set_timestamp_horarios
     BEFORE UPDATE ON horarios
     FOR EACH ROW
     EXECUTE PROCEDURE trigger_set_timestamp();
+
+
 
 
 
@@ -203,10 +332,13 @@ CREATE TABLE festivos (
 	CONSTRAINT unique_holiday_date UNIQUE(dia, mes, anio)
 );
 
+
 CREATE TRIGGER set_timestamp_festivos
     BEFORE UPDATE ON festivos
     FOR EACH ROW
     EXECUTE PROCEDURE trigger_set_timestamp();
+
+
 
 
 
@@ -225,17 +357,6 @@ CREATE TABLE permisos_fisicos (
     CONSTRAINT unique_usuario_punto UNIQUE (usuario_id, punto_acceso_id)
 );
 
-CREATE UNIQUE INDEX idx_permiso_activo_unico 
-	ON permisos_fisicos (usuario_id, punto_acceso_id) 
-	WHERE eliminado_el IS NULL;
-
-CREATE TRIGGER set_timestamp_permisos_fisicos
-    BEFORE UPDATE ON permisos_fisicos
-    FOR EACH ROW
-    EXECUTE PROCEDURE trigger_set_timestamp();
-
-
-
 
 --- MÓDULO LOGS DE ACCESO ----
 
@@ -246,6 +367,8 @@ CREATE TABLE logs_acceso (
     fecha TIMESTAMPTZ NOT NULL DEFAULT NOW(), 
     autorizado BOOLEAN NOT NULL
 );
+
+
 
 
 
@@ -261,10 +384,12 @@ CREATE TABLE roles (
     eliminado_el TIMESTAMPTZ DEFAULT NULL
 );
 
+
 CREATE TRIGGER tr_actualizar_fecha_roles
     BEFORE UPDATE ON roles
     FOR EACH ROW
     EXECUTE FUNCTION trigger_set_timestamp();
+
 
 CREATE TABLE app_permisos (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -275,10 +400,12 @@ CREATE TABLE app_permisos (
     eliminado_el TIMESTAMPTZ DEFAULT NULL
 );
 
+
 CREATE TRIGGER tr_actualizar_fecha_app_permisos
     BEFORE UPDATE ON app_permisos
     FOR EACH ROW
     EXECUTE FUNCTION trigger_set_timestamp();
+
 
 CREATE TABLE rol_permisos (
     rol_id UUID NOT NULL,
@@ -289,6 +416,7 @@ CREATE TABLE rol_permisos (
     CONSTRAINT fk_permiso FOREIGN KEY (permiso_id) REFERENCES app_permisos(id) ON DELETE CASCADE
 );
 
+
 CREATE TABLE usuario_roles (
     usuario_id UUID NOT NULL,
     rol_id UUID NOT NULL,
@@ -297,5 +425,3 @@ CREATE TABLE usuario_roles (
     CONSTRAINT fk_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
     CONSTRAINT fk_rol FOREIGN KEY (rol_id) REFERENCES roles(id) ON DELETE CASCADE
 );
-
-

@@ -32,6 +32,23 @@ export const transactionToReactivateCard = async (cardID: string) => {
       },
     });
 
+    await tx.puntos_acceso.updateMany({
+      where: {
+        permisos_fisicos: {
+          some: {
+            usuario_id: card.usuario_id,
+            eliminado_el: null,
+          },
+        },
+      },
+      data: {
+        version: {
+          increment: 1,
+        },
+        esta_sincronizado: false,
+      },
+    });
+
     return updatedCard;
   });
 };

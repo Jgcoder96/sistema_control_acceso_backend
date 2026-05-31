@@ -23,7 +23,7 @@
         schema:
           type: string
         description: Filtra por coincidencia parcial en el nombre del punto de acceso.
-        example: 'Puerta Principal'
+        example: 'LIDE'
       - in: query
         name: page
         schema:
@@ -67,7 +67,7 @@
                             example: '2c0766f2-5b93-4041-af31-dd9820f46e9d'
                           nombre:
                             type: string
-                            example: 'Puerta Principal'
+                            example: 'LIDE'
                           mac:
                             type: string
                             example: '50:78:7D:16:3C:1E'
@@ -93,7 +93,7 @@
                                 example: 'fc9835ed-0938-4d07-a55b-1aed1c83998b'
                               nombre:
                                 type: string
-                                example: 'Planta Baja'
+                                example: 'EIEE - Piso 3'
                     metadata:
                       type: object
                       properties:

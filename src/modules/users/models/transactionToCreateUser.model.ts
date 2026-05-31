@@ -1,5 +1,5 @@
 import { prisma } from '../../../config/index.js';
-import { UserAlreadyExist } from '../errors/index.js';
+import { UserIDAlreadyExist, UserEmailAlreadyExist } from '../errors/index.js';
 import type { UserToCreate } from '../types/index.js';
 
 export const transactionToCreateUser = async (data: UserToCreate) => {
@@ -7,10 +7,35 @@ export const transactionToCreateUser = async (data: UserToCreate) => {
     data;
 
   return await prisma.$transaction(async (tx) => {
-    const user = await tx.usuarios.findFirst({
+    const existingCedula = await tx.usuarios.findFirst({
+      where: {
+        cedula,
+        eliminado_el: null,
+      },
+    });
+
+    if (existingCedula) {
+      throw new UserIDAlreadyExist();
+    }
+
+    const existingEmail = await tx.usuarios.findFirst({
+      where: {
+        correo_electronico: {
+          equals: correo_electronico,
+          mode: 'insensitive',
+        },
+        eliminado_el: null,
+      },
+    });
+
+    if (existingEmail) {
+      throw new UserEmailAlreadyExist();
+    }
+
+    const deletedUser = await tx.usuarios.findFirst({
       where: {
         OR: [
-          { cedula: cedula },
+          { cedula },
           {
             correo_electronico: {
               equals: correo_electronico,
@@ -18,17 +43,15 @@ export const transactionToCreateUser = async (data: UserToCreate) => {
             },
           },
         ],
-      },
-      orderBy: {
-        eliminado_el: 'asc',
+        NOT: {
+          eliminado_el: null,
+        },
       },
     });
 
-    if (user) {
-      if (user.eliminado_el === null) throw new UserAlreadyExist();
-
-      const restoredUser = await tx.usuarios.update({
-        where: { id: user.id },
+    if (deletedUser) {
+      return await tx.usuarios.update({
+        where: { id: deletedUser.id },
         data: {
           nombre,
           apellido,
@@ -40,11 +63,9 @@ export const transactionToCreateUser = async (data: UserToCreate) => {
           eliminado_el: null,
         },
       });
-
-      return restoredUser;
     }
 
-    const newUser = await tx.usuarios.create({
+    return await tx.usuarios.create({
       data: {
         nombre,
         apellido,
@@ -55,7 +76,5 @@ export const transactionToCreateUser = async (data: UserToCreate) => {
         estado: 'activo',
       },
     });
-
-    return newUser;
   });
 };

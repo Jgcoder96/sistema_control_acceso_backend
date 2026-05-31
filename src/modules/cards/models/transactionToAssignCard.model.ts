@@ -41,6 +41,23 @@ export const transactionToAssignCard = async (
       },
     });
 
+    await tx.puntos_acceso.updateMany({
+      where: {
+        permisos_fisicos: {
+          some: {
+            usuario_id: userID,
+            eliminado_el: null,
+          },
+        },
+      },
+      data: {
+        version: {
+          increment: 1,
+        },
+        esta_sincronizado: false,
+      },
+    });
+
     return updatedCard;
   });
 };

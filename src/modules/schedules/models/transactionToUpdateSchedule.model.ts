@@ -3,7 +3,7 @@ import {
   InvalidSchedule,
   ScheduleAlreadyExists,
   ScheduleDoesNotExists,
-} from '../errors/index.js'; // Asegúrate de tener este error o usa uno genérico
+} from '../errors/index.js';
 import { prisma } from '../../../config/index.js';
 import {
   prepareTimeToPrisma,
@@ -44,7 +44,7 @@ export const transactionToUpdateSchedule = async (
         ? null
         : (d.dia_semana ?? null)) as dia_semana_enum | null,
       es_festivo: d.es_festivo,
-      hora_inicio: prepareTimeToPrisma(d.hora_inicio).toISOString(), // Normalizamos para comparar
+      hora_inicio: prepareTimeToPrisma(d.hora_inicio).toISOString(),
       hora_fin: prepareTimeToPrisma(d.hora_fin).toISOString(),
       horario_id: id,
     }));
@@ -79,6 +79,23 @@ export const transactionToUpdateSchedule = async (
           hora_inicio: new Date(d.hora_inicio),
           hora_fin: new Date(d.hora_fin),
         })),
+      });
+
+      await tx.puntos_acceso.updateMany({
+        where: {
+          permisos_fisicos: {
+            some: {
+              horario_id: id,
+              eliminado_el: null,
+            },
+          },
+        },
+        data: {
+          version: {
+            increment: 1,
+          },
+          esta_sincronizado: false,
+        },
       });
     }
 

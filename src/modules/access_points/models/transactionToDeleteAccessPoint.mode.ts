@@ -12,10 +12,12 @@ export const transactionToDeleteAccessPoint = async (id: string) => {
 
     if (!accessPointExists) throw new AccessPointDoesNotExists();
 
+    const deleteDate = new Date();
+
     const deletedAccessPoint = await tx.puntos_acceso.update({
       where: { id: id },
       data: {
-        eliminado_el: new Date(),
+        eliminado_el: deleteDate,
       },
     });
 

@@ -19,6 +19,16 @@ export const transactionToDeletePhysicalPermit = async (id: string) => {
       },
     });
 
+    await tx.puntos_acceso.update({
+      where: {
+        id: physicalPermitExists.punto_acceso_id,
+      },
+      data: {
+        version: { increment: 1 },
+        esta_sincronizado: false,
+      },
+    });
+
     return deletedPhysicalPermit;
   });
 };

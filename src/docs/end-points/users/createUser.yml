@@ -30,17 +30,17 @@
               cedula:
                 type: string
                 description: Cedula de identidad del usuario
-                example: '25542586'
+                example: '12345678'
               correo_electronico:
                 type: string
                 format: email
                 description: Correo electrónico del usuario
-                example: test@gmail.com
+                example: example@example.com
               clave:
                 type: string
                 format: password
                 description: Contraseña de acceso del usuario
-                example: Prueba.123
+                example: Test.1234
               foto:
                 type: string
                 format: binary
@@ -176,10 +176,19 @@
               properties:
                 success:
                   type: boolean
-                  example: false
                 message:
                   type: string
-                  example: Ya se encuentra registrado un usuario con esos datos.
+            examples:
+              cedula_ya_registrada:
+                summary: 1. Cedula ya registrada
+                value:
+                  success: false
+                  message: 'Ya se encuentra registrado un usuario con esa cédula.'
+              correo_electronico_ya_registrado:
+                summary: 2. Correo electrónico ya registrado
+                value:
+                  success: false
+                  message: 'Ya se encuentra registrado un usuario con el correo electrónico.'
       '500':
         description: Error interno del servidor
         content:

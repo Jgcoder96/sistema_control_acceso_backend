@@ -1,4 +1,4 @@
-import { ScheduleDoesNotExists } from '../errors/index.js';
+import { ScheduleDoesNotExists, ScheduleInUse } from '../errors/index.js';
 import { prisma } from '../../../config/index.js';
 
 export const transactionToDeleteSchedule = async (id: string) => {
@@ -11,6 +11,15 @@ export const transactionToDeleteSchedule = async (id: string) => {
     });
 
     if (!scheduleExists) throw new ScheduleDoesNotExists();
+
+    const usedInPermits = await tx.permisos_fisicos.findFirst({
+      where: {
+        horario_id: id,
+        eliminado_el: null,
+      },
+    });
+
+    if (usedInPermits) throw new ScheduleInUse();
 
     await tx.horario_detalles.deleteMany({
       where: { horario_id: id },

@@ -18,7 +18,7 @@
         schema:
           type: string
         description: Filtra por coincidencia parcial en el nombre del horario.
-        example: 'Turno Administrativo'
+        example: 'Horario Profesores'
       - in: query
         name: page
         schema:
@@ -62,7 +62,7 @@
                             example: 'a4de9459-2033-4461-9c65-a73240e67298'
                           nombre:
                             type: string
-                            example: 'Turno Gerencial'
+                            example: 'Horario Profesores'
                           creado_el:
                             type: string
                             format: date-time

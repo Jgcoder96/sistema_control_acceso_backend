@@ -52,6 +52,11 @@
                   issues:
                     - field: 'id'
                       message: 'El parametro de la petición no es un UUID válido.'
+              horario_con_permiso_asociado:
+                summary: 2. Horario con permiso asociado
+                value:
+                  success: false
+                  message: 'No se puede eliminar el horario porque está asignado a permisos de acceso activos.'
       '404':
         description: Recurso no encontrado.
         content:

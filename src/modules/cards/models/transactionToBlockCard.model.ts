@@ -7,6 +7,7 @@ import { prisma } from '../../../config/index.js';
 
 export const transactionToBlockCard = async (cardID: string) => {
   return await prisma.$transaction(async (tx) => {
+    // 1. Validar la existencia y estado de la tarjeta
     const card = await tx.tarjetas.findUnique({
       where: {
         id: cardID,
@@ -31,6 +32,24 @@ export const transactionToBlockCard = async (cardID: string) => {
         accion: 'bloqueo',
       },
     });
+
+    await tx.puntos_acceso.updateMany({
+      where: {
+        permisos_fisicos: {
+          some: {
+            usuario_id: card.usuario_id,
+            eliminado_el: null,
+          },
+        },
+      },
+      data: {
+        version: {
+          increment: 1,
+        },
+        esta_sincronizado: false,
+      },
+    });
+
     return updatedCard;
   });
 };

@@ -18,7 +18,7 @@
         schema:
           type: string
         description: Filtra por coincidencia parcial en el nombre de la ubicación.
-        example: 'Planta'
+        example: 'EIEE - Piso 3'
       - in: query
         name: page
         schema:
@@ -59,7 +59,7 @@
                         example: '550e8400-e29b-41d4-a716-446655440000'
                       nombre:
                         type: string
-                        example: 'Planta Baja'
+                        example: 'EIEE - Piso 3'
                       mesh_id:
                         type: string
                         example: '77:77:77:77:77:77'

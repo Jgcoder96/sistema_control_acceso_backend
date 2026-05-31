@@ -14,28 +14,32 @@ export const transactionToCreatePhysicalPermit = async (
 
   return await prisma.$transaction(async (tx) => {
     const existingAccessPoint = await tx.puntos_acceso.findFirst({
-      where: {
-        id: punto_acceso_id,
-      },
+      where: { id: punto_acceso_id },
     });
 
     if (!existingAccessPoint) throw new AccessPointDoesNotExists();
 
     const existingUser = await tx.usuarios.findFirst({
-      where: {
-        id: usuario_id,
-      },
+      where: { id: usuario_id },
     });
 
     if (!existingUser) throw new UserDoesNotExists();
 
     const existingHorary = await tx.horarios.findFirst({
-      where: {
-        id: horario_id,
-      },
+      where: { id: horario_id },
     });
 
     if (!existingHorary) throw new HoraryDoesNotExists();
+
+    const incrementAccessPointVersion = async () => {
+      await tx.puntos_acceso.update({
+        where: { id: punto_acceso_id },
+        data: {
+          version: { increment: 1 },
+          esta_sincronizado: false,
+        },
+      });
+    };
 
     const existingPermit = await tx.permisos_fisicos.findFirst({
       where: {
@@ -55,8 +59,11 @@ export const transactionToCreatePhysicalPermit = async (
         },
       });
 
+      await incrementAccessPointVersion();
+
       return permissionRestored;
     }
+
     const newPhysicalPermit = await tx.permisos_fisicos.create({
       data: {
         usuario_id,
@@ -64,6 +71,9 @@ export const transactionToCreatePhysicalPermit = async (
         horario_id,
       },
     });
+
+    await incrementAccessPointVersion();
+
     return newPhysicalPermit;
   });
 };

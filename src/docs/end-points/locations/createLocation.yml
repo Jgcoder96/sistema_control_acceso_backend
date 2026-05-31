@@ -17,7 +17,7 @@
               nombre:
                 type: string
                 description: Nombre único de la ubicación física.
-                example: 'Cuarto de Servidores'
+                example: 'EIEE - Piso 3'
               mesh_id:
                 type: string
                 description: ID único de la malla a la que pertenece la ubicación.

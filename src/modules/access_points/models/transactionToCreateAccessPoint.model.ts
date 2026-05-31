@@ -1,7 +1,7 @@
 import {
   MacAlreadyInUse,
   LocationDoesNotExists,
-  AccessPointNameAlreadyInUse, // Asegúrate de importar tu nuevo error
+  AccessPointNameAlreadyInUse,
 } from '../errors/index.js';
 import { prisma } from '../../../config/index.js';
 import type { AccessPoint } from '../types/index.js';
@@ -10,7 +10,6 @@ export const transactionToCreateAccessPoint = async (
   accessPoint: AccessPoint,
 ) => {
   return await prisma.$transaction(async (tx) => {
-    // 1. Validar que la ubicación existe
     const location = await tx.ubicaciones.findFirst({
       where: { id: accessPoint.ubicacion_id, eliminado_el: null },
     });

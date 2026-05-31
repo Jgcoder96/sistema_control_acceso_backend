@@ -111,16 +111,6 @@ model horarios {
   permisos_fisicos permisos_fisicos[]
 }
 
-model logs_acceso {
-  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tarjeta_id      String?       @db.Uuid
-  punto_acceso_id String        @db.Uuid
-  fecha           DateTime      @default(now()) @db.Timestamptz(6)
-  autorizado      Boolean
-  puntos_acceso   puntos_acceso @relation(fields: [punto_acceso_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  tarjetas        tarjetas?     @relation(fields: [tarjeta_id], references: [id], onUpdate: NoAction)
-}
-
 model permisos_fisicos {
   id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   usuario_id      String        @db.Uuid
@@ -143,6 +133,16 @@ model app_permisos {
   actualizado_el DateTime       @default(now()) @db.Timestamptz(6)
   eliminado_el   DateTime?      @db.Timestamptz(6)
   rol_permisos   rol_permisos[]
+}
+
+model logs_acceso {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tarjeta_id      String?       @db.Uuid
+  punto_acceso_id String        @db.Uuid
+  fecha           DateTime      @default(now()) @db.Timestamptz(6)
+  autorizado      Boolean
+  puntos_acceso   puntos_acceso @relation(fields: [punto_acceso_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tarjetas        tarjetas?     @relation(fields: [tarjeta_id], references: [id], onUpdate: NoAction)
 }
 
 model rol_permisos {

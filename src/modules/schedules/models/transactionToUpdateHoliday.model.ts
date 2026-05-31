@@ -20,26 +20,29 @@ export const transactionToUpdateHoliday = async (
 
     const normalizedYear = anio ?? null;
 
-    const hasChanges =
-      existingHoliday.nombre !== nombre ||
+    const dateChanged =
       existingHoliday.dia !== dia ||
       existingHoliday.mes !== mes ||
       existingHoliday.anio !== normalizedYear;
 
-    if (!hasChanges) return existingHoliday;
+    const nameChanged = existingHoliday.nombre !== nombre;
 
-    const nameDuplicate = await tx.festivos.findFirst({
-      where: {
-        nombre: {
-          equals: nombre,
-          mode: 'insensitive',
+    if (!dateChanged && !nameChanged) return existingHoliday;
+
+    if (nameChanged) {
+      const nameDuplicate = await tx.festivos.findFirst({
+        where: {
+          nombre: {
+            equals: nombre,
+            mode: 'insensitive',
+          },
+          id: { not: id },
+          eliminado_el: null,
         },
-        id: { not: id },
-        eliminado_el: null,
-      },
-    });
+      });
 
-    if (nameDuplicate) throw new HolidayAlreadyExists();
+      if (nameDuplicate) throw new HolidayAlreadyExists();
+    }
 
     const updatedHoliday = await tx.festivos.update({
       where: { id },
@@ -47,9 +50,21 @@ export const transactionToUpdateHoliday = async (
         nombre,
         dia,
         mes,
-        anio: anio ?? null,
+        anio: normalizedYear,
       },
     });
+
+    if (dateChanged) {
+      await tx.puntos_acceso.updateMany({
+        where: {
+          eliminado_el: null,
+        },
+        data: {
+          version: { increment: 1 },
+          esta_sincronizado: false,
+        },
+      });
+    }
 
     return updatedHoliday;
   });

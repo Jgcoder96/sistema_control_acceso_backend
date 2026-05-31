@@ -18,19 +18,19 @@
         schema:
           type: string
         description: Filtra por coincidencia parcial en la cédula del usuario.
-        example: '25542586'
+        example: '12345678'
       - in: query
         name: puntoAcceso
         schema:
           type: string
         description: Filtra por coincidencia parcial en el punto de acceso.
-        example: 'Entrada Principal'
+        example: 'LIDE'
       - in: query
         name: ubicacion
         schema:
           type: string
         description: Filtra por coincidencia parcial en la ubicación.
-        example: 'Planta Baja'
+        example: 'EIEE - Piso 3'
       - in: query
         name: page
         schema:
