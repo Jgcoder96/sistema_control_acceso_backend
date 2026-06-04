@@ -7,14 +7,8 @@ export const getUsers = async (filters: UserFilters) => {
 
   const { status, search, page, limit } = filters;
 
-  if (status === 'deleted') {
-    where.eliminado_el = { not: null };
-  } else {
-    where.eliminado_el = null;
-    if (status === 'activo' || status === 'inactivo') {
-      where.estado = status;
-    }
-  }
+  if (status === 'active') where.eliminado_el = null;
+  else if (status === 'deleted') where.eliminado_el = { not: null };
 
   if (search) {
     where.cedula = {
