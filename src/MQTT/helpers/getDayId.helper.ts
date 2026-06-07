@@ -1,8 +1,8 @@
 export const getDayId = (
-  dia: string | null,
-  esFestivo: boolean | null,
+  day: string | null,
+  isHoliday: boolean | null,
 ): number => {
-  if (esFestivo === true) return 0;
+  if (isHoliday === true) return 0;
   const mapping: Record<string, number> = {
     lunes: 1,
     martes: 2,
@@ -12,5 +12,5 @@ export const getDayId = (
     sabado: 6,
     domingo: 7,
   };
-  return mapping[dia?.toLowerCase() || ''] || 0;
+  return mapping[day?.toLowerCase() || ''] || 0;
 };

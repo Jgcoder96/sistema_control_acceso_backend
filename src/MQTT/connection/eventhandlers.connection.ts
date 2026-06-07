@@ -4,27 +4,33 @@ import {
   handleDeviceSyncSuccessful,
 } from '../subscriptions/index.js';
 
+import { SUBSCRIPTION_TOPICS } from '../constants/subscriptionTopics.constant.js';
+
 export const eventHandlers = (client: MqttClient): void => {
+  const { DEVICE_SYNC_REQUEST, DEVICE_SYNC_SUCCESSFUL, MESH_CONFIG } =
+    SUBSCRIPTION_TOPICS;
+
   client.on('connect', () => {
     console.info('🚀 MQTT Conectado');
+
     client.subscribe([
-      'device/sync/request',
-      'device/sync/successful',
-      'mesh/config',
+      DEVICE_SYNC_REQUEST,
+      DEVICE_SYNC_SUCCESSFUL,
+      MESH_CONFIG,
     ]);
   });
 
   client.on('message', async (topic: string, message: Buffer) => {
     switch (topic) {
-      case 'device/sync/request':
+      case DEVICE_SYNC_REQUEST:
         await handleDeviceSync(client, message);
         break;
 
-      case 'device/sync/successful':
+      case DEVICE_SYNC_SUCCESSFUL:
         await handleDeviceSyncSuccessful(message);
         break;
 
-      case 'mesh/config':
+      case MESH_CONFIG:
         console.info('Tópico mesh/config recibido.');
         break;
 

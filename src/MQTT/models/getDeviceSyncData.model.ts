@@ -1,25 +1,64 @@
 import { Prisma } from '@prisma/client';
 import { prisma } from '../../config/index.js';
 
-export const getCompleteDeviceData = async (deviceMac: string) => {
+export const getDeviceInfo = async (deviceMac: string) => {
   return await prisma.puntos_acceso.findUnique({
-    where: { mac: deviceMac },
-    include: {
+    where: {
+      mac: deviceMac,
+    },
+    select: {
+      id: true,
+      mac: true,
+      version: true,
+      eliminado_el: true,
       ubicaciones: {
-        select: { mesh_id: true },
+        select: {
+          mesh_id: true,
+          eliminado_el: true,
+        },
       },
-      permisos_fisicos: {
-        where: { eliminado_el: null },
-        include: {
-          usuarios: {
-            include: {
-              tarjetas: {
-                where: { estado: 'activa', eliminado_el: null },
-              },
+    },
+  });
+};
+
+export const getPaginatedCards = async (
+  deviceMac: string,
+  skip: number,
+  take: number,
+) => {
+  return await prisma.tarjetas.findMany({
+    where: {
+      estado: 'activa',
+      eliminado_el: null,
+      usuarios: {
+        eliminado_el: null,
+        permisos_fisicos: {
+          some: {
+            eliminado_el: null,
+            puntos_acceso: {
+              mac: deviceMac,
+              eliminado_el: null,
+              ubicaciones: { eliminado_el: null },
             },
           },
-          horarios: {
-            include: { horario_detalles: true },
+        },
+      },
+    },
+    skip: skip,
+    take: take,
+    include: {
+      usuarios: {
+        include: {
+          permisos_fisicos: {
+            where: {
+              puntos_acceso: { mac: deviceMac },
+              eliminado_el: null,
+            },
+            include: {
+              horarios: {
+                include: { horario_detalles: true },
+              },
+            },
           },
         },
       },
@@ -27,7 +66,29 @@ export const getCompleteDeviceData = async (deviceMac: string) => {
   });
 };
 
-export const getFestivos = async () => {
+export const countTotalCards = async (deviceMac: string) => {
+  return await prisma.tarjetas.count({
+    where: {
+      estado: 'activa',
+      eliminado_el: null,
+      usuarios: {
+        eliminado_el: null,
+        permisos_fisicos: {
+          some: {
+            eliminado_el: null,
+            puntos_acceso: {
+              mac: deviceMac,
+              eliminado_el: null,
+              ubicaciones: { eliminado_el: null },
+            },
+          },
+        },
+      },
+    },
+  });
+};
+
+export const getHolidays = async () => {
   return await prisma.festivos.findMany({
     where: { eliminado_el: null },
     select: {
@@ -38,8 +99,6 @@ export const getFestivos = async () => {
   });
 };
 
-export type CompleteDeviceData = Prisma.PromiseReturnType<
-  typeof getCompleteDeviceData
->;
-
-export type FestivosData = Prisma.PromiseReturnType<typeof getFestivos>;
+export type DeviceInfo = Prisma.PromiseReturnType<typeof getDeviceInfo>;
+export type PaginatedCards = Prisma.PromiseReturnType<typeof getPaginatedCards>;
+export type HolidaysData = Prisma.PromiseReturnType<typeof getHolidays>;

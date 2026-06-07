@@ -1,6 +1,6 @@
 import { prisma } from '../../config/index.js';
 
-interface SyncAckPayload {
+interface SyncSuccessfulPayload {
   type: string;
   version: number;
   success: boolean;
@@ -10,7 +10,7 @@ interface SyncAckPayload {
 
 export const handleDeviceSyncSuccessful = async (message: Buffer) => {
   try {
-    const payload: SyncAckPayload = JSON.parse(message.toString());
+    const payload: SyncSuccessfulPayload = JSON.parse(message.toString());
 
     if (!payload.success) {
       console.warn(
