@@ -139,9 +139,10 @@ model logs_acceso {
   id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   tarjeta_id      String?       @db.Uuid
   punto_acceso_id String        @db.Uuid
+  codigo_tarjeta  String        @db.VarChar(20)
   fecha           DateTime      @default(now()) @db.Timestamptz(6)
   autorizado      Boolean
-  puntos_acceso   puntos_acceso @relation(fields: [punto_acceso_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  puntos_acceso   puntos_acceso @relation(fields: [punto_acceso_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   tarjetas        tarjetas?     @relation(fields: [tarjeta_id], references: [id], onUpdate: NoAction)
 }
 
