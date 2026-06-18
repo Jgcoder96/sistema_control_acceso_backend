@@ -2,12 +2,13 @@ import { MqttClient } from 'mqtt';
 import {
   handleDeviceSync,
   handleDeviceSyncSuccessful,
+  handleDeviceAccessEvent,
 } from '../subscriptions/index.js';
 
 import { SUBSCRIPTION_TOPICS } from '../constants/subscriptionTopics.constant.js';
 
 export const eventHandlers = (client: MqttClient): void => {
-  const { DEVICE_SYNC_REQUEST, DEVICE_SYNC_SUCCESSFUL, MESH_CONFIG } =
+  const { DEVICE_SYNC_REQUEST, DEVICE_SYNC_SUCCESSFUL, DEVICE_ACCESS_EVENT } =
     SUBSCRIPTION_TOPICS;
 
   client.on('connect', () => {
@@ -16,7 +17,7 @@ export const eventHandlers = (client: MqttClient): void => {
     client.subscribe([
       DEVICE_SYNC_REQUEST,
       DEVICE_SYNC_SUCCESSFUL,
-      MESH_CONFIG,
+      DEVICE_ACCESS_EVENT,
     ]);
   });
 
@@ -30,8 +31,8 @@ export const eventHandlers = (client: MqttClient): void => {
         await handleDeviceSyncSuccessful(message);
         break;
 
-      case MESH_CONFIG:
-        console.info('Tópico mesh/config recibido.');
+      case DEVICE_ACCESS_EVENT:
+        await handleDeviceAccessEvent(message);
         break;
 
       default:
