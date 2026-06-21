@@ -1,6 +1,6 @@
+import { eventHandlers } from './index.js';
+import { MQTT_OPTIONS } from '../config/index.js';
 import mqtt, { MqttClient } from 'mqtt';
-import { eventHandlers } from './eventhandlers.connection.js';
-import { MQTT_OPTIONS } from '../config/MQTT_OPTIONS.config.js';
 
 let client: MqttClient | null = null;
 

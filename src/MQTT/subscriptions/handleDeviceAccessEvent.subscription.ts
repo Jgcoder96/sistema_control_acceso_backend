@@ -1,5 +1,6 @@
 import { Buffer } from 'buffer';
-import { saveAccessLog } from '../models/saveAccessLog.model.js';
+import { saveAccessLog } from '../models/index.js';
+import { logger } from '../../config/index.js';
 
 export interface DeviceAccessPayload {
   card_id: string;
@@ -18,7 +19,6 @@ const parseDeviceDate = (dateStr: string): Date => {
     return new Date();
   }
 
-  // Añadimos el signo '!' después de cada índice para asegurar que son strings
   const day = parseInt(match[1]!, 10);
   const month = parseInt(match[2]!, 10);
   const year = parseInt(match[3]!, 10);
@@ -35,22 +35,15 @@ export const handleDeviceAccessEvent = async (
   try {
     const payload: DeviceAccessPayload = JSON.parse(message.toString());
 
-    console.info(
-      `📥 Evento de acceso: Tarjeta ${payload.card_id} en ${payload.device_mac}`,
-    );
-
     await saveAccessLog({
       cardCode: payload.card_id,
       mac: payload.device_mac,
       authorized: payload.access_granted,
       date: parseDeviceDate(payload.date),
     });
-
-    console.info('✅ Registro guardado en base de datos.');
   } catch (error) {
-    console.error(
-      '🚨 Error en handleDeviceAccessEvent:',
-      error instanceof Error ? error.message : error,
+    logger.error(
+      `[MQTT - ACCESS EVENT] Error al guardar el evento de lectura | Motivo: ${error}.`,
     );
   }
 };

@@ -2,7 +2,6 @@ import { accessPointsRoute } from '../../modules/access_points/routes/index.js';
 import { appPermissionsRoute } from '../../modules/app_permissions/routes/index.js';
 import { authRoute } from '../../modules/users/routes/index.js';
 import { cardsRoute } from '../../modules/cards/routes/index.js';
-import { configRoute } from '../../modules/config/routes/index.js';
 import { locationRoute } from '../../modules/locations/routes/index.js';
 import { physicalPermitRoute } from '../../modules/permissions/routes/index.js';
 import { rolesRoute } from '../../modules/roles/routes/routeRoles.route.js';
@@ -20,7 +19,6 @@ export const appRoutes: AppRoutes = {
   appPermisions: appPermissionsRoute(),
   auth: authRoute(),
   cards: cardsRoute(),
-  config: configRoute(),
   locations: locationRoute(),
   physicalPermits: physicalPermitRoute(),
   roles: rolesRoute(),
@@ -67,8 +65,6 @@ export const setupRoutes = (app: Express): Router => {
   router.use('/app/roles', appRoutes.roles);
 
   router.use('/app/permissions', appRoutes.appPermisions);
-
-  router.use('/config', appRoutes.config);
 
   app.use('/api', router);
 

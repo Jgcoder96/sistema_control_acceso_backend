@@ -9,3 +9,5 @@ export {
 } from './getDeviceSyncData.model.js';
 
 export { accessPointsTableListener } from './accessPointsTableListener.model.js';
+
+export { saveAccessLog } from './saveAccessLog.model.js';

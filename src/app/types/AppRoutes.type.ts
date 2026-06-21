@@ -5,7 +5,6 @@ export interface AppRoutes {
   appPermisions: Router;
   auth: Router;
   cards: Router;
-  config: Router;
   schedules: Router;
   locations: Router;
   physicalPermits: Router;

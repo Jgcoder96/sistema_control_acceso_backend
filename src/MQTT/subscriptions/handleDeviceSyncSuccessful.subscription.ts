@@ -1,4 +1,5 @@
 import { prisma } from '../../config/index.js';
+import { logger } from '../../config/index.js';
 
 interface SyncSuccessfulPayload {
   type: string;
@@ -13,8 +14,8 @@ export const handleDeviceSyncSuccessful = async (message: Buffer) => {
     const payload: SyncSuccessfulPayload = JSON.parse(message.toString());
 
     if (!payload.success) {
-      console.warn(
-        `⚠️ El dispositivo ${payload.device_mac} reportó un fallo en la escritura NVS.`,
+      logger.warn(
+        `[MQTT - SYNC SUCCESSFULL] El dispositivo ${payload.device_mac} reportó un fallo en la escritura NVS (Memoria interna).`,
       );
       return;
     }
@@ -26,20 +27,22 @@ export const handleDeviceSyncSuccessful = async (message: Buffer) => {
       },
       data: {
         esta_sincronizado: true,
-        // Opcional: podrías guardar la versión confirmada si tuvieras un campo para ello
       },
     });
 
-    console.log('\n' + '='.repeat(50));
-    console.log(`✅ DISPOSITIVO SINCRONIZADO EN DB`);
-    console.log(`   Nombre: ${updatedDevice.nombre}`);
-    console.log(`   MAC: ${payload.device_mac}`);
-    console.log(`   Versión Confirmada: ${payload.version}`);
-    console.log('='.repeat(50));
+    // Log estructurado de éxito
+    logger.info(
+      `[MQTT - SYNC SUCCESSFULL] Sincronización confirmada en base de datos`,
+      {
+        nombre: updatedDevice.nombre,
+        mac: payload.device_mac,
+        version_confirmada: payload.version,
+      },
+    );
   } catch (error) {
-    console.error(
-      '❌ Error procesando el ACK de sincronización:',
-      (error as Error).message,
+    logger.error(
+      `[MQTT - SYNC SUCCESSFULL] Error procesando el ACK (confirmación) de sincronización: ${(error as Error).message}`,
+      { stack: (error as Error).stack },
     );
   }
 };

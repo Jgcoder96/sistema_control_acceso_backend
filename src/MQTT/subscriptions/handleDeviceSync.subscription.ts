@@ -6,6 +6,7 @@ import {
   getPaginatedCards,
   type PaginatedCards,
 } from '../models/index.js';
+import { logger } from '../../config/index.js';
 import { macToBuffer, getDayId, getHMSTuple } from '../helpers/index.js';
 
 const PAGE_SIZE = 10;
@@ -27,7 +28,9 @@ export const handleDeviceSync = async (client: MqttClient, message: Buffer) => {
     const deviceData = await getDeviceInfo(device_mac);
 
     if (!deviceData) {
-      console.log(`\n❌ ERROR: DISPOSITIVO NO REGISTRADO [${device_mac}]`);
+      logger.warn(
+        `[MQTT - SYNC] Dispositivo no encontrado en la base de datos: ${device_mac}`,
+      );
       return;
     }
 
@@ -38,7 +41,9 @@ export const handleDeviceSync = async (client: MqttClient, message: Buffer) => {
     const dbMeshId = deviceData.ubicaciones?.mesh_id || '00:00:00:00:00:00';
 
     if (dbMeshId !== mesh_id) {
-      console.log(`\n❌ ERROR DE AUTENTICACIÓN (MESH_ID)`);
+      logger.warn(
+        `[MQTT - SYNC] Conflicto de Mesh ID para ${device_mac}: DB ${dbMeshId} vs Msg ${mesh_id}`,
+      );
       return;
     }
 
@@ -57,22 +62,22 @@ export const handleDeviceSync = async (client: MqttClient, message: Buffer) => {
     let cardsRaw: PaginatedCards = [];
 
     if (isDeleted) {
-      console.log(
-        `\n⚠️ DISPOSITIVO/UBICACIÓN MARCADO COMO ELIMINADO [${device_mac}]. Enviando respuesta vacía.`,
+      logger.warn(
+        `[MQTT - SYNC] El dispositivo/ubicación ${device_mac} está marcado como ELIMINADO. Enviando respuesta de limpieza.`,
       );
     } else if (isUpToDate) {
-      console.log(
-        `\n✅ ${device_mac} ya está actualizado (V.${device_version}).`,
+      logger.info(
+        `[MQTT - SYNC] Dispositivo ${device_mac} omitido: ya está actualizado (V.${device_version}).`,
       );
     } else {
       const totalCardsCount = await countTotalCards(device_mac);
       totalPages = Math.ceil(totalCardsCount / PAGE_SIZE) || 1;
 
-      console.log(
-        `\n🔄 Sincronizando ${device_mac} - Página ${requestedPage} de ${totalPages}`,
-      );
-
       if (requestedPage === 1) {
+        logger.info(
+          `[MQTT - SYNC] Sincronizando ${device_mac}: Iniciando envío de ${totalPages} página(s).`,
+        );
+
         const HolidaysRaw = await getHolidays();
         const bufferHolidays = Buffer.alloc(HolidaysRaw.length * 4);
         HolidaysRaw.forEach((f, i) => {
@@ -147,12 +152,20 @@ export const handleDeviceSync = async (client: MqttClient, message: Buffer) => {
       qos: 1,
     });
 
-    console.log('='.repeat(50));
-    console.log(`📤 PÁGINA ${requestedPage}/${totalPages} ENVIADA`);
-    console.log(`   Estado: ${isDeleted ? 'ELIMINADO (Vaciando)' : 'ACTIVO'}`);
-    console.log(`   Tarjetas enviadas: ${cardsRaw.length}`);
-    console.log('='.repeat(50));
+    logger.info(
+      `[MQTT - SYNC] Página ${requestedPage}/${totalPages} enviada a ${device_mac}`,
+      {
+        estado: isDeleted ? 'ELIMINADO' : 'ACTIVO',
+        tarjetas: cardsRaw.length,
+        version: deviceData.version,
+      },
+    );
   } catch (error) {
-    console.error('❌ Error en handleDeviceSync:', (error as Error).message);
+    logger.error(
+      `[MQTT - SYNC] Error crítico en handleDeviceSync: ${(error as Error).message}`,
+      {
+        stack: (error as Error).stack,
+      },
+    );
   }
 };
