@@ -18,4 +18,5 @@ export const envs = {
   S3_BUCKET_NAME: env.get('S3_BUCKET_NAME').required().asString(),
 
   JWT_SECRET: env.get('JWT_SECRET').required().asString(),
+  JWT_REFRESH_SECRET: env.get('JWT_REFRESH_SECRET').required().asString(),
 };

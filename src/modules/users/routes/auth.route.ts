@@ -3,6 +3,7 @@ import {
   validateUserForCreateInRequestBody,
   validateUserForUpdateInRequestBody,
   validateUsersFiltersInQuery,
+  validateRefreshRequestBody,
 } from '../schemas/index.js';
 import {
   formDataValidator,
@@ -16,6 +17,7 @@ import {
   getUsers,
   login,
   updateUser,
+  refreshToken,
 } from '../controllers/index.js';
 import { validateIdInRequestParams } from '../../shared/schemas/index.js';
 
@@ -26,6 +28,12 @@ export const authRoute = (): Router => {
     '/login',
     [schemaValidator(validateLoginInRequestBody, 'body')],
     login,
+  );
+
+  router.post(
+    '/refresh-token',
+    [schemaValidator(validateRefreshRequestBody, 'body')],
+    refreshToken,
   );
 
   router.get(

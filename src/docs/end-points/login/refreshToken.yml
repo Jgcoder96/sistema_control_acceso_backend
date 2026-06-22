@@ -1,0 +1,131 @@
+/api/users/refresh-token:
+  post:
+    summary: Refrescar Token
+    description: |
+      # 🔄🔑 Refrescar Token
+    tags:
+      - Iniciar Sesión
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - token
+            properties:
+              token:
+                type: string
+                description: El token de refresco (Refresh Token) obtenido en el login para renovar el acceso.
+                example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJmZmJlZDViLTUzZTktNGM1Zi1hZTE2LWM5ZTM4NDhiMDk1YiIsImlhdCI6MTc4MjA5MDA5OCwiZXhwIjoxNzgyNjk0ODk4fQ.2wQI3adTO0d1_qQB805LJ3_5gGR-Ci5wAmSTRC3xnd9'
+    responses:
+      '200':
+        description: Token renovado exitosamente
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Token renovado exitosamente.
+                data:
+                  type: object
+                  properties:
+                    access_token:
+                      type: string
+                      example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJmZmJlZDViLTUzZTktNGM1Zi1hZTE2LWM5ZTM4NDhiMDk1YiIsIm5vbWJyZSI6Ikpvc8OpIiwiYXBlbGxpZG8iOiJQw6lyZXoiLCJjZWR1bGEiOiIyNTU0MjU4NiIsImNvcnJlbyI6Impvc2VwZXJlekBleGFtcGxlLmNvbSIsInJvbGVzIjpbXSwicGVybWlzb3MiOltdLCJpYXQiOjE3ODIwOTMzNjAsImV4cCI6MTc4MjA5Njk2MH0.7hB0Vn8keebecUGlsLljCK3sQw4lnMMBUmp4BFSN0_k
+      '400':
+        description: Error de validación en los datos enviados
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: { type: boolean, example: false }
+                message:
+                  {
+                    type: string,
+                    example: 'Error de validación en los datos enviados.',
+                  }
+                issues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field: { type: string }
+                      message: { type: string }
+            examples:
+              estructura_invalida:
+                summary: 1. Cuerpo JSON inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
+              token_faltante:
+                summary: 2. Campos Inválidos
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'token'
+                      message: "El campo 'token' es obligatorio y debe ser una cadena de texto."
+              longitud_incorrecta:
+                summary: 3. Longitud Incorrecta
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'token'
+                      message: "El campo 'refresh_token' debe contener al menos 4 caracteres."
+              formato_invalido:
+                summary: 4. Formato de Token no válido (Regex)
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - field: 'token'
+                      message: 'El formato del token no es válido.'
+      '401':
+        description: Error de Autenticación (Token Inválido o Expirado)
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: 'Token de autenticación inválido.'
+            examples:
+              token_invalido:
+                summary: 1. Token Inválido
+                description: Ocurre cuando el token ha sido manipulado, la firma no coincide o no existe en la base de datos.
+                value:
+                  success: false
+                  message: 'Token de autenticación inválido.'
+              sesion_expirada:
+                summary: 2. Sesión Expirada
+                description: Ocurre cuando el tiempo de vida del token ha llegado a su fin.
+                value:
+                  success: false
+                  message: 'Su sesión ha expirado por tiempo. Inicie sesión de nuevo.'
+      '500':
+        description: Error interno del servidor
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Error interno del servidor

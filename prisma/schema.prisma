@@ -22,6 +22,7 @@ model usuarios {
   historial_asignaciones historial_asignaciones[]
   permisos_fisicos       permisos_fisicos[]
   tarjetas               tarjetas[]
+  tokens_refresco        tokens_refresco[]
   usuario_roles          usuario_roles[]
 }
 
@@ -175,6 +176,15 @@ model usuario_roles {
   usuarios   usuarios @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_usuario")
 
   @@id([usuario_id, rol_id])
+}
+
+model tokens_refresco {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  usuario_id String    @db.Uuid
+  token      String    @unique
+  expira_el  DateTime  @db.Timestamptz(6)
+  creado_el  DateTime? @default(now()) @db.Timestamptz(6)
+  usuarios   usuarios  @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 enum estado_tarjeta {

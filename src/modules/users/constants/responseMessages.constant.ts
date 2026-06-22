@@ -3,5 +3,6 @@ export const RESPONSE_MESSAGES = {
   deleteUser: 'Usuario Eliminado exitosamente.',
   getUsers: 'Usuarios obtenidos exitosamente.',
   login: 'Sesión iniciada exitosamente.',
+  refreshToken: 'Token renovado exitosamente.',
   updateUser: 'Usuario actualizado exitosamente.',
 };

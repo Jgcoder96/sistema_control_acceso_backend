@@ -38,34 +38,53 @@
                   example: true
                 message:
                   type: string
-                  example: Login exitoso
+                  example: Sesión iniciada exitosamente.
                 data:
                   type: object
                   properties:
-                    id:
-                      type: string
-                      format: uuid
-                      example: c15498c8-9f6c-4212-8560-e073512364f8
-                    nombre:
-                      type: string
-                      example: José
-                    apellido:
-                      type: string
-                      example: Pérez
-                    cedula:
-                      type: string
-                      example: '123456789'
-                    correo_electronico:
-                      type: string
-                      format: email
-                      example: example@example.com
-                    token:
-                      type: string
-                      example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImVjNDAzOTA0LTc2ODUtNDc2Mi1iMzFlLTdlODYxMzg2MWRiYyIsImlhdCI6MTc2OTAwODM3NywiZXhwIjoxNzY5MDExOTc3fQ.KNFqChyA_iEDne54ffVbYC4ENVaNV-qYBbwJAF5SIh8
-                    foto_url:
-                      type: string
-                      format: uri
-                      example: 'https://sistema-control-acceso-s3.s3.amazonaws.com/fotos/perfil.jpg'
+                    user:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          example: bffbed5b-53e9-4c5f-ae16-c9e3848b095b
+                        nombre:
+                          type: string
+                          example: nombre
+                        apellido:
+                          type: string
+                          example: apellido
+                        cedula:
+                          type: string
+                          example: cedula
+                        correo_electronico:
+                          type: string
+                          format: email
+                          example: example@example.com
+                        foto_url:
+                          type: string
+                          format: uri
+                          example: 'https://teg-s3-bucket.s3.us-east-2.amazonaws.com/fotos/1780935396649?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20260622T010138Z&X-Amz-Expires=3600&X-Amz-Signature=37ffbd66e81d37f5f3b400d4ac01ae6bbe56307bd771482e693b2c40ec6a7d72'
+                        roles:
+                          type: array
+                          items:
+                            type: string
+                          example: []
+                        permisos:
+                          type: array
+                          items:
+                            type: string
+                          example: []
+                    tokens:
+                      type: object
+                      properties:
+                        access:
+                          type: string
+                          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJmZmJlZDViLTUzZTktNGM1Zi1hZTE2LWM5ZTM4NDhiMDk1YiIsIm5vbWJyZSI6Ikpvc8OpIiwiYXBlbGxpZG8iOiJQw6lyZXoiLCJjZWR1bGEiOiIyNTU0MjU4NiIsImNvcnJlbyI6Impvc2VwZXJlekBleGFtcGxlLmNvbSIsInJvbGVzIjpbXSwicGVybWlzb3MiOltdLCJpYXQiOjE3ODIwOTAwOTgsImV4cCI6MTc4MjA5MzY5OH0.ocVLTa3RocLALgqT-FCTupmLObHFe5R77zD4O3uQHtA
+                        refresh:
+                          type: string
+                          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJmZmJlZDViLTUzZTktNGM1Zi1hZTE2LWM5ZTM4NDhiMDk1YiIsImlhdCI6MTc4MjA5MDA5OCwiZXhwIjoxNzgyNjk0ODk4fQ.2wQI3adTO0d1_qQB805LJ3_5gGR-Ci5wAmSTRC3xnd8
       '400':
         description: Error de validación en los datos enviados
         content:
@@ -82,8 +101,15 @@
                       field: { type: string }
                       message: { type: string }
             examples:
+              estructura_invalida:
+                summary: 1. Cuerpo JSON inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un objeto JSON.'
               campos_invalidos:
-                summary: 1. Campos Inválidos
+                summary: 2. Campos Inválidos
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados'
@@ -93,7 +119,7 @@
                     - field: 'clave'
                       message: "El campo 'clave' es obligatorio y debe ser una cadena de texto."
               longitud_incorrecta:
-                summary: 2. Longitud Incorrecta
+                summary: 3. Longitud Incorrecta
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados'
@@ -103,7 +129,7 @@
                     - field: 'clave'
                       message: 'La contraseña no puede exceder los 100 caracteres.'
               complejidad_clave:
-                summary: 3. Reglas de seguridad de contraseña
+                summary: 4. Reglas de seguridad de contraseña
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados'
