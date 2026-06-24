@@ -37,7 +37,6 @@ export const getCards = async (filters: AccessCardFilters) => {
         actualizado_el: true,
         eliminado_el: true,
         asignada_el: true,
-        // Usuario actual
         usuarios: {
           select: {
             id: true,
@@ -67,16 +66,42 @@ export const getCards = async (filters: AccessCardFilters) => {
     }),
   ]);
 
+  const dateVzla = new Intl.DateTimeFormat('es-VE', {
+    timeZone: 'America/Caracas',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  });
+
   const data = rawData.map((item) => {
     const { usuarios, historial_asignaciones, ...cardRest } = item;
 
     return {
       ...cardRest,
+      creado_el: cardRest.creado_el
+        ? dateVzla.format(cardRest.creado_el)
+        : null,
+      actualizado_el: cardRest.actualizado_el
+        ? dateVzla.format(cardRest.actualizado_el)
+        : null,
+      eliminado_el: cardRest.eliminado_el
+        ? dateVzla.format(cardRest.eliminado_el)
+        : null,
+      asignada_el: cardRest.asignada_el
+        ? dateVzla.format(cardRest.asignada_el)
+        : null,
+
       usuario: usuarios,
+
       historial_asignaciones: historial_asignaciones.map((h) => {
         const { usuarios: hUsuario, ...hRest } = h;
         return {
           ...hRest,
+          fecha: hRest.fecha ? dateVzla.format(hRest.fecha) : null,
           usuario: hUsuario,
         };
       }),
