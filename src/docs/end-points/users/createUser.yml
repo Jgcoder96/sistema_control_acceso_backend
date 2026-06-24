@@ -22,15 +22,15 @@
               nombre:
                 type: string
                 description: Nombre del usuario
-                example: José
+                example: nombre
               apellido:
                 type: string
                 description: Apellido del usuario
-                example: Pérez
+                example: apellido
               cedula:
                 type: string
                 description: Cedula de identidad del usuario
-                example: '12345678'
+                example: 'cedula'
               correo_electronico:
                 type: string
                 format: email
@@ -68,17 +68,17 @@
                       example: c15498c8-9f6c-4212-8560-e073512364f8
                     nombre:
                       type: string
-                      example: José
+                      example: nombre
                     apellido:
                       type: string
-                      example: Pérez
+                      example: apellido
                     cedula:
                       type: string
-                      example: '12345678'
+                      example: 'cedula'
                     correo_electronico:
                       type: string
                       format: email
-                      example: test@gmail.com
+                      example: example@example.com
                     foto_url:
                       type: string
                       format: uri
@@ -99,8 +99,15 @@
                       field: { type: string }
                       message: { type: string }
             examples:
+              estructura_invalida:
+                summary: 1. Cuerpo JSON inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un Form Data.'
               campos_invalidos:
-                summary: 1. Campos Inválidos
+                summary: 2. Campos Inválidos
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados'
@@ -118,7 +125,7 @@
                     - field: 'foto'
                       message: 'La foto de perfil es obligatoria.'
               longitud_incorrecta:
-                summary: 2. Longitud Incorrecta
+                summary: 3. Longitud Incorrecta
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados'
@@ -138,13 +145,15 @@
                     - field: 'cedula'
                       message: "El campo 'cedula' debe contener solo números"
                     - field: 'correo_electronico'
+                      message: "El campo 'correo_electronico' no puede exceder los 255 caracteres."
+                    - field: 'correo_electronico'
                       message: 'Formato de correo electrónico no válido.'
                     - field: 'clave'
                       message: 'La contraseña debe tener al menos 8 caracteres.'
                     - field: 'clave'
                       message: 'La contraseña no puede exceder los 100 caracteres.'
               complejidad_clave:
-                summary: 3. Reglas de seguridad de contraseña
+                summary: 4. Reglas de seguridad de contraseña
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados'
@@ -158,7 +167,7 @@
                     - field: 'clave'
                       message: 'La contraseña debe incluir al menos un carácter especial.'
               validacion_foto:
-                summary: 4. Reglas de la imagen
+                summary: 5. Reglas de la imagen
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados'

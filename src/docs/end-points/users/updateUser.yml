@@ -90,8 +90,15 @@
                       field: { type: string }
                       message: { type: string }
             examples:
+              estructura_invalida:
+                summary: 1. Cuerpo JSON inválido
+                value:
+                  success: false
+                  message: 'Error de validación en los datos enviados.'
+                  issues:
+                    - message: 'La estructura del cuerpo de la solicitud no es válida. Se requiere un Form Data.'
               campos_invalidos:
-                summary: 1. Campos Inválidos
+                summary: 2. Campos Inválidos
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados'
@@ -107,7 +114,7 @@
                     - field: 'clave'
                       message: "El campo 'clave' debe ser una cadena de texto."
               longitud_incorrecta:
-                summary: 2. Longitud Incorrecta
+                summary: 3. Longitud Incorrecta
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados'
@@ -125,7 +132,9 @@
                     - field: 'cedula'
                       message: "El campo 'cedula' no puede exceder los 8 digitos."
                     - field: 'cedula'
-                      message: "El campo 'cedula' debe contener solo números"
+                      message: "El campo 'cedula' debe contener solo números."
+                    - field: 'correo_electronico'
+                      message: "El campo 'correo_electronico' no puede exceder los 255 caracteres."
                     - field: 'correo_electronico'
                       message: 'Formato de correo electrónico no válido.'
                     - field: 'clave'
@@ -133,7 +142,7 @@
                     - field: 'clave'
                       message: 'La contraseña no puede exceder los 100 caracteres.'
               complejidad_clave:
-                summary: 3. Reglas de seguridad de contraseña
+                summary: 4. Reglas de seguridad de contraseña
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados'
@@ -147,7 +156,7 @@
                     - field: 'clave'
                       message: 'La contraseña debe incluir al menos un carácter especial.'
               validacion_foto:
-                summary: 4. Reglas de la imagen
+                summary: 5. Reglas de la imagen
                 value:
                   success: false
                   message: 'Error de validación en los datos enviados'

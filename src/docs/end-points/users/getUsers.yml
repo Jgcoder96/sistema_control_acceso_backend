@@ -59,17 +59,17 @@
                         example: 'cf22220f-fb1f-4176-a44b-3d815ed15c92'
                       nombre:
                         type: string
-                        example: 'Lizbeth'
+                        example: 'nombre'
                       apellido:
                         type: string
-                        example: 'Romero'
+                        example: 'apellido'
                       cedula:
                         type: string
-                        example: '10262082'
+                        example: 'cedula'
                       correo_electronico:
                         type: string
                         format: email
-                        example: 'lizbethromero@gmail.com'
+                        example: 'example@example.com'
                       foto_url:
                         type: string
                         format: uri
@@ -80,11 +80,11 @@
                       creado_el:
                         type: string
                         format: date-time
-                        example: '2026-05-18T20:07:36.654Z'
+                        example: '08/06/2026, 12:16:38 p. m.'
                       actualizado_el:
                         type: string
                         format: date-time
-                        example: '2026-05-18T20:10:09.036Z'
+                        example: '24/06/2026, 09:58:42 a. m.'
                       eliminado_el:
                         type: string
                         format: date-time
