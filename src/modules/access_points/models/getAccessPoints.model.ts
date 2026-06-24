@@ -21,6 +21,9 @@ export const getAccessPoints = async (filters: AccessPointFilters) => {
     };
   }
 
+  const take = parseInt(limit);
+  const skip = (parseInt(page) - 1) * take;
+
   const [totalItems, data] = await Promise.all([
     prisma.puntos_acceso.count({ where }),
     prisma.puntos_acceso.findMany({
@@ -33,20 +36,35 @@ export const getAccessPoints = async (filters: AccessPointFilters) => {
           },
         },
       },
-      take: parseInt(limit),
-      skip: (parseInt(page) - 1) * parseInt(limit),
+      take,
+      skip,
       orderBy: { creado_el: 'desc' },
     }),
   ]);
+
+  const dateVzla = new Intl.DateTimeFormat('es-VE', {
+    timeZone: 'America/Caracas',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  });
 
   const formattedData = data.map((item) => {
     return {
       id: item.id,
       nombre: item.nombre,
       mac: item.mac,
-      creado_el: item.creado_el,
-      actualizado_el: item.actualizado_el,
-      eliminado_el: item.eliminado_el,
+      creado_el: item.creado_el ? dateVzla.format(item.creado_el) : null,
+      actualizado_el: item.actualizado_el
+        ? dateVzla.format(item.actualizado_el)
+        : null,
+      eliminado_el: item.eliminado_el
+        ? dateVzla.format(item.eliminado_el)
+        : null,
       ubicacion: {
         id: item.ubicaciones?.id,
         nombre: item.ubicaciones?.nombre,
@@ -59,8 +77,8 @@ export const getAccessPoints = async (filters: AccessPointFilters) => {
     metadata: {
       totalItems,
       page: parseInt(page),
-      limit: parseInt(limit),
-      totalPages: Math.ceil(totalItems / parseInt(limit)),
+      limit: take,
+      totalPages: Math.ceil(totalItems / take),
     },
   };
 };
