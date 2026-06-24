@@ -75,11 +75,11 @@
                           creado_el:
                             type: string
                             format: date-time
-                            example: '2026-05-02T00:49:21.760Z'
+                            example: '24/06/2026, 05:42:13 p. m.'
                           actualizado_el:
                             type: string
                             format: date-time
-                            example: '2026-05-02T00:49:21.760Z'
+                            example: '24/06/2026, 05:42:13 p. m.'
                           eliminado_el:
                             type: string
                             format: date-time

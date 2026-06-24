@@ -35,8 +35,30 @@ export const getHolidays = async (filters: HolidayFilters) => {
     }),
   ]);
 
+  const dateVzla = new Intl.DateTimeFormat('es-VE', {
+    timeZone: 'America/Caracas',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  });
+
+  const formattedData = data.map((holiday) => ({
+    ...holiday,
+    creado_el: holiday.creado_el ? dateVzla.format(holiday.creado_el) : null,
+    actualizado_el: holiday.actualizado_el
+      ? dateVzla.format(holiday.actualizado_el)
+      : null,
+    eliminado_el: holiday.eliminado_el
+      ? dateVzla.format(holiday.eliminado_el)
+      : null,
+  }));
+
   return {
-    data,
+    data: formattedData,
     metadata: {
       totalItems,
       page: parseInt(page),

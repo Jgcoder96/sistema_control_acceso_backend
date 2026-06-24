@@ -8,6 +8,8 @@ export const transactionToUpdateHoliday = async (
 ) => {
   const { nombre, dia, mes, anio } = horary;
 
+  console.log(horary);
+
   return await prisma.$transaction(async (tx) => {
     const existingHoliday = await tx.festivos.findFirst({
       where: {
