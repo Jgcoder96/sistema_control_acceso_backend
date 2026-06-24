@@ -17,23 +17,48 @@ export const getLocations = async (filters: LocationFilters) => {
     };
   }
 
+  const take = parseInt(limit);
+  const skip = (parseInt(page) - 1) * take;
+
   const [totalItems, data] = await Promise.all([
     prisma.ubicaciones.count({ where }),
     prisma.ubicaciones.findMany({
       where,
-      take: parseInt(limit),
-      skip: (parseInt(page) - 1) * parseInt(limit),
+      take,
+      skip,
       orderBy: { creado_el: 'desc' },
     }),
   ]);
 
+  const dateVzla = new Intl.DateTimeFormat('es-VE', {
+    timeZone: 'America/Caracas',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  });
+
+  const formattedData = data.map((location) => ({
+    ...location,
+    creado_el: location.creado_el ? dateVzla.format(location.creado_el) : null,
+    actualizado_el: location.actualizado_el
+      ? dateVzla.format(location.actualizado_el)
+      : null,
+    eliminado_el: location.eliminado_el
+      ? dateVzla.format(location.eliminado_el)
+      : null,
+  }));
+
   return {
-    data,
+    data: formattedData,
     metadata: {
       totalItems,
-      page,
-      limit,
-      totalPages: Math.ceil(totalItems / parseInt(limit)),
+      page: parseInt(page),
+      limit: take,
+      totalPages: Math.ceil(totalItems / take),
     },
   };
 };
