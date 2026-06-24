@@ -36,49 +36,19 @@
                       id:
                         type: string
                         format: uuid
-                        example: '6a3ab7e9-0f60-4483-9912-b8fcd046a9d0'
+                        example: '7ccd1b1c-319a-4770-9bea-399cf36fa3cc'
                       nombre:
                         type: string
                         example: 'Administrador'
                       descripcion:
                         type: string
-                        example: 'Gestión de Usuarios, Gestión de Roles, Gestión de Permisos Físicos y Visualización de Eventos.'
+                        example: 'Gestión de Usuarios.'
                       creado_el:
                         type: string
-                        format: date-time
-                        example: '2026-05-06T18:29:26.039Z'
+                        example: '24/06/2026, 02:06:39 p. m.'
                       actualizado_el:
                         type: string
-                        format: date-time
-                        example: '2026-05-06T18:29:26.039Z'
-                      permisos:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            id:
-                              type: string
-                              format: uuid
-                              example: '8b2a73a8-dfc4-434f-9373-d6443eee5e80'
-                            slug:
-                              type: string
-                              example: 'usuarios.crear'
-                            descripcion:
-                              type: string
-                              example: 'Permite crear nuevos usuarios.'
-                            creado_el:
-                              type: string
-                              format: date-time
-                              example: '2026-05-07T15:06:38.898Z'
-                            actualizado_el:
-                              type: string
-                              format: date-time
-                              example: '2026-05-07T18:48:01.876Z'
-                            eliminado_el:
-                              type: string
-                              format: date-time
-                              nullable: true
-                              example: null
+                        example: '24/06/2026, 02:19:53 p. m.'
       '400':
         description: Error de validación en los datos enviados.
         content:

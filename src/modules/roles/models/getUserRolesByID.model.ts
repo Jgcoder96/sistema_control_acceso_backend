@@ -10,21 +10,24 @@ export const getUserRolesByID = async (userId: string) => {
       include: {
         usuario_roles: {
           include: {
-            roles: {
-              include: {
-                rol_permisos: {
-                  include: {
-                    app_permisos: true,
-                  },
-                },
-              },
-            },
+            roles: true,
           },
         },
       },
     });
 
     if (!user) throw new UserDoesNotExist();
+
+    const dateVzla = new Intl.DateTimeFormat('es-VE', {
+      timeZone: 'America/Caracas',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+    });
 
     return user.usuario_roles
       .map((ur) => ur.roles)
@@ -33,11 +36,11 @@ export const getUserRolesByID = async (userId: string) => {
         id: role.id,
         nombre: role.nombre,
         descripcion: role.descripcion,
-        creado_el: role.creado_el,
-        actualizado_el: role.actualizado_el,
-        permisos: role.rol_permisos
-          .map((rp) => rp.app_permisos)
-          .filter((p) => p !== null && p.eliminado_el === null),
+        // Fechas formateadas
+        creado_el: role.creado_el ? dateVzla.format(role.creado_el) : null,
+        actualizado_el: role.actualizado_el
+          ? dateVzla.format(role.actualizado_el)
+          : null,
       }));
   });
 };

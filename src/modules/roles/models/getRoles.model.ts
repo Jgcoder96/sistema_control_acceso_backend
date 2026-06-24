@@ -30,8 +30,28 @@ export const getRoles = async (filters: RoleFilters) => {
     }),
   ]);
 
+  const dateVzla = new Intl.DateTimeFormat('es-VE', {
+    timeZone: 'America/Caracas',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  });
+
+  const formattedData = data.map((role) => ({
+    ...role,
+    creado_el: role.creado_el ? dateVzla.format(role.creado_el) : null,
+    actualizado_el: role.actualizado_el
+      ? dateVzla.format(role.actualizado_el)
+      : null,
+    eliminado_el: role.eliminado_el ? dateVzla.format(role.eliminado_el) : null,
+  }));
+
   return {
-    data,
+    data: formattedData,
     metadata: {
       totalItems,
       page: parseInt(page),

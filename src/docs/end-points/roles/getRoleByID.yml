@@ -44,15 +44,15 @@
                     creado_el:
                       type: string
                       format: date-time
-                      example: '2026-05-06T18:29:26.039Z'
+                      example: '24/06/2026, 02:06:39 p. m.'
                     actualizado_el:
                       type: string
                       format: date-time
-                      example: '2026-05-06T18:29:26.039Z'
+                      example: '24/06/2026, 02:19:53 p. m.'
                     eliminado_el:
                       type: string
                       format: date-time
-                      example: '2026-05-06T18:29:26.039Z'
+                      example: '24/06/2026, 02:19:53 p. m.'
                     permisos:
                       type: array
                       items:
@@ -71,11 +71,11 @@
                           creado_el:
                             type: string
                             format: date-time
-                            example: '2026-05-07T15:06:38.898Z'
+                            example: '24/06/2026, 11:21:55 a. m.'
                           actualizado_el:
                             type: string
                             format: date-time
-                            example: '2026-05-07T18:48:01.876Z'
+                            example: '24/06/2026, 11:21:55 a. m.'
                           eliminado_el:
                             type: string
                             format: date-time

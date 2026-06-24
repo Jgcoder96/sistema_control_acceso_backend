@@ -23,12 +23,13 @@ export const getAppPermissions = async (
       limit: (req.query.limit as string) || '10',
     };
 
-    const roles = await getAppPermissionsService(filters);
+    const { data, metadata } = await getAppPermissionsService(filters);
 
     res.status(200).json({
       success: true,
       message: RESPONSE_MESSAGES.getAppPermissions,
-      data: roles,
+      data,
+      metadata,
     });
   } catch (error) {
     next(error);

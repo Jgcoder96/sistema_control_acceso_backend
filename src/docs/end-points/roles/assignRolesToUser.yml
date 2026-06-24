@@ -1,4 +1,4 @@
-/api/app/roles/{id}/user:
+/api/app/roles/{id}/users:
   post:
     summary: Asignar Roles
     description: |

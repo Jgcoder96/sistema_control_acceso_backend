@@ -64,7 +64,7 @@ export const rolesRoute = (): Router => {
   );
 
   router.post(
-    '/:id/user',
+    '/:id/users',
     [
       schemaValidator(validateRolesInRequestBody, 'body'),
       schemaValidator(validateIdInRequestParams, 'params'),
