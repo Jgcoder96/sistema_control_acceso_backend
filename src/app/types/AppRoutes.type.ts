@@ -9,4 +9,5 @@ export interface AppRoutes {
   locations: Router;
   physicalPermits: Router;
   roles: Router;
+  logs: Router;
 }

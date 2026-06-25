@@ -3,6 +3,7 @@ import { appPermissionsRoute } from '../../modules/app_permissions/routes/index.
 import { authRoute } from '../../modules/users/routes/index.js';
 import { cardsRoute } from '../../modules/cards/routes/index.js';
 import { locationRoute } from '../../modules/locations/routes/index.js';
+import { logsRoutes } from '../../modules/logs/routes/index.js';
 import { physicalPermitRoute } from '../../modules/permissions/routes/index.js';
 import { rolesRoute } from '../../modules/roles/routes/routeRoles.route.js';
 import { schedulesRoute } from '../../modules/schedules/routes/index.js';
@@ -20,6 +21,7 @@ export const appRoutes: AppRoutes = {
   auth: authRoute(),
   cards: cardsRoute(),
   locations: locationRoute(),
+  logs: logsRoutes(),
   physicalPermits: physicalPermitRoute(),
   roles: rolesRoute(),
   schedules: schedulesRoute(),
@@ -61,6 +63,8 @@ export const setupRoutes = (app: Express): Router => {
   router.use('/firmware/schedules', appRoutes.schedules);
 
   router.use('/firmware/permissions', appRoutes.physicalPermits);
+
+  router.use('/firmware/logs', appRoutes.logs);
 
   router.use('/app/roles', appRoutes.roles);
 

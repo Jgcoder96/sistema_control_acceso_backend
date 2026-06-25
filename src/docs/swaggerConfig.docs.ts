@@ -52,6 +52,9 @@ const options: swaggerJSDoc.Options = {
       {
         name: 'Permisos Físicos',
       },
+      {
+        name: 'Logs',
+      },
     ],
     servers: [
       {
