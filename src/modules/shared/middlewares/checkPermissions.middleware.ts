@@ -15,6 +15,10 @@ export const checkPermissions = (requiredPermissions: string[]) => {
 
     if (!user) throw new UnauthenticatedUser();
 
+    if (user.roles.includes('superAdmin')) {
+      return next();
+    }
+
     const hasPermission = requiredPermissions.every((permission) =>
       user.permisos.includes(permission),
     );

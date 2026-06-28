@@ -84,6 +84,18 @@ CREATE TRIGGER tr_usuario_cascada
 
 
 
+--- TOKEN DE AUTENTICACIÓN ---
+
+CREATE TABLE tokens_refresco (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    usuario_id UUID NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    token TEXT NOT NULL UNIQUE,
+    expira_el TIMESTAMPTZ NOT NULL,
+    creado_el TIMESTAMPTZ DEFAULT NOW()
+);
+
+
+
 
 
 
@@ -216,7 +228,6 @@ CREATE TABLE puntos_acceso (
     nombre VARCHAR(100) NOT NULL,
     mac VARCHAR(17) NOT NULL UNIQUE,
     version INTEGER NOT NULL DEFAULT 1,
-    esta_conectado BOOLEAN NOT NULL DEFAULT FALSE,
     esta_sincronizado BOOLEAN NOT NULL DEFAULT FALSE,
     creado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     actualizado_el TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -264,6 +275,36 @@ CREATE TRIGGER tr_punto_acceso_cascada
     BEFORE UPDATE ON puntos_acceso
     FOR EACH ROW
     EXECUTE PROCEDURE trigger_punto_acceso_cascada();
+
+
+
+CREATE OR REPLACE FUNCTION notificar_punto_acceso_desincronizacion() 
+	RETURNS TRIGGER AS $$
+		DECLARE
+    		v_mesh_id VARCHAR(17);
+		BEGIN
+    		SELECT u.mesh_id INTO v_mesh_id 
+    		FROM ubicaciones u 
+    		WHERE u.id = NEW.ubicacion_id;
+    		IF (OLD.esta_sincronizado = TRUE AND NEW.esta_sincronizado = FALSE) THEN
+        	PERFORM pg_notify(
+            'device_desync', 
+            json_build_object(
+                'mac', NEW.mac, 
+                'mesh_id', v_mesh_id
+            )::text
+        );
+    		END IF;
+    
+    		RETURN NEW;
+		END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER tr_puntos_acceso_mqtt_notificar
+	AFTER UPDATE ON puntos_acceso
+		FOR EACH ROW
+		EXECUTE FUNCTION notificar_punto_acceso_desincronizacion();
 
 
 
@@ -362,11 +403,13 @@ CREATE TABLE permisos_fisicos (
 
 CREATE TABLE logs_acceso (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    tarjeta_id UUID REFERENCES tarjetas(id) ON DELETE SET NULL,
-    punto_acceso_id UUID NOT NULL REFERENCES puntos_acceso(id),
+    tarjeta_id UUID REFERENCES tarjetas(id) ON DELETE SET NULL, -- Relación opcional
+    punto_acceso_id UUID NOT NULL REFERENCES puntos_acceso(id) ON DELETE CASCADE,
+    codigo_tarjeta VARCHAR(20) NOT NULL, -- El número que leyó el sensor (ej: "10725571")
     fecha TIMESTAMPTZ NOT NULL DEFAULT NOW(), 
     autorizado BOOLEAN NOT NULL
 );
+
 
 
 
@@ -425,3 +468,7 @@ CREATE TABLE usuario_roles (
     CONSTRAINT fk_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
     CONSTRAINT fk_rol FOREIGN KEY (rol_id) REFERENCES roles(id) ON DELETE CASCADE
 );
+
+
+
+
