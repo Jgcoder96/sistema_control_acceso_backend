@@ -11,7 +11,7 @@
       - name: id
         in: path
         required: true
-        description: Identificador único (UUID) del Rol a buscar.
+        description: Identificador único (UUID) del Rol.
         schema:
           type: string
           format: uuid
@@ -109,7 +109,7 @@
                     - field: 'id'
                       message: 'El parametro de la petición no es un UUID válido.'
       '401':
-        description: Errores de autenticación
+        description: Errores de autenticación.
         content:
           application/json:
             schema:
@@ -143,7 +143,7 @@
                   success: false
                   message: 'Usuario no autenticado.'
       '403':
-        description: Permisos insuficientes
+        description: Permisos insuficientes.
         content:
           application/json:
             schema:

@@ -1,6 +1,6 @@
 export const PERMISSIONS = {
   assignPermissionsToRole: 'roles.permisos.asignar',
-  assignRolesToUser: 'roles.usuarios.asignar',
+  assignRolesToUser: 'usuarios.roles.asignar',
   createRole: 'roles.crear',
   deleteRole: 'roles.eliminar',
   getRole: 'roles.permisos.leer',

@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "tsx watch src/main.ts",
     "build": "rimraf ./dist && tsc",
-    "start": "node ./dist/main.js"
+    "start": "node ./dist/main.js",
+    "seed:admin": "tsx src/seeds/seedSuperAdmin.seed.ts",
+    "seed:admin:prod": "node ./dist/seeds/seedSuperAdmin.seed.js"
   },
   "repository": {
     "type": "git",

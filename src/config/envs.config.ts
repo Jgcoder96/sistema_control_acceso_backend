@@ -19,4 +19,10 @@ export const envs = {
 
   JWT_SECRET: env.get('JWT_SECRET').required().asString(),
   JWT_REFRESH_SECRET: env.get('JWT_REFRESH_SECRET').required().asString(),
+
+  SUPERADMIN_EMAIL: env.get('SUPERADMIN_EMAIL').required().asString(),
+  SUPERADMIN_PASSWORD: env.get('SUPERADMIN_PASSWORD').required().asString(),
+  SUPERADMIN_NOMBRE: env.get('SUPERADMIN_NOMBRE').required().asString(),
+  SUPERADMIN_APELLIDO: env.get('SUPERADMIN_APELLIDO').required().asString(),
+  SUPERADMIN_CEDULA: env.get('SUPERADMIN_CEDULA').required().asString(),
 };

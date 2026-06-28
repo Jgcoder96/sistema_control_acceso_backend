@@ -64,7 +64,7 @@
                 example: activo
     responses:
       '200':
-        description: Recurso actualizado exitosamente
+        description: Recurso actualizado exitosamente.
         content:
           application/json:
             schema:
@@ -77,7 +77,7 @@
                   type: string
                   example: Usuario actualizado exitosamente.
       '400':
-        description: Error de validación en los datos enviados
+        description: Error de validación en los datos enviados.
         content:
           application/json:
             schema:
@@ -168,7 +168,7 @@
                     - field: 'foto'
                       message: 'Solo se permiten formatos Jpeg, PNG y WebP.'
       '401':
-        description: Errores de autenticación
+        description: Errores de autenticación.
         content:
           application/json:
             schema:
@@ -202,7 +202,7 @@
                   success: false
                   message: 'Usuario no autenticado.'
       '403':
-        description: Permisos insuficientes
+        description: Permisos insuficientes.
         content:
           application/json:
             schema:
@@ -215,7 +215,7 @@
                   type: string
                   example: No tienes los permisos necesarios.
       '404':
-        description: Recurso no encontrado
+        description: Recurso no encontrado.
         content:
           application/json:
             schema:
@@ -228,7 +228,7 @@
                   type: string
                   example: El Usuario no se encuentra registrado.
       '409':
-        description: El recurso ya existe en la base de datos
+        description: El recurso ya existe en la base de datos.
         content:
           application/json:
             schema:
@@ -250,7 +250,7 @@
                   success: false
                   message: 'Ya se encuentra registrado un usuario con el correo electrónico.'
       '500':
-        description: Error interno del servidor
+        description: Error interno del servidor.
         content:
           application/json:
             schema:

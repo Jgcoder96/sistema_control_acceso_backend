@@ -11,7 +11,7 @@
       - name: id
         in: path
         required: true
-        description: Identificador único (UUID) del Rol a asignar permisos.
+        description: Identificador único (UUID) del Usuario.
         schema:
           type: string
           format: uuid
@@ -103,7 +103,7 @@
                     - field: 'rolesIds'
                       message: 'Los elementos del arreglo no son un UUID válido.'
       '401':
-        description: Errores de autenticación
+        description: Errores de autenticación.
         content:
           application/json:
             schema:
@@ -137,7 +137,7 @@
                   success: false
                   message: 'Usuario no autenticado.'
       '403':
-        description: Permisos insuficientes
+        description: Permisos insuficientes.
         content:
           application/json:
             schema:
