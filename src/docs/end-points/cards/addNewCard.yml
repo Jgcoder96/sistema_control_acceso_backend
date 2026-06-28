@@ -5,6 +5,8 @@
       # 💳 Crear una nueva Tarjeta de Acceso
     tags:
       - Tarjetas de Acceso
+    security:
+      - bearerAuth: []
     requestBody:
       required: true
       content:
@@ -72,6 +74,53 @@
                   issues:
                     - field: 'codigo'
                       message: 'El formato del código RFID no es válido.'
+      '401':
+        description: Errores de autenticación
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  description: Mensaje de error devuelto por la API.
+            examples:
+              token_expired:
+                summary: 1. Token Expirado
+                value:
+                  success: false
+                  message: 'El token ha expirado.'
+              token_invalid:
+                summary: 2. Token Inválido
+                value:
+                  success: false
+                  message: 'Token inválido.'
+              token_not_found:
+                summary: 3. Token no encontrado
+                value:
+                  success: false
+                  message: 'Token no proporcionado.'
+              unauthenticated_user:
+                summary: 4. Usuario no autenticado
+                value:
+                  success: false
+                  message: 'Usuario no autenticado.'
+      '403':
+        description: Permisos insuficientes
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: No tienes los permisos necesarios.
       '409':
         description: El recurso ya existe en la base de datos.
         content:

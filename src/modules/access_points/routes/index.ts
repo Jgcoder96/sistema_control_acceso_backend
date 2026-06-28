@@ -1,1 +1,1 @@
-export { accessPointsRoute } from './accessPoints.route.js';
+export { routeForAccessPoints } from './accessPoints.route.js';

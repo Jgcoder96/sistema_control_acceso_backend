@@ -1,1 +1,1 @@
-export { rolesRoute } from './routeRoles.route.js';
+export { routeForRoles } from './roles.route.js';

@@ -1,1 +1,1 @@
-export { logsRoutes } from './logs.routes.js';
+export { routeForLogs } from './logs.route.js';

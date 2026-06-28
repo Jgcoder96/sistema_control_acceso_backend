@@ -46,7 +46,7 @@ export const globalErrorHandler = (
     });
   }
 
-  logger.error('Error interno del servidor', { ...meta });
+  //logger.error('Error interno del servidor', { ...meta });
 
   res.status(statusCode).json({
     success: false,

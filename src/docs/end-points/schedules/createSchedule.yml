@@ -5,6 +5,8 @@
       # 📅 Crear un nuevo Horario
     tags:
       - Horarios
+    security:
+      - bearerAuth: []
     requestBody:
       required: true
       content:
@@ -183,6 +185,53 @@
                     message: 'Conflicto de horario en el día lunes: el rango [08:00:00 - 14:00:00] se cruza con [12:00:00 - 18:00:00].'
                   - success: false
                     message: 'Conflicto de horario en los días festivos: el rango [10:00:00 - 16:00:00] se cruza con [15:00:00 - 20:00:00].'
+      '401':
+        description: Errores de autenticación
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  description: Mensaje de error devuelto por la API.
+            examples:
+              token_expired:
+                summary: 1. Token Expirado
+                value:
+                  success: false
+                  message: 'El token ha expirado.'
+              token_invalid:
+                summary: 2. Token Inválido
+                value:
+                  success: false
+                  message: 'Token inválido.'
+              token_not_found:
+                summary: 3. Token no encontrado
+                value:
+                  success: false
+                  message: 'Token no proporcionado.'
+              unauthenticated_user:
+                summary: 4. Usuario no autenticado
+                value:
+                  success: false
+                  message: 'Usuario no autenticado.'
+      '403':
+        description: Permisos insuficientes
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: No tienes los permisos necesarios.
       '409':
         description: El recurso ya existe en la base de datos.
         content:

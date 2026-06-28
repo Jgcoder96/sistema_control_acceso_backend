@@ -1,1 +1,1 @@
-export { physicalPermitRoute } from './physicalPermit.routes.js';
+export { routeForPhysicalPermits } from './physicalPermits.route.js';

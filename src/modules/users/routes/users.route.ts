@@ -8,6 +8,8 @@ import {
 import {
   formDataValidator,
   schemaValidator,
+  isAuth,
+  checkPermissions,
 } from '../../shared/middlewares/index.js';
 import { Router } from 'express';
 import upload from '../../../config/multer.config.js';
@@ -16,12 +18,13 @@ import {
   deleteUser,
   getUsers,
   login,
-  updateUser,
   refreshToken,
+  updateUser,
 } from '../controllers/index.js';
 import { validateIdInRequestParams } from '../../shared/schemas/index.js';
+import { PERMISSIONS } from '../constants/index.js';
 
-export const authRoute = (): Router => {
+export const routeForUsers = (): Router => {
   const router = Router();
 
   router.post(
@@ -38,6 +41,8 @@ export const authRoute = (): Router => {
 
   router.get(
     '/',
+    isAuth,
+    checkPermissions([PERMISSIONS.getUsers]),
     [schemaValidator(validateUsersFiltersInQuery, 'query')],
     getUsers,
   );
@@ -45,6 +50,8 @@ export const authRoute = (): Router => {
   router.post(
     '/',
     [
+      isAuth,
+      checkPermissions([PERMISSIONS.createUser]),
       upload.single('foto'),
       formDataValidator(validateUserForCreateInRequestBody),
     ],
@@ -54,6 +61,8 @@ export const authRoute = (): Router => {
   router.put(
     '/:id',
     [
+      isAuth,
+      checkPermissions([PERMISSIONS.updateUser]),
       upload.single('foto'),
       schemaValidator(validateIdInRequestParams, 'params'),
       formDataValidator(validateUserForUpdateInRequestBody),
@@ -63,7 +72,11 @@ export const authRoute = (): Router => {
 
   router.delete(
     '/:id',
-    [schemaValidator(validateIdInRequestParams, 'params')],
+    [
+      isAuth,
+      checkPermissions([PERMISSIONS.deleteUser]),
+      schemaValidator(validateIdInRequestParams, 'params'),
+    ],
     deleteUser,
   );
 

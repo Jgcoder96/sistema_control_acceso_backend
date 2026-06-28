@@ -1,35 +1,54 @@
+import { Router } from 'express';
+
 import {
   createAccessPoint,
   deleteAccessPoint,
-  updateAccessPoint,
   getAccessPoints,
+  updateAccessPoint,
 } from '../controllers/index.js';
+
 import {
+  checkPermissions,
+  isAuth,
+  schemaValidator,
+} from '../../shared/middlewares/index.js';
+
+import {
+  validateAccesspointFiltersInQuery,
   validateAccessPointInBodyRequest,
   validateIdInRequestParams,
-  validateAccesspointFiltersInQuery,
 } from '../schemas/index.js';
-import { Router } from 'express';
-import { schemaValidator } from '../../shared/middlewares/index.js';
 
-export const accessPointsRoute = (): Router => {
+import { PERMISSIONS } from '../constants/index.js';
+
+export const routeForAccessPoints = (): Router => {
   const router = Router();
 
   router.get(
     '/',
-    [schemaValidator(validateAccesspointFiltersInQuery, 'query')],
+    [
+      isAuth,
+      checkPermissions([PERMISSIONS.getAccessPoints]),
+      schemaValidator(validateAccesspointFiltersInQuery, 'query'),
+    ],
     getAccessPoints,
   );
 
   router.post(
     '/',
-    [schemaValidator(validateAccessPointInBodyRequest, 'body')],
+    [
+      isAuth,
+      checkPermissions([PERMISSIONS.createAccessPoint]),
+      schemaValidator(validateAccessPointInBodyRequest, 'body'),
+    ],
     createAccessPoint,
   );
 
   router.put(
     '/:id',
     [
+      isAuth,
+      checkPermissions([PERMISSIONS.updateAccessPoint]),
       schemaValidator(validateIdInRequestParams, 'params'),
       schemaValidator(validateAccessPointInBodyRequest, 'body'),
     ],
@@ -38,7 +57,11 @@ export const accessPointsRoute = (): Router => {
 
   router.delete(
     '/:id',
-    [schemaValidator(validateIdInRequestParams, 'params')],
+    [
+      isAuth,
+      checkPermissions([PERMISSIONS.deleteAccessPoint]),
+      schemaValidator(validateIdInRequestParams, 'params'),
+    ],
     deleteAccessPoint,
   );
 

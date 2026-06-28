@@ -1,1 +1,1 @@
-export { appPermissionsRoute } from './routeRolePermissions.route.js';
+export { routeForAppPermissions } from './appPermissions.route.js';

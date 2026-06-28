@@ -1,1 +1,1 @@
-export { schedulesRoute } from './route.js';
+export { routesForSchedules } from './schedules.route.js';

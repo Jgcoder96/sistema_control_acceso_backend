@@ -1,1 +1,1 @@
-export { cardsRoute } from './cards.routes.js';
+export { routeForAccessCards } from './accessCards.route.js';

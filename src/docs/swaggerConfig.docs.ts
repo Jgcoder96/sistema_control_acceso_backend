@@ -21,6 +21,19 @@ const options: swaggerJSDoc.Options = {
         name: 'jgcoder96',
       },
     },
+
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description:
+            'Introduce el token JWT obtenido en el login para acceder a los endpoints protegidos.',
+        },
+      },
+    },
+
     tags: [
       {
         name: 'Iniciar Sesión',

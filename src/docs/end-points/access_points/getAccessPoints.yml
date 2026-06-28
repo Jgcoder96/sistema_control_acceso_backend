@@ -5,6 +5,8 @@
       # 🔍 Obtener lista de Puntos de Acceso
     tags:
       - Puntos de Acceso
+    security:
+      - bearerAuth: []
     parameters:
       - in: query
         name: status
@@ -41,7 +43,7 @@
         description: Cantidad de registros por página.
     responses:
       '200':
-        description: Puntos de Acceso obtenidos exitosamente.
+        description: Puntos de Acceso obtenidos exitosamente
         content:
           application/json:
             schema:
@@ -110,7 +112,7 @@
                           type: integer
                           example: 1
       '400':
-        description: Error de validación en los parámetros de consulta (Query Params).
+        description: Error de validación en los parámetros de consulta (Query Params)
         content:
           application/json:
             schema:
@@ -202,8 +204,55 @@
                   issues:
                     - field: 'limit'
                       message: 'El límite máximo de la consulta es 100.'
+      '401':
+        description: Errores de autenticación
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  description: Mensaje de error devuelto por la API.
+            examples:
+              token_expired:
+                summary: 1. Token Expirado
+                value:
+                  success: false
+                  message: 'El token ha expirado.'
+              token_invalid:
+                summary: 2. Token Inválido
+                value:
+                  success: false
+                  message: 'Token inválido.'
+              token_not_found:
+                summary: 3. Token no encontrado
+                value:
+                  success: false
+                  message: 'Token no proporcionado.'
+              unauthenticated_user:
+                summary: 4. Usuario no autenticado
+                value:
+                  success: false
+                  message: 'Usuario no autenticado.'
+      '403':
+        description: Permisos insuficientes
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: No tienes los permisos necesarios.
       '500':
-        description: Error interno del servidor.
+        description: Error interno del servidor
         content:
           application/json:
             schema:

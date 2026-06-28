@@ -1,1 +1,1 @@
-export { locationRoute } from './location.route.js';
+export { routeForLocations } from './locations.route.js';

@@ -1,3 +1,5 @@
+import { Router } from 'express';
+
 import {
   assignPermissionsToRole,
   assignRolesToUser,
@@ -8,9 +10,15 @@ import {
   getUserRolesByID,
   updateRole,
 } from '../controllers/index.js';
-import { Router } from 'express';
-import { schemaValidator } from '../../shared/middlewares/index.js';
+
+import {
+  checkPermissions,
+  isAuth,
+  schemaValidator,
+} from '../../shared/middlewares/index.js';
+
 import { validateIdInRequestParams } from '../../shared/schemas/index.js';
+
 import {
   validatePermissionsInRequestBody,
   validateRoleFiltersInQuery,
@@ -18,24 +26,36 @@ import {
   validateRolesInRequestBody,
 } from '../schemas/index.js';
 
-export const rolesRoute = (): Router => {
+import { PERMISSIONS } from '../constants/index.js';
+
+export const routeForRoles = (): Router => {
   const router = Router();
 
   router.get(
     '/',
-    [schemaValidator(validateRoleFiltersInQuery, 'query')],
+    [
+      isAuth,
+      checkPermissions([PERMISSIONS.getRoles]),
+      schemaValidator(validateRoleFiltersInQuery, 'query'),
+    ],
     getRoles,
   );
 
   router.post(
     '/',
-    [schemaValidator(validateRoleInRequestBody, 'body')],
+    [
+      isAuth,
+      checkPermissions([PERMISSIONS.createRole]),
+      schemaValidator(validateRoleInRequestBody, 'body'),
+    ],
     createRole,
   );
 
   router.put(
     '/:id',
     [
+      isAuth,
+      checkPermissions([PERMISSIONS.updateRole]),
       schemaValidator(validateIdInRequestParams, 'params'),
       schemaValidator(validateRoleInRequestBody, 'body'),
     ],
@@ -44,13 +64,19 @@ export const rolesRoute = (): Router => {
 
   router.delete(
     '/:id',
-    [schemaValidator(validateIdInRequestParams, 'params')],
+    [
+      isAuth,
+      checkPermissions([PERMISSIONS.deleteRole]),
+      schemaValidator(validateIdInRequestParams, 'params'),
+    ],
     deleteRole,
   );
 
   router.post(
     '/:id/permissions',
     [
+      isAuth,
+      checkPermissions([PERMISSIONS.assignPermissionsToRole]),
       schemaValidator(validateIdInRequestParams, 'params'),
       schemaValidator(validatePermissionsInRequestBody, 'body'),
     ],
@@ -59,13 +85,19 @@ export const rolesRoute = (): Router => {
 
   router.get(
     '/:id/permissions',
-    [schemaValidator(validateIdInRequestParams, 'params')],
+    [
+      isAuth,
+      checkPermissions([PERMISSIONS.getRole]),
+      schemaValidator(validateIdInRequestParams, 'params'),
+    ],
     getRoleByID,
   );
 
   router.post(
     '/:id/users',
     [
+      isAuth,
+      checkPermissions([PERMISSIONS.assignRolesToUser]),
       schemaValidator(validateRolesInRequestBody, 'body'),
       schemaValidator(validateIdInRequestParams, 'params'),
     ],
@@ -74,7 +106,11 @@ export const rolesRoute = (): Router => {
 
   router.get(
     '/:id/users',
-    [schemaValidator(validateIdInRequestParams, 'params')],
+    [
+      isAuth,
+      checkPermissions([PERMISSIONS.getUserRoles]),
+      schemaValidator(validateIdInRequestParams, 'params'),
+    ],
     getUserRolesByID,
   );
 

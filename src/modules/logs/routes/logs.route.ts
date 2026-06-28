@@ -1,9 +1,12 @@
-import { getAccessLogs } from '../controllers/index.js';
 import { Router } from 'express';
+
+import { getAccessLogs } from '../controllers/index.js';
+
 import { schemaValidator } from '../../shared/middlewares/index.js';
+
 import { validateAccessLogsFiltersInQuery } from '../schemas/index.js';
 
-export const logsRoutes = (): Router => {
+export const routeForLogs = (): Router => {
   const router = Router();
 
   router.get(

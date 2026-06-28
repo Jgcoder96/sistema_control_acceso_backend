@@ -3,7 +3,7 @@ import { Router } from 'express';
 export interface AppRoutes {
   accessPoints: Router;
   appPermisions: Router;
-  auth: Router;
+  users: Router;
   cards: Router;
   schedules: Router;
   locations: Router;

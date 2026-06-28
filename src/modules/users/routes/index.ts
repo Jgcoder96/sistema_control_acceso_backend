@@ -1,1 +1,1 @@
-export { authRoute } from './auth.route.js';
+export { routeForUsers } from './users.route.js';
