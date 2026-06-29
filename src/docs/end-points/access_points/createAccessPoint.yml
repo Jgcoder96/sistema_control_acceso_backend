@@ -31,7 +31,7 @@
                 example: 'fc9835ed-0938-4d07-a55b-1aed1c83998b'
     responses:
       '201':
-        description: Recurso creado exitosamente
+        description: Recurso creado exitosamente.
         content:
           application/json:
             schema:
@@ -44,7 +44,7 @@
                   type: string
                   example: Punto de acceso creado exitosamente.
       '400':
-        description: Error de validación en los datos enviados
+        description: Error de validación en los datos enviados.
         content:
           application/json:
             schema:
@@ -86,7 +86,7 @@
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'nombre'
-                      message: "El campo 'nombre' debe contener al menos 4 caracteres."
+                      message: "El campo 'nombre' debe contener al menos 3 caracteres."
                     - field: 'nombre'
                       message: "El campo 'nombre' no puede exceder los 100 caracteres."
               mac_invalida:
@@ -106,7 +106,7 @@
                     - field: 'ubicacion_id'
                       message: 'El formato del ID de la ubicación no es un UUID válido.'
       '401':
-        description: Errores de autenticación
+        description: Errores de autenticación.
         content:
           application/json:
             schema:
@@ -140,7 +140,7 @@
                   success: false
                   message: 'Usuario no autenticado.'
       '403':
-        description: Permisos insuficientes
+        description: Permisos insuficientes.
         content:
           application/json:
             schema:
@@ -153,7 +153,7 @@
                   type: string
                   example: No tienes los permisos necesarios.
       '404':
-        description: Recurso no encontrado
+        description: Recurso no encontrado.
         content:
           application/json:
             schema:
@@ -166,7 +166,7 @@
                   type: string
                   example: La ubicación física no se encuentra registrada.
       '409':
-        description: El recurso ya existe en la base de datos
+        description: El recurso ya existe en la base de datos.
         content:
           application/json:
             schema:
@@ -188,7 +188,7 @@
                   success: false
                   message: 'Ya se encuentra registrado un Punto de Acceso con ese nombre.'
       '500':
-        description: Error interno del servidor
+        description: Error interno del servidor.
         content:
           application/json:
             schema:

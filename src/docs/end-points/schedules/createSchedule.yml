@@ -186,7 +186,7 @@
                   - success: false
                     message: 'Conflicto de horario en los días festivos: el rango [10:00:00 - 16:00:00] se cruza con [15:00:00 - 20:00:00].'
       '401':
-        description: Errores de autenticación
+        description: Errores de autenticación.
         content:
           application/json:
             schema:
@@ -220,7 +220,7 @@
                   success: false
                   message: 'Usuario no autenticado.'
       '403':
-        description: Permisos insuficientes
+        description: Permisos insuficientes.
         content:
           application/json:
             schema:

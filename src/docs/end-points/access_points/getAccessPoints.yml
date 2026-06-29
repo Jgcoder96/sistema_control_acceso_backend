@@ -43,7 +43,7 @@
         description: Cantidad de registros por página.
     responses:
       '200':
-        description: Puntos de Acceso obtenidos exitosamente
+        description: Puntos de Acceso obtenidos exitosamente.
         content:
           application/json:
             schema:
@@ -112,7 +112,7 @@
                           type: integer
                           example: 1
       '400':
-        description: Error de validación en los parámetros de consulta (Query Params)
+        description: Error de validación en los parámetros de consulta (Query Params).
         content:
           application/json:
             schema:
@@ -205,7 +205,7 @@
                     - field: 'limit'
                       message: 'El límite máximo de la consulta es 100.'
       '401':
-        description: Errores de autenticación
+        description: Errores de autenticación.
         content:
           application/json:
             schema:
@@ -239,7 +239,7 @@
                   success: false
                   message: 'Usuario no autenticado.'
       '403':
-        description: Permisos insuficientes
+        description: Permisos insuficientes.
         content:
           application/json:
             schema:
@@ -252,7 +252,7 @@
                   type: string
                   example: No tienes los permisos necesarios.
       '500':
-        description: Error interno del servidor
+        description: Error interno del servidor.
         content:
           application/json:
             schema:

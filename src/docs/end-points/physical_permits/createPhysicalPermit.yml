@@ -92,7 +92,7 @@
                     - field: 'horario_id'
                       message: 'El formato del ID de horario no es un UUID válido.'
       '401':
-        description: Errores de autenticación
+        description: Errores de autenticación.
         content:
           application/json:
             schema:
@@ -126,7 +126,7 @@
                   success: false
                   message: 'Usuario no autenticado.'
       '403':
-        description: Permisos insuficientes
+        description: Permisos insuficientes.
         content:
           application/json:
             schema:

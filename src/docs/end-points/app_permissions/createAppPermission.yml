@@ -99,7 +99,7 @@
                     - field: 'slug'
                       message: 'El slug solo puede contener letras minúsculas, números, puntos, guiones y guiones bajos (sin espacios).'
       '401':
-        description: Errores de autenticación
+        description: Errores de autenticación.
         content:
           application/json:
             schema:
@@ -133,7 +133,7 @@
                   success: false
                   message: 'Usuario no autenticado.'
       '403':
-        description: Permisos insuficientes
+        description: Permisos insuficientes.
         content:
           application/json:
             schema:

@@ -104,11 +104,11 @@
                   message: 'Error de validación en los datos enviados.'
                   issues:
                     - field: 'nombre'
-                      message: "El campo 'nombre' debe contener al menos 4 caracteres."
+                      message: "El campo 'nombre' debe contener al menos 3 caracteres."
                     - field: 'nombre'
                       message: "El campo 'nombre' no puede exceder los 100 caracteres."
       '401':
-        description: Errores de autenticación
+        description: Errores de autenticación.
         content:
           application/json:
             schema:
@@ -142,7 +142,7 @@
                   success: false
                   message: 'Usuario no autenticado.'
       '403':
-        description: Permisos insuficientes
+        description: Permisos insuficientes.
         content:
           application/json:
             schema:

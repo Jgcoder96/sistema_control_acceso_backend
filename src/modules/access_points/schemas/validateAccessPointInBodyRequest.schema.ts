@@ -11,7 +11,7 @@ export const validateAccessPointInBodyRequest = z.object(
       .string(
         "El campo 'nombre' es obligatorio y debe ser una cadena de texto.",
       )
-      .min(4, "El campo 'nombre' debe contener al menos 4 caracteres.")
+      .min(3, "El campo 'nombre' debe contener al menos 3 caracteres.")
       .max(100, "El campo 'nombre' no puede exceder los 100 caracteres.")
       .trim(),
     mac: z
