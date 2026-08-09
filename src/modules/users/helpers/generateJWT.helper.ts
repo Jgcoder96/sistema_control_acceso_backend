@@ -8,7 +8,7 @@ export const generateAccessToken = async (
 ): Promise<string> => {
   return jwt.sign(payload, envs.JWT_SECRET, { expiresIn: '1h' });
 };
-
+//7d
 export const generateRefreshToken = async (id: string): Promise<string> => {
   return jwt.sign({ id }, envs.JWT_REFRESH_SECRET, { expiresIn: '7d' });
 };
