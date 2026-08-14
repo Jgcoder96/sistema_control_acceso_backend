@@ -19,14 +19,15 @@ const parseDeviceDate = (dateStr: string): Date => {
     return new Date();
   }
 
-  const day = parseInt(match[1]!, 10);
-  const month = parseInt(match[2]!, 10);
-  const year = parseInt(match[3]!, 10);
-  const hour = parseInt(match[4]!, 10);
-  const minute = parseInt(match[5]!, 10);
-  const second = parseInt(match[6]!, 10);
+  const day = match[1]!.padStart(2, '0');
+  const month = match[2]!.padStart(2, '0');
+  const year = match[3]!;
+  const hour = match[4]!.padStart(2, '0');
+  const minute = match[5]!.padStart(2, '0');
+  const second = match[6]!.padStart(2, '0');
 
-  return new Date(year, month - 1, day, hour, minute, second);
+  const isoString = `${year}-${month}-${day}T${hour}:${minute}:${second}-04:00`;
+  return new Date(isoString);
 };
 
 export const handleDeviceAccessEvent = async (
