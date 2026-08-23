@@ -33,5 +33,17 @@ export const saveAccessLog = async ({
       tarjeta_id: card ? card.id : null,
       codigo_tarjeta: cardCode,
     },
+    include: {
+      puntos_acceso: {
+        include: {
+          ubicaciones: true,
+        },
+      },
+      tarjetas: {
+        include: {
+          usuarios: true,
+        },
+      },
+    },
   });
 };

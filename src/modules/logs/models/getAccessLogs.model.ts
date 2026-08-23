@@ -1,6 +1,7 @@
 import { prisma } from '../../../config/index.js';
 import { Prisma } from '@prisma/client';
 import type { AccessLogsFilters } from '../types/index.js';
+import { getFileUrl } from '../../users/helpers/index.js';
 
 export const getAccessLogs = async (filters: AccessLogsFilters) => {
   const { cedula, puntoDeAccesoId, tarjeta, ubicacionId, limit, page } =
@@ -84,47 +85,54 @@ export const getAccessLogs = async (filters: AccessLogsFilters) => {
     hour12: true,
   });
 
-  const data = rawData.map((log) => {
-    let tarjetaData = null;
+  const data = await Promise.all(
+    rawData.map(async (log) => {
+      let tarjetaData = null;
 
-    if (log.tarjetas) {
-      tarjetaData = {
-        id: log.tarjetas.id,
-        codigo: log.tarjetas.codigo,
-        usuario: log.tarjetas.usuarios
-          ? {
-              id: log.tarjetas.usuarios.id,
-              nombre: log.tarjetas.usuarios.nombre,
-              apellido: log.tarjetas.usuarios.apellido,
-              cedula: log.tarjetas.usuarios.cedula,
-              correo: log.tarjetas.usuarios.correo_electronico,
-              foto: log.tarjetas.usuarios.foto_url,
-            }
-          : null,
+      if (log.tarjetas) {
+        let realFotoUrl = null;
+        if (log.tarjetas.usuarios?.foto_url) {
+          realFotoUrl = await getFileUrl(log.tarjetas.usuarios.foto_url);
+        }
+
+        tarjetaData = {
+          id: log.tarjetas.id,
+          codigo: log.tarjetas.codigo,
+          usuario: log.tarjetas.usuarios
+            ? {
+                id: log.tarjetas.usuarios.id,
+                nombre: log.tarjetas.usuarios.nombre,
+                apellido: log.tarjetas.usuarios.apellido,
+                cedula: log.tarjetas.usuarios.cedula,
+                correo: log.tarjetas.usuarios.correo_electronico,
+                foto: realFotoUrl,
+              }
+            : null,
+        };
+      }
+
+      return {
+        id: log.id,
+        codigo_tarjeta_raw: log.codigo_tarjeta,
+        fecha: log.fecha ? dateVzla.format(log.fecha) : null,
+        autorizado: log.autorizado,
+
+        tarjeta: tarjetaData,
+
+        punto_acceso: {
+          id: log.puntos_acceso.id,
+          nombre: log.puntos_acceso.nombre,
+          mac: log.puntos_acceso.mac,
+        },
+
+        ubicacion: {
+          id: log.puntos_acceso.ubicaciones.id,
+          mesh_id: log.puntos_acceso.ubicaciones.mesh_id,
+          nombre: log.puntos_acceso.ubicaciones.nombre,
+        },
       };
-    }
-
-    return {
-      id: log.id,
-      codigo_tarjeta_raw: log.codigo_tarjeta,
-      fecha: log.fecha ? dateVzla.format(log.fecha) : null,
-      autorizado: log.autorizado,
-
-      tarjeta: tarjetaData,
-
-      punto_acceso: {
-        id: log.puntos_acceso.id,
-        nombre: log.puntos_acceso.nombre,
-        mac: log.puntos_acceso.mac,
-      },
-
-      ubicacion: {
-        id: log.puntos_acceso.ubicaciones.id,
-        mesh_id: log.puntos_acceso.ubicaciones.mesh_id,
-        nombre: log.puntos_acceso.ubicaciones.nombre,
-      },
-    };
-  });
+    }),
+  );
 
   return {
     data,

@@ -6,7 +6,7 @@ export const startEventListener = (wss: Server): void => {
     logger.info('Nuevo usuario conectado');
 
     socket.on('chat message', (msg) => {
-      console.log('Mensaje: ' + msg);
+      //console.log('Mensaje: ' + msg);
 
       wss.emit('chat message', msg);
     });

@@ -38,9 +38,23 @@ export const uploadFile = async (file: RequestFile): Promise<string> => {
 };
 
 export const getFileUrl = async (fileKey: string): Promise<string> => {
+  let actualKey = fileKey;
+  
+  // Si en la base de datos se guardó accidentalmente la URL completa (ej. https://teg-s3-bucket.s3.../fotos/123?X-Amz...),
+  // extraemos solo la ruta relativa ("fotos/123") para poder firmarla de nuevo correctamente y evitar una doble firma.
+  if (fileKey.startsWith('http://') || fileKey.startsWith('https://')) {
+    try {
+      const parsedUrl = new URL(fileKey);
+      // parsedUrl.pathname devuelve "/fotos/123", le quitamos el primer slash
+      actualKey = parsedUrl.pathname.substring(1);
+    } catch (e) {
+      console.error('Error parsing S3 fileKey URL:', e);
+    }
+  }
+
   const command = new GetObjectCommand({
     Bucket: BUCKET_NAME,
-    Key: fileKey,
+    Key: actualKey,
   });
 
   const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
