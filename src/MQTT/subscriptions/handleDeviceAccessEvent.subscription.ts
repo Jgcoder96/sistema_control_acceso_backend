@@ -69,6 +69,7 @@ export const handleDeviceAccessEvent = async (
       };
 
       wss.emit('access_event', formattedLog);
+      logger.info(`[WebSocket] Evento de acceso emitido para: ${savedLog.id}`);
     } catch (wsError) {
       logger.error(`[WebSocket] Error emitiendo evento de acceso: ${wsError}`);
     }
